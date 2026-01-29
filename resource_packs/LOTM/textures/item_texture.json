@@ -1,0 +1,66 @@
+{
+  "resource_pack_name": "lotm_resources",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "darkness_potion_seq9": {
+      "textures": "textures/items/darkness_potion_seq9"
+    },
+    "darkness_potion_seq8": {
+      "textures": "textures/items/darkness_potion_seq8"
+    },
+    "death_potion_seq9": {
+      "textures": "textures/items/death_potion_seq9"
+    },
+    "door_potion_seq9": {
+      "textures": "textures/items/door_potion_seq9"
+    },
+    "door_potion_seq8": {
+      "textures": "textures/items/door_potion_seq8"
+    },
+    "spirit_restoration_potion": {
+      "textures": "textures/items/spirit_restoration_potion"
+    },
+    "poet_songs": {
+      "textures": "textures/items/poet_songs"
+    },
+    "spirit_world_key": {
+      "textures": "textures/items/spirit_world_key"
+    },
+    "flashbang": {
+      "textures": "textures/items/flashbang"
+    },
+    "flame_fingers": {
+      "textures": "textures/items/flame_fingers"
+    },
+    "spark_crystal": {
+      "textures": "textures/items/spark_crystal"
+    },
+    "frost_stone": {
+      "textures": "textures/items/frost_stone"
+    },
+    "twilight_potion_seq9": {
+      "textures": "textures/items/twilight_potion_seq9"
+    },
+    "twilight_potion_seq8": {
+      "textures": "textures/items/twilight_potion_seq8"
+    },
+    "twilight_potion_seq7": {
+      "textures": "textures/items/twilight_potion_seq7"
+    },
+    "twilight_potion_seq6": {
+      "textures": "textures/items/twilight_potion_seq6"
+    },
+    "dawn_light": {
+      "textures": "textures/items/dawn_light"
+    },
+    "dawnsword": {
+			"textures": "textures/items/dawnsword.png"
+		},
+    "dawnchestplate_": {
+			"textures": "textures/items/dawnchestplate_.png"
+		},
+    "tophat": {
+			"textures": "textures/items/tophat.png"
+		}
+  }
+}

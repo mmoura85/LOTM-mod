@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:spirit_world_key",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon":"spirit_world_key",
+      "minecraft:display_name": {
+        "value": "§5Spirit World Key"
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 1
+    }
+  }
+}

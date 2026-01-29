@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:flashbang",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "flashbang",
+      "minecraft:display_name": {
+        "value": "§fFlashbang"
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 1
+    }
+  }
+}

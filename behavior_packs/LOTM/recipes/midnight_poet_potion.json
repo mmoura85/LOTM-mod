@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:midnight_poet_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " M ",
+      "DPD",
+      " N "
+    ],
+    "key": {
+      "M": {
+        "item": "minecraft:music_disc_13"
+      },
+      "D": {
+        "item": "minecraft:echo_shard"
+      },
+      "P": {
+        "item": "lotm:darkness_potion_seq9"
+      },
+      "N": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    "result": {
+      "item": "lotm:darkness_potion_seq8",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:darkness_potion_seq9"
+      }
+    ]
+  }
+}

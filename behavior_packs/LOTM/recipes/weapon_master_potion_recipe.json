@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:weapon_master_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " A ",
+      "DPD",
+      " E "
+    ],
+    "key": {
+      "A": {
+        "item": "minecraft:netherite_axe"
+      },
+      "D": {
+        "item": "minecraft:diamond"
+      },
+      "P": {
+        "item": "lotm:twilight_potion_seq8"
+      },
+      "E": {
+        "item": "minecraft:emerald"
+      }
+    },
+    "result": {
+      "item": "lotm:twilight_potion_seq7",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:twilight_potion_seq8"
+      }
+    ]
+  }
+}

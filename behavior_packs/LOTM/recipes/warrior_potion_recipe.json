@@ -1,0 +1,38 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:warrior_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " I ",
+      "SWS",
+      " B "
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:iron_sword"
+      },
+      "S": {
+        "item": "minecraft:iron_ingot"
+      },
+      "W": {
+        "item": "minecraft:potion",
+        "data": 0
+      },
+      "B": {
+        "item": "minecraft:bone"
+      }
+    },
+    "result": {
+      "item": "lotm:twilight_potion_seq9",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:iron_sword"
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:dawn_paladin_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " S ",
+      "NPN",
+      " G "
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:nether_star"
+      },
+      "N": {
+        "item": "minecraft:netherite_ingot"
+      },
+      "P": {
+        "item": "lotm:twilight_potion_seq7"
+      },
+      "G": {
+        "item": "minecraft:glistering_melon_slice"
+      }
+    },
+    "result": {
+      "item": "lotm:twilight_potion_seq6",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:twilight_potion_seq7"
+      }
+    ]
+  }
+}

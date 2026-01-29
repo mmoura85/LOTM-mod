@@ -1,0 +1,27 @@
+{
+	"format_version": "1.19.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dawnsword",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "root_item",
+					"pivot": [0, 0, 0],
+					"binding": "q.item_slot_to_bone_name(c.item_slot)",
+					"cubes": [
+						{"origin": [-1, -1, -1], "size": [2, 4, 2], "uv": [0, 18]},
+						{"origin": [-1, 3, -4], "size": [2, 1, 8], "uv": [0, 8]},
+						{"origin": [0, 4, -2], "size": [0, 20, 4], "uv": [0, -4]}
+					]
+				}
+			]
+		}
+	]
+}

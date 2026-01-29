@@ -1,0 +1,38 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:spirit_restoration_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " G ",
+      "LWL",
+      " R "
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:ghast_tear"
+      },
+      "L": {
+        "item": "minecraft:glowstone_dust"
+      },
+      "W": {
+        "item": "minecraft:potion",
+        "data": 0
+      },
+      "R": {
+        "item": "minecraft:redstone"
+      }
+    },
+    "result": {
+      "item": "lotm:spirit_restoration_potion",
+      "count": 3
+    },
+    "unlock": [
+      {
+        "item": "minecraft:ghast_tear"
+      }
+    ]
+  }
+}
