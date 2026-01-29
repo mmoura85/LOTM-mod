@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:frost_stone_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "III",
+      "IPI",
+      "III"
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:ice"
+      },
+      "P": {
+        "item": "minecraft:prismarine_shard"
+      }
+    },
+    "result": {
+      "item": "lotm:frost_stone",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:ice"
+      }
+    ]
+  }
+}

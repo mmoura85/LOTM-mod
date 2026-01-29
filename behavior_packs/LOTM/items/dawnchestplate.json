@@ -1,0 +1,36 @@
+{
+	"format_version": "1.20.50",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lotm:dawnchestplate_",
+			"menu_category": {
+				"category": "equipment",
+				"group": "itemGroup.name.chestplate"
+			}
+		},
+		"components": {
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dawnchestplate_",
+			"minecraft:glint": true,
+			"minecraft:wearable": {
+				"slot": "slot.armor.chest",
+				"protection": 20
+			},
+			"minecraft:enchantable": {
+				"slot": "armor_torso",
+				"value": 18
+			},
+			"minecraft:durability": {
+				"max_durability": 2100
+			},
+			"minecraft:repairable": {
+				"repair_items": [
+					{
+						"items": ["iron_ingot"],
+						"repair_amount": 63
+					}
+				]
+			}
+		}
+	}
+}

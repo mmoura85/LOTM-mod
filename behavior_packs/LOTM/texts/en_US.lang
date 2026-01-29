@@ -1,0 +1,193 @@
+## Items - Darkness Pathway
+item.lotm:darkness_potion_seq9.name=Sleepless Potion
+item.lotm:darkness_potion_seq8.name=Midnight Poet Potion
+item.lotm:poet_songs.name=Midnight Poet's Songs
+
+## Items - Death Pathway
+item.lotm:death_potion_seq9.name=Corpse Collector Potion
+
+## Items - Door Pathway
+item.lotm:door_potion_seq9.name=Apprentice Potion
+item.lotm:door_potion_seq8.name=Trickmaster Potion
+item.lotm:spirit_world_key.name=Spirit World Key
+item.lotm:flashbang.name=Flashbang
+item.lotm:flame_fingers.name=Flame Fingers
+item.lotm:spark_crystal.name=Spark Crystal
+item.lotm:frost_stone.name=Frost Stone
+
+## Items - Twilight Giant Pathway
+item.lotm:twilight_potion_seq9.name=Warrior Potion
+item.lotm:twilight_potion_seq8.name=Pugilist Potion
+item.lotm:twilight_potion_seq7.name=Weapon Master Potion
+item.lotm:twilight_potion_seq6.name=Dawn Paladin Potion
+
+## Items - General
+item.lotm:spirit_restoration_potion.name=Spirit Restoration Potion
+
+## Pathways
+lotm.pathway.darkness=Darkness
+lotm.pathway.death=Death
+lotm.pathway.door=Door
+lotm.pathway.twilight_giant=Twilight Giant
+lotm.pathway.seer=Seer
+lotm.pathway.apprentice=Apprentice
+lotm.pathway.sun=Sun
+
+## Sequences
+lotm.sequence.9=Sequence 9
+lotm.sequence.8=Sequence 8
+lotm.sequence.7=Sequence 7
+lotm.sequence.6=Sequence 6
+lotm.sequence.5=Sequence 5
+lotm.sequence.4=Sequence 4
+lotm.sequence.3=Sequence 3
+lotm.sequence.2=Sequence 2
+lotm.sequence.1=Sequence 1
+lotm.sequence.0=Sequence 0
+
+## Darkness Pathway Sequences
+lotm.darkness.seq9=Sleepless
+lotm.darkness.seq8=Midnight Poet
+lotm.darkness.seq7=Nightmare
+lotm.darkness.seq6=Requiem
+lotm.darkness.seq5=Gatekeeper
+lotm.darkness.seq4=Gatekeeper
+lotm.darkness.seq3=Ferryman
+lotm.darkness.seq2=Pale Emperor
+lotm.darkness.seq1=Prince of Concealment
+lotm.darkness.seq0=Darkness
+
+## Death Pathway Sequences
+lotm.death.seq9=Corpse Collector
+lotm.death.seq8=Gravedigger
+lotm.death.seq7=Spirit Medium
+lotm.death.seq6=Spirit Guide
+lotm.death.seq5=Gatekeeper
+lotm.death.seq4=Undying
+lotm.death.seq3=Ferryman
+lotm.death.seq2=Death Consul
+lotm.death.seq1=Pale Emperor
+lotm.death.seq0=Death
+
+## Door Pathway Sequences
+lotm.door.seq9=Apprentice
+lotm.door.seq8=Trickmaster
+lotm.door.seq7=Astrologer
+lotm.door.seq6=Clown
+lotm.door.seq5=Magician
+lotm.door.seq4=Nimblewright Master
+lotm.door.seq3=Scholar of Yore
+lotm.door.seq2=Planeswalker## Items - Darkness Pathway
+item.lotm:darkness_potion_seq9.name=Sleepless Potion
+item.lotm:darkness_potion_seq8.name=Midnight Poet Potion
+item.lotm:poet_songs.name=Midnight Poet's Songs
+
+## Items - Death Pathway
+item.lotm:death_potion_seq9.name=Corpse Collector Potion
+
+## Items - Door Pathway
+item.lotm:door_potion_seq9.name=Apprentice Potion
+item.lotm:door_potion_seq8.name=Trickmaster Potion
+item.lotm:spirit_world_key.name=Spirit World Key
+item.lotm:flashbang.name=Flashbang
+item.lotm:flame_fingers.name=Flame Fingers
+item.lotm:spark_crystal.name=Spark Crystal
+item.lotm:frost_stone.name=Frost Stone
+
+## Items - Twilight Giant Pathway
+item.lotm:twilight_potion_seq9.name=Warrior Potion
+item.lotm:twilight_potion_seq8.name=Pugilist Potion
+item.lotm:twilight_potion_seq7.name=Weapon Master Potion
+item.lotm:twilight_potion_seq6.name=Dawn Paladin Potion
+item.lotm:dawn_light.name=Light of Dawn
+
+## Items - General
+item.lotm:spirit_restoration_potion.name=Spirit Restoration Potion
+
+## Pathways
+lotm.pathway.darkness=Darkness
+lotm.pathway.death=Death
+lotm.pathway.door=Door
+lotm.pathway.twilight_giant=Twilight Giant
+lotm.pathway.seer=Seer
+lotm.pathway.apprentice=Apprentice
+lotm.pathway.sun=Sun
+
+## Sequences
+lotm.sequence.9=Sequence 9
+lotm.sequence.8=Sequence 8
+lotm.sequence.7=Sequence 7
+lotm.sequence.6=Sequence 6
+lotm.sequence.5=Sequence 5
+lotm.sequence.4=Sequence 4
+lotm.sequence.3=Sequence 3
+lotm.sequence.2=Sequence 2
+lotm.sequence.1=Sequence 1
+lotm.sequence.0=Sequence 0
+
+## Darkness Pathway Sequences
+lotm.darkness.seq9=Sleepless
+lotm.darkness.seq8=Midnight Poet
+lotm.darkness.seq7=Nightmare
+lotm.darkness.seq6=Requiem
+lotm.darkness.seq5=Gatekeeper
+lotm.darkness.seq4=Gatekeeper
+lotm.darkness.seq3=Ferryman
+lotm.darkness.seq2=Pale Emperor
+lotm.darkness.seq1=Prince of Concealment
+lotm.darkness.seq0=Darkness
+
+## Death Pathway Sequences
+lotm.death.seq9=Corpse Collector
+lotm.death.seq8=Gravedigger
+lotm.death.seq7=Spirit Medium
+lotm.death.seq6=Spirit Guide
+lotm.death.seq5=Gatekeeper
+lotm.death.seq4=Undying
+lotm.death.seq3=Ferryman
+lotm.death.seq2=Death Consul
+lotm.death.seq1=Pale Emperor
+lotm.death.seq0=Death
+
+## Door Pathway Sequences
+lotm.door.seq9=Apprentice
+lotm.door.seq8=Trickmaster
+lotm.door.seq7=Astrologer
+lotm.door.seq6=Clown
+lotm.door.seq5=Magician
+lotm.door.seq4=Nimblewright Master
+lotm.door.seq3=Scholar of Yore
+lotm.door.seq2=Planeswalker
+lotm.door.seq1=Door
+lotm.door.seq0=Fool
+
+## Twilight Giant Pathway Sequences
+lotm.twilight_giant.seq9=Warrior
+lotm.twilight_giant.seq8=Pugilist
+lotm.twilight_giant.seq7=Weapon Master
+lotm.twilight_giant.seq6=Dawn Paladin
+lotm.twilight_giant.seq5=Guardian
+lotm.twilight_giant.seq4=Demon Hunter
+lotm.twilight_giant.seq3=Silver Knight
+lotm.twilight_giant.seq2=Dawn Knight
+lotm.twilight_giant.seq1=Glory
+lotm.twilight_giant.seq0=Twilight Giant
+lotm.door.seq1=Door
+lotm.door.seq0=Fool
+
+## Twilight Giant Pathway Sequences
+lotm.twilight_giant.seq9=Warrior
+lotm.twilight_giant.seq8=Pugilist
+lotm.twilight_giant.seq7=Weapon Master
+lotm.twilight_giant.seq6=Dawn Paladin
+lotm.twilight_giant.seq5=Guardian
+lotm.twilight_giant.seq4=Demon Hunter
+lotm.twilight_giant.seq3=Silver Knight
+lotm.twilight_giant.seq2=Dawn Knight
+lotm.twilight_giant.seq1=Glory
+lotm.twilight_giant.seq0=Twilight Giant
+
+
+item.lotm:dawnsword=DawnSword
+item.lotm:dawnchestplate_=DawnChestPlate 
+item.lotm:tophat=TopHat

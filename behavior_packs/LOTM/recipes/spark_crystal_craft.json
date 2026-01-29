@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:spark_crystal_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " Q ",
+      "QRQ",
+      " Q "
+    ],
+    "key": {
+      "Q": {
+        "item": "minecraft:quartz"
+      },
+      "R": {
+        "item": "minecraft:redstone"
+      }
+    },
+    "result": {
+      "item": "lotm:spark_crystal",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:quartz"
+      }
+    ]
+  }
+}

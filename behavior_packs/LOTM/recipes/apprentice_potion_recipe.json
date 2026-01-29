@@ -1,0 +1,38 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:apprentice_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " D ",
+      "EWE",
+      " A "
+    ],
+    "key": {
+      "D": {
+        "item": "minecraft:tripwire_hook"
+      },
+      "E": {
+        "item": "minecraft:ender_pearl"
+      },
+      "W": {
+        "item": "minecraft:potion",
+        "data": 0
+      },
+      "A": {
+        "item": "minecraft:amethyst_shard"
+      }
+    },
+    "result": {
+      "item": "lotm:door_potion_seq9",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:ender_pearl"
+      }
+    ]
+  }
+}
