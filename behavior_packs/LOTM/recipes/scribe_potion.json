@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:scribe_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " B ",
+      "DPD",
+      " E "
+    ],
+    "key": {
+      "B": {
+        "item": "minecraft:writable_book"
+      },
+      "D": {
+        "item": "minecraft:diamond"
+      },
+      "P": {
+        "item": "lotm:door_potion_seq7"
+      },
+      "E": {
+        "item": "minecraft:echo_shard"
+      }
+    },
+    "result": {
+      "item": "lotm:door_potion_seq6",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:door_potion_seq7"
+      }
+    ]
+  }
+}

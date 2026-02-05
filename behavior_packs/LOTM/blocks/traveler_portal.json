@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "lotm:traveler_portal"
+    },
+    "components": {
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "traveler_portal",
+          "render_method": "blend",
+          "ambient_occlusion": false,
+          "face_dimming": false
+        }
+      },
+      "minecraft:collision_box": false,
+      "minecraft:selection_box": false,
+      "minecraft:light_emission": 11,
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.1
+      },
+      "minecraft:map_color": "#8B00FF"
+    }
+  }
+}

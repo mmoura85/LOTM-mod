@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:astrologer_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " S ",
+      "EPE",
+      " C "
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:spyglass"
+      },
+      "E": {
+        "item": "minecraft:ender_eye"
+      },
+      "P": {
+        "item": "lotm:door_potion_seq8"
+      },
+      "C": {
+        "item": "minecraft:clock"
+      }
+    },
+    "result": {
+      "item": "lotm:door_potion_seq7",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:door_potion_seq8"
+      }
+    ]
+  }
+}
