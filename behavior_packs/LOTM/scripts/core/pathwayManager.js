@@ -20,10 +20,10 @@ export class PathwayManager {
   static SPIRIT_GROWTH = {
     [this.PATHWAYS.DARKNESS]: 15,      // Physical pathway - slower growth
     [this.PATHWAYS.DEATH]: 20,         // Mystical pathway - moderate growth
-    [this.PATHWAYS.DOOR]: 25,          // Highly mystical - faster growth
+    [this.PATHWAYS.DOOR]: 35,          // Highly mystical - faster growth
     [this.PATHWAYS.TWILIGHT_GIANT]: 12, // Very physical - slowest growth
     [this.PATHWAYS.SUN]: 18,            // Balanced pathway
-    [this.PATHWAYS.SEER]: 25,           // Mystical pathway - faster growth
+    [this.PATHWAYS.SEER]: 35,           // Mystical pathway - faster growth
     [this.PATHWAYS.APPRENTICE]: 22      // Mystical pathway - faster growth
   };
   

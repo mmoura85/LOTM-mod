@@ -57,7 +57,7 @@ export class TrickmasterSequence {
    */
   static hasSequence(player) {
     return PathwayManager.getPathway(player) === this.PATHWAY &&
-           PathwayManager.getSequence(player) === this.SEQUENCE_NUMBER;
+           PathwayManager.getSequence(player) <= this.SEQUENCE_NUMBER;
   }
   
   /**

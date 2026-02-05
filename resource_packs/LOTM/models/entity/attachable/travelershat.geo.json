@@ -3,7 +3,7 @@
 	"minecraft:geometry": [
 		{
 			"description": {
-				"identifier": "geometry.tophat",
+				"identifier": "geometry.travelershat",
 				"texture_width": 32,
 				"texture_height": 32,
 				"visible_bounds_width": 2,
@@ -15,7 +15,7 @@
 					"name": "root_item",
 					"pivot": [0, 0, 0],
 					"cubes": [
-						{"origin": [0, 1, -2], "size": [3, 2, 3], "uv": [-2, -1]}
+						{"origin": [-3, 9, -3], "size": [6, 3, 6], "uv": [-8, -4]}
 					]
 				},
 				{
@@ -24,7 +24,7 @@
 					"pivot": [0, 0, 0],
 					"binding": "'head'",
 					"cubes": [
-						{"origin": [-1, 0, -3], "size": [5, 1, 5], "uv": [6, 3]}
+						{"origin": [-4, 0, -4], "size": [8, 8, 8], "inflate": 1, "uv": [0, 0]}
 					]
 				}
 			]

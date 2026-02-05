@@ -61,6 +61,33 @@
 		},
     "tophat": {
 			"textures": "textures/items/tophat.png"
-		}
+		},
+    "door_potion_seq7": {
+      "textures": "textures/items/door_potion_seq7"
+    },
+    "door_potion_seq6": {
+      "textures": "textures/items/door_potion_seq6"
+    },
+    "door_potion_seq5": {
+      "textures": "textures/items/door_potion_seq5"
+    },
+    "crystal_ball": {
+      "textures": "textures/items/crystal_ball"
+    },
+    "recording_tome": {
+      "textures": "textures/items/recording_tome"
+    },
+    "travelers_log": {
+      "textures": "textures/items/travelers_log"
+    },
+    "travelershat": {
+			"textures": "textures/items/travelershat.png"
+		},
+    "darkness_potion_seq7": {
+      "textures": "textures/items/darkness_potion_seq7"
+    },
+    "nightmare_powers": {
+      "textures": "textures/items/nightmare_powers"
+    }
   }
 }

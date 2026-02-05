@@ -14,6 +14,12 @@ item.lotm:flashbang.name=Flashbang
 item.lotm:flame_fingers.name=Flame Fingers
 item.lotm:spark_crystal.name=Spark Crystal
 item.lotm:frost_stone.name=Frost Stone
+item.lotm:door_potion_seq7.name=Astrologer Potion
+item.lotm:door_potion_seq6.name=Scribe Potion
+item.lotm:door_potion_seq5.name=Traveler Potion
+item.lotm:crystal_ball.name=Crystal Ball
+item.lotm:recording_tome.name=Recording Tome
+item.lotm:travelers_log.name=Traveler's Log
 
 ## Items - Twilight Giant Pathway
 item.lotm:twilight_potion_seq9.name=Warrior Potion
@@ -73,14 +79,18 @@ lotm.death.seq0=Death
 lotm.door.seq9=Apprentice
 lotm.door.seq8=Trickmaster
 lotm.door.seq7=Astrologer
-lotm.door.seq6=Clown
-lotm.door.seq5=Magician
-lotm.door.seq4=Nimblewright Master
-lotm.door.seq3=Scholar of Yore
+lotm.door.seq6=Scribe
+lotm.door.seq5=Traveler
+## lotm.door.seq6=Clown
+## lotm.door.seq5=Magician
+## lotm.door.seq4=Nimblewright Master
+## lotm.door.seq3=Scholar of Yore
 lotm.door.seq2=Planeswalker## Items - Darkness Pathway
 item.lotm:darkness_potion_seq9.name=Sleepless Potion
 item.lotm:darkness_potion_seq8.name=Midnight Poet Potion
-item.lotm:poet_songs.name=Midnight Poet's Songs
+item.lotm:poet_songs.name=Midnight Poet's 
+item.lotm:darkness_potion_seq7.name=Nightmare Potion
+item.lotm:nightmare_powers.name=Nightmare Powers
 
 ## Items - Death Pathway
 item.lotm:death_potion_seq9.name=Corpse Collector Potion
