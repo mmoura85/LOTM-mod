@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:soul_assurer_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " S ",
+      "DPD",
+      " G "
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:soul_sand"
+      },
+      "D": {
+        "item": "minecraft:diamond"
+      },
+      "P": {
+        "item": "lotm:darkness_potion_seq7"
+      },
+      "G": {
+        "item": "minecraft:ghast_tear"
+      }
+    },
+    "result": {
+      "item": "lotm:darkness_potion_seq6",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:darkness_potion_seq7"
+      }
+    ]
+  }
+}

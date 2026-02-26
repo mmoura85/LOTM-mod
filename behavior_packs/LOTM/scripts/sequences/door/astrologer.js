@@ -8,7 +8,7 @@ export class AstrologerSequence {
   static PATHWAY = 'door';
   
   // Passive ability constants - ENHANCED from Trickmaster
-  static EFFECT_DURATION = 400;
+  static EFFECT_DURATION = 999999;
   static SPEED_AMPLIFIER = 2; // Speed III (maintained)
   static JUMP_AMPLIFIER = 2; // Jump Boost III (maintained)
   
@@ -64,7 +64,7 @@ export class AstrologerSequence {
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Enhanced mobility (same as Trickmaster)
     this.applyMobilityEnhancements(player);
@@ -445,12 +445,16 @@ export class AstrologerSequence {
       // Spawn particles
       for (let i = 0; i < 20; i++) {
         system.runTimeout(() => {
-          player.dimension.spawnParticle('minecraft:portal_directional', doorLoc);
-          player.dimension.spawnParticle('minecraft:portal_directional', {
-            x: doorLoc.x,
-            y: doorLoc.y + 1,
-            z: doorLoc.z
-          });
+          try {
+            player.dimension.spawnParticle('minecraft:portal_directional', doorLoc);
+          } catch (e){}
+          try {
+            player.dimension.spawnParticle('minecraft:portal_directional', {
+              x: doorLoc.x,
+              y: doorLoc.y + 1,
+              z: doorLoc.z
+            });
+          } catch (e){}
         }, i * 3);
       }
       
@@ -485,7 +489,9 @@ export class AstrologerSequence {
           // Spawn particles at destination
           for (let i = 0; i < 10; i++) {
             system.runTimeout(() => {
-              player.dimension.spawnParticle('minecraft:portal_directional', teleportLoc);
+              try {
+                player.dimension.spawnParticle('minecraft:portal_directional', teleportLoc);
+              } catch (e){}
             }, i * 2);
           }
           
@@ -506,7 +512,9 @@ export class AstrologerSequence {
       
       for (let i = 0; i < 10; i++) {
         system.runTimeout(() => {
-          player.dimension.spawnParticle('minecraft:lava_particle', doorLoc);
+          try {
+            player.dimension.spawnParticle('minecraft:lava_particle', doorLoc);
+          } catch (e){}
         }, i * 3);
       }
       
@@ -587,11 +595,13 @@ export class AstrologerSequence {
       // Visual effect at wall
       for (let i = 0; i < 5; i++) {
         system.runTimeout(() => {
-          player.dimension.spawnParticle('minecraft:soul_particle', {
-            x: wallLoc.x + 0.5,
-            y: wallLoc.y + 0.5,
-            z: wallLoc.z + 0.5
-          });
+          try {
+            player.dimension.spawnParticle('minecraft:soul_particle', {
+              x: wallLoc.x + 0.5,
+              y: wallLoc.y + 0.5,
+              z: wallLoc.z + 0.5
+            });
+          } catch (e){}
         }, i * 10);
       }
       

@@ -7,7 +7,7 @@ export class CorpseCollectorSequence {
   static PATHWAY = 'death';
   
   // Passive ability constants
-  static EFFECT_DURATION = 400; // ~20 seconds to prevent flicker
+  static EFFECT_DURATION = 999999; // ~20 seconds to prevent flicker
   static SPEED_AMPLIFIER = 1; // Speed I
   static STRENGTH_AMPLIFIER = 2; // Strength I
   static RESISTANCE_AMPLIFIER = 1; // Resistance I (for decay/cold)
@@ -32,7 +32,7 @@ export class CorpseCollectorSequence {
    * Apply passive abilities (called every tick for active players)
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Physical enhancements
     this.applyPhysicalEnhancements(player);

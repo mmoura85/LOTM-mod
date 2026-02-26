@@ -88,6 +88,60 @@
     },
     "nightmare_powers": {
       "textures": "textures/items/nightmare_powers"
+    },
+    "twilight_potion_seq5": {
+      "textures": "textures/items/twilight_potion_seq5"
+    },
+    "guardian_shield": {
+      "textures": "textures/items/guardian_shield"
+    },
+    "sun_potion_seq9": {
+      "textures": "textures/items/sun_potion_seq9"
+    },
+    "sun_potion_seq8": {
+      "textures": "textures/items/sun_potion_seq8"
+    },
+    "bard_songs": {
+      "textures": "textures/items/bard_songs"
+    },
+    "solar_orb": {
+      "textures": "textures/items/solar_orb"
+    },
+    "spirit_fog_catalyst": {
+      "textures": "textures/items/spirit_fog_catalyst"
+    },
+    "invisible_hand": {
+      "textures": "textures/items/invisible_hand"
+    },
+    "revolver": {
+      "textures": "textures/items/revolver"
+    },
+    "bullet": {
+      "textures": "textures/items/bullet"
+    },
+    "soul_assurer_powers": {
+      "textures": "textures/items/soul_assurer_powers"
+    },
+    "darkness_potion_seq6": {
+      "textures": "textures/items/darkness_potion_seq6"
+    },
+    "demon_hunter_powers": {
+      "textures": "textures/items/demon_hunter_powers"
+    },
+    "twilight_potion_seq4": {
+      "textures": "textures/items/twilight_potion_seq4"
+    },
+    "secrets_sorcerer_powers": {
+      "textures": "textures/items/secrets_sorcerer_powers"
+    },
+    "transfiguration_portal": {
+      "textures": "textures/items/transfiguration_portal"
+    },
+    "door_potion_seq4": {
+      "textures": "textures/items/door_potion_seq4"
+    },
+    "prison_pocket": {
+      "textures": "textures/items/prison_pocket"
     }
   }
 }

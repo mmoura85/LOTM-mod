@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:soul_assurer_powers"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "SES",
+      "DND",
+      " S "
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:soul_sand"
+      },
+      "E": {
+        "item": "minecraft:ender_eye"
+      },
+      "D": {
+        "item": "minecraft:diamond"
+      },
+      "N": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    "result": {
+      "item": "lotm:soul_assurer_powers",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:nether_star"
+      }
+    ]
+  }
+}

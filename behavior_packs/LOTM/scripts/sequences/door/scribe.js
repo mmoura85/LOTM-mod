@@ -8,7 +8,7 @@ export class ScribeSequence {
   static PATHWAY = 'door';
   
   // Passive ability constants - ENHANCED from Astrologer
-  static EFFECT_DURATION = 400;
+  static EFFECT_DURATION = 999999;
   static SPEED_AMPLIFIER = 3; // Speed IV
   static JUMP_AMPLIFIER = 2; // Jump Boost III (maintained)
   
@@ -71,11 +71,11 @@ export class ScribeSequence {
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    const pathway = PathwayManager.getPathway(player);
-    const sequence = PathwayManager.getSequence(player);
+    // const pathway = PathwayManager.getPathway(player);
+    // const sequence = PathwayManager.getSequence(player);
     
-    // Only apply if player is exactly this sequence
-    if (pathway !== this.PATHWAY || sequence !== this.SEQUENCE_NUMBER) return;
+    // // Only apply if player is exactly this sequence
+    // if (pathway !== this.PATHWAY || sequence !== this.SEQUENCE_NUMBER) return;
     
     // Load saved recordings on first tick (if not already loaded)
     if (!this.recordedAbilities.has(player.name)) {
@@ -274,11 +274,13 @@ export class ScribeSequence {
     for (let i = 0; i < 20; i++) {
       system.runTimeout(() => {
         const angle = (i / 20) * Math.PI * 2;
-        player.dimension.spawnParticle('minecraft:soul_particle', {
-          x: targetPlayer.location.x + Math.cos(angle) * 2,
-          y: targetPlayer.location.y + 1,
-          z: targetPlayer.location.z + Math.sin(angle) * 2
-        });
+        try {
+          player.dimension.spawnParticle('minecraft:soul_particle', {
+            x: targetPlayer.location.x + Math.cos(angle) * 2,
+            y: targetPlayer.location.y + 1,
+            z: targetPlayer.location.z + Math.sin(angle) * 2
+          });
+        } catch (e){}
       }, i * 2);
     }
     
@@ -534,7 +536,9 @@ export class ScribeSequence {
     for (const entity of entities) {
       entity.addEffect('slowness', duration, { amplifier: 3, showParticles: false });
       entity.addEffect('weakness', duration, { amplifier: 5, showParticles: false });
-      entity.dimension.spawnParticle('minecraft:heart_particle', entity.location);
+      try {
+        entity.dimension.spawnParticle('minecraft:heart_particle', entity.location);
+      } catch (e){}
     }
     
     player.playSound('note.harp', { pitch: 1.5, volume: 0.8 });
@@ -558,8 +562,9 @@ export class ScribeSequence {
     const duration = Math.floor(100 * strength);
     
     player.playSound('random.explode', { pitch: 2.0, volume: 0.8 });
-    player.dimension.spawnParticle('minecraft:huge_explosion_emitter', player.location);
-    
+    try {
+      player.dimension.spawnParticle('minecraft:huge_explosion_emitter', player.location);
+    } catch (e){}
     const entities = player.dimension.getEntities({
       location: player.location,
       maxDistance: range,
@@ -600,9 +605,9 @@ export class ScribeSequence {
       
       system.runTimeout(() => {
         if (hasHit) return;
-        
-        player.dimension.spawnParticle('minecraft:basic_flame_particle', particleLoc);
-        
+        try {
+          player.dimension.spawnParticle('minecraft:basic_flame_particle', particleLoc);
+        } catch (e){}
         const entities = player.dimension.getEntities({
           location: particleLoc,
           maxDistance: 1.5,
@@ -690,12 +695,13 @@ export class ScribeSequence {
       system.runTimeout(() => {
         const angle = (i / 10) * Math.PI * 2;
         const radius = range * 0.5;
-        
-        player.dimension.spawnParticle('minecraft:soul_particle', {
-          x: player.location.x + Math.cos(angle) * radius,
-          y: player.location.y + 1,
-          z: player.location.z + Math.sin(angle) * radius
-        });
+        try {
+          player.dimension.spawnParticle('minecraft:soul_particle', {
+            x: player.location.x + Math.cos(angle) * radius,
+            y: player.location.y + 1,
+            z: player.location.z + Math.sin(angle) * radius
+          });
+        } catch (e){}
       }, i * 5);
     }
     

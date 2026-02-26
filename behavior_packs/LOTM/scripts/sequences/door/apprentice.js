@@ -7,7 +7,7 @@ export class ApprenticeSequence {
   static PATHWAY = 'door';
   
   // Passive ability constants
-  static EFFECT_DURATION = 400; // ~20 seconds to prevent flicker
+  static EFFECT_DURATION = 999999; // ~20 seconds to prevent flicker
   static SPEED_AMPLIFIER = 0; // Speed I
   static JUMP_AMPLIFIER = 0; // Jump Boost I
   
@@ -36,7 +36,7 @@ export class ApprenticeSequence {
    * Apply passive abilities (called every tick for active players)
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Enhanced mobility for mystical travel
     this.applyMobilityEnhancements(player);
@@ -207,12 +207,16 @@ export class ApprenticeSequence {
       // Spawn particles at door location
       for (let i = 0; i < 20; i++) {
         system.runTimeout(() => {
-          player.dimension.spawnParticle('minecraft:portal_directional', doorLoc);
-          player.dimension.spawnParticle('minecraft:portal_directional', {
-            x: doorLoc.x,
-            y: doorLoc.y + 1,
-            z: doorLoc.z
-          });
+          try {
+            player.dimension.spawnParticle('minecraft:portal_directional', doorLoc);
+          } catch (e){}
+          try {
+            player.dimension.spawnParticle('minecraft:portal_directional', {
+              x: doorLoc.x,
+              y: doorLoc.y + 1,
+              z: doorLoc.z
+            });
+          } catch (e){}
         }, i * 3);
       }
       
@@ -228,7 +232,9 @@ export class ApprenticeSequence {
           // Spawn particles at destination
           for (let i = 0; i < 10; i++) {
             system.runTimeout(() => {
-              player.dimension.spawnParticle('minecraft:portal_directional', teleportLoc);
+              try {
+                player.dimension.spawnParticle('minecraft:portal_directional', teleportLoc);
+              } catch (e){}
             }, i * 2);
           }
           
@@ -254,7 +260,9 @@ export class ApprenticeSequence {
       // Spawn failure particles
       for (let i = 0; i < 10; i++) {
         system.runTimeout(() => {
-          player.dimension.spawnParticle('minecraft:lava_particle', doorLoc);
+          try {
+            player.dimension.spawnParticle('minecraft:lava_particle', doorLoc);
+          } catch (e){}
         }, i * 3);
       }
       

@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:bullet_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "  I",
+      " G ",
+      "G  "
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:iron_nugget"
+      },
+      "G": {
+        "item": "minecraft:gunpowder"
+      }
+    },
+    "result": {
+      "item": "lotm:bullet",
+      "count": 8
+    },
+    "unlock": [
+      {
+        "item": "minecraft:gunpowder"
+      }
+    ]
+  }
+}

@@ -923,4 +923,237 @@ export class DoorPathwayMenus {
     // Return to portal management menu
     this.showManagePortalsMenu(player, TravelerSequence);
   }
+
+  // ADD THIS TO door_pathway_menus.js
+
+  // ============================================
+  // SECRETS SORCERER MENUS (SEQUENCE 4)
+  // ============================================
+  
+  /**
+   * Show Secrets Sorcerer Powers main menu
+   */
+  static async showSecretsSorcererMenu(player, SecretsSorcererSequence) {
+    const pockets = SecretsSorcererSequence.personalPockets.get(player.name) || [];
+    const portals = this.getPlayerPortals(player.name, SecretsSorcererSequence);
+    
+    const form = new ActionFormData()
+      .title('§5Secrets Sorcerer Powers')
+      .body(
+        `§7Personal Pockets: §e${pockets.length}§7/§e3\n` +
+        `§7Active Portals: §e${portals.length}§7/§e5\n\n` +
+        `§7Manage your concealed spaces:`
+      )
+      .button('§5Pocket Dimensions\n§7Create and enter', 'textures/blocks/portal')
+      .button('§dSpawn Portal\n§7Transfiguration trap', 'textures/blocks/end_portal')
+      .button('§7Cancel', 'textures/ui/cancel');
+    
+    const response = await form.show(player);
+    
+    if (response.canceled) return;
+    
+    switch (response.selection) {
+      case 0: // Pocket Dimensions
+        this.showPocketDimensionMenu(player, SecretsSorcererSequence);
+        break;
+      case 1: // Spawn Portal
+        const success = SecretsSorcererSequence.spawnTransfigurationPortal(player);
+        if (success) {
+          player.sendMessage('§dPortal spawned! Touch to randomly teleport enemies!');
+        }
+        break;
+      case 2: // Cancel
+        break;
+    }
+  }
+  
+  /**
+   * Show pocket dimension management menu
+   */
+  static async showPocketDimensionMenu(player, SecretsSorcererSequence) {
+    const pockets = SecretsSorcererSequence.personalPockets.get(player.name) || [];
+    
+    const form = new ActionFormData()
+      .title('§5Pocket Dimensions')
+      .body(`§7Your Concealed Spaces: §e${pockets.length}§7/§e3\n\n§7What would you like to do?`);
+    
+    if (pockets.length < 3) {
+      form.button('§aCreate New Pocket\n§7100 Spirit', 'textures/blocks/portal');
+    }
+    
+    if (pockets.length > 0) {
+      form.button('§5Enter Pocket\n§720 Spirit per entry', 'textures/items/ender_pearl');
+      form.button('§7Exit Pocket\n§7Return to world', 'textures/ui/cancel');
+    }
+    
+    form.button('§7Back', 'textures/ui/cancel');
+    
+    const response = await form.show(player);
+    
+    if (response.canceled) return;
+    
+    let selection = response.selection;
+    
+    // Handle dynamic button layout
+    if (pockets.length < 3) {
+      if (selection === 0) {
+        // Create new pocket
+        const success = SecretsSorcererSequence.createPocket(player);
+        if (success) {
+          this.showPocketDimensionMenu(player, SecretsSorcererSequence);
+        }
+        return;
+      }
+      selection--; // Adjust for next buttons
+    }
+    
+    if (pockets.length > 0) {
+      if (selection === 0) {
+        // Enter pocket
+        this.showSelectPocketMenu(player, SecretsSorcererSequence);
+        return;
+      } else if (selection === 1) {
+        // Exit pocket
+        SecretsSorcererSequence.exitPocket(player);
+        return;
+      }
+      selection -= 2; // Adjust for back button
+    }
+    
+    if (selection === 0) {
+      // Back button
+      this.showSecretsSorcererMenu(player, SecretsSorcererSequence);
+    }
+  }
+  
+  /**
+   * Show pocket selection menu
+   */
+  static async showSelectPocketMenu(player, SecretsSorcererSequence) {
+    const pockets = SecretsSorcererSequence.personalPockets.get(player.name) || [];
+    
+    if (pockets.length === 0) {
+      player.sendMessage('§cYou have no pockets!');
+      return;
+    }
+    
+    const form = new ActionFormData()
+      .title('§5Select Pocket')
+      .body('§7Choose which pocket to enter:\n§7Cost: §b20 Spirit');
+    
+    for (let i = 0; i < pockets.length; i++) {
+      const pocket = pockets[i];
+      const coords = `§7(${Math.floor(pocket.entryLocation.x)}, ${Math.floor(pocket.entryLocation.y)}, ${Math.floor(pocket.entryLocation.z)})`;
+      form.button(
+        `§5Pocket ${i + 1}\n${coords}`,
+        'textures/blocks/portal'
+      );
+    }
+    
+    form.button('§7Back', 'textures/ui/cancel');
+    
+    const response = await form.show(player);
+    
+    if (response.canceled) return;
+    
+    if (response.selection < pockets.length) {
+      // Enter selected pocket
+      SecretsSorcererSequence.enterPocket(player, response.selection);
+    } else {
+      // Back button
+      this.showPocketDimensionMenu(player, SecretsSorcererSequence);
+    }
+  }
+  
+  /**
+   * Show imprison target menu
+   */
+  static async showImprisonMenu(player, SecretsSorcererSequence) {
+    // Find nearby entities
+    const nearbyEntities = [];
+    const maxDistance = 10;
+    
+    try {
+      const entities = player.dimension.getEntities({
+        location: player.location,
+        maxDistance: maxDistance,
+        excludeNames: [player.name],
+        excludeTypes: ['minecraft:item', 'minecraft:xp_orb', 'minecraft:arrow']
+      });
+      
+      for (const entity of entities) {
+        const distance = Math.floor(Math.sqrt(
+          Math.pow(player.location.x - entity.location.x, 2) +
+          Math.pow(player.location.y - entity.location.y, 2) +
+          Math.pow(player.location.z - entity.location.z, 2)
+        ));
+        
+        nearbyEntities.push({
+          entity: entity,
+          distance: distance
+        });
+      }
+    } catch (e) {}
+    
+    if (nearbyEntities.length === 0) {
+      const errorForm = new MessageFormData()
+        .title('§cNo Targets')
+        .body('§7No entities found within 10 blocks.')
+        .button1('§7OK')
+        .button2('§7Back');
+      
+      const response = await errorForm.show(player);
+      
+      if (response.selection === 1) {
+        this.showSecretsSorcererMenu(player, SecretsSorcererSequence);
+      }
+      return;
+    }
+    
+    const form = new ActionFormData()
+      .title('§cImprison Target')
+      .body('§7Select a target to imprison for 20 seconds:\n§7Cost: §b80 Spirit');
+    
+    for (const target of nearbyEntities) {
+      const entityName = target.entity.nameTag || target.entity.typeId.replace('minecraft:', '');
+      form.button(
+        `§e${entityName}\n§7${target.distance}m away`,
+        'textures/items/iron_bars'
+      );
+    }
+    
+    form.button('§7Back', 'textures/ui/cancel');
+    
+    const response = await form.show(player);
+    
+    if (response.canceled) return;
+    
+    if (response.selection < nearbyEntities.length) {
+      // Imprison selected target
+      const target = nearbyEntities[response.selection];
+      SecretsSorcererSequence.imprisonEntity(player, target.entity);
+    } else {
+      // Back button
+      this.showSecretsSorcererMenu(player, SecretsSorcererSequence);
+    }
+  }
+  
+  /**
+   * Get player's active portals
+   */
+  static getPlayerPortals(playerName, SecretsSorcererSequence) {
+    const portals = [];
+    
+    for (const [portalId, portalData] of SecretsSorcererSequence.transfigurationPortals) {
+      if (portalData.creator === playerName) {
+        portals.push({
+          id: portalId,
+          location: portalData.location,
+          timeLeft: Math.ceil(portalData.ticksRemaining / 20)
+        });
+      }
+    }
+    
+    return portals;
+  }
 }

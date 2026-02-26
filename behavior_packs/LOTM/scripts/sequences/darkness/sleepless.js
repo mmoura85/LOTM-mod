@@ -7,7 +7,7 @@ export class SleeplessSequence {
   static PATHWAY = PathwayManager.PATHWAYS.DARKNESS;
   
   // Passive ability constants
-  static NIGHT_VISION_DURATION = 400; // ~20 seconds to prevent flicker
+  static NIGHT_VISION_DURATION = 999999; // ~20 seconds to prevent flicker
   static SPEED_AMPLIFIER =1; // Speed I
   static STRENGTH_AMPLIFIER = 1; // Strength I
   static JUMP_AMPLIFIER = 1; // Jump Boost I
@@ -22,7 +22,7 @@ export class SleeplessSequence {
    */
   static hasSequence(player) {
     return PathwayManager.getPathway(player) === this.PATHWAY &&
-           PathwayManager.getSequence(player) === this.SEQUENCE_NUMBER;
+           PathwayManager.getSequence(player) <= this.SEQUENCE_NUMBER;
   }
   
   /**
@@ -77,7 +77,7 @@ export class SleeplessSequence {
    * Apply passive abilities (called every tick for active players)
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Night Vision - permanent effect
     const nightVision = player.getEffect('night_vision');

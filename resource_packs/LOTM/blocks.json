@@ -1,5 +1,9 @@
 {
   "lotm:traveler_portal": {
     "textures": "traveler_portal"
+  },
+  "lotm:transfiguration_portal_block": {
+    "textures": "transfiguration_portal_block"
   }
 }
+

@@ -8,7 +8,7 @@ export class MidnightPoetSequence {
   static PATHWAY = PathwayManager.PATHWAYS.DARKNESS;
   
   // Passive ability constants - STRONGER than Sleepless
-  static NIGHT_VISION_DURATION = 400;
+  static NIGHT_VISION_DURATION = 999999;
   static SPEED_AMPLIFIER = 2; // Speed II (upgraded from Sleepless)
   static STRENGTH_AMPLIFIER = 2; // Strength II (upgraded from Sleepless)
   static JUMP_AMPLIFIER = 2; // Jump Boost II (upgraded from Sleepless)
@@ -70,7 +70,7 @@ export class MidnightPoetSequence {
     const sequence = PathwayManager.getSequence(player);
     
     // Allow both Midnight Poet (8) and Nightmare (7)
-    return pathway === this.PATHWAY && (sequence === this.SEQUENCE_NUMBER || sequence === 7);
+    return pathway === this.PATHWAY && (sequence <= this.SEQUENCE_NUMBER || sequence === 7);
   }
   
   /**
@@ -84,7 +84,7 @@ export class MidnightPoetSequence {
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Load selected song on first tick
     if (!this.selectedSongs.has(player.name)) {

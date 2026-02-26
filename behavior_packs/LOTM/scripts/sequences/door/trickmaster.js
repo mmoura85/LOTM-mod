@@ -8,7 +8,7 @@ export class TrickmasterSequence {
   static PATHWAY = 'door';
   
   // Passive ability constants - ENHANCED from Apprentice
-  static EFFECT_DURATION = 400;
+  static EFFECT_DURATION = 999999;
   static SPEED_AMPLIFIER = 2; // Speed III (upgraded)
   static JUMP_AMPLIFIER = 2; // Jump Boost III (upgraded)
   
@@ -64,7 +64,7 @@ export class TrickmasterSequence {
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Enhanced mobility
     this.applyMobilityEnhancements(player);
@@ -178,7 +178,9 @@ export class TrickmasterSequence {
         for (let i = 0; i < 20; i++) {
           system.runTimeout(() => {
             if (this.tumbleActive.get(player.name)) {
-              player.dimension.spawnParticle('minecraft:endrod', player.location);
+              try {
+                player.dimension.spawnParticle('minecraft:endrod', player.location);
+              } catch (e){}
             }
           }, i * 5);
         }
@@ -211,7 +213,9 @@ export class TrickmasterSequence {
     
     // Visual and audio effects
     player.playSound('random.explode', { pitch: 2.0, volume: 1.0 });
-    player.dimension.spawnParticle('minecraft:huge_explosion_emitter', location);
+    try {
+      player.dimension.spawnParticle('minecraft:huge_explosion_emitter', location);
+    } catch (e){}
     
     // Affect nearby entities
     const entities = player.dimension.getEntities({
@@ -285,14 +289,18 @@ export class TrickmasterSequence {
           // Impact effects - burst of flames
           for (let j = 0; j < 15; j++) {
             const angle = (j / 15) * Math.PI * 2;
-            player.dimension.spawnParticle('minecraft:basic_flame_particle', {
-              x: particleLoc.x + Math.cos(angle) * 0.5,
-              y: particleLoc.y,
-              z: particleLoc.z + Math.sin(angle) * 0.5
-            });
+            try {
+              player.dimension.spawnParticle('minecraft:basic_flame_particle', {
+                x: particleLoc.x + Math.cos(angle) * 0.5,
+                y: particleLoc.y,
+                z: particleLoc.z + Math.sin(angle) * 0.5
+              });
+            } catch (e){}
           }
-          player.dimension.spawnParticle('minecraft:lava_particle', particleLoc);
-          
+          try {
+            player.dimension.spawnParticle('minecraft:lava_particle', particleLoc);
+          } catch (e){}
+
           // 5% chance to set burnable blocks on fire
           if (Math.random() < 0.05) {
             const blockAbove = player.dimension.getBlock({
@@ -315,30 +323,44 @@ export class TrickmasterSequence {
         }
         
         // Spawn dense fire bolt particles (single stream with multiple flames)
-        player.dimension.spawnParticle('minecraft:basic_flame_particle', particleLoc);
-        player.dimension.spawnParticle('minecraft:basic_flame_particle', {
-          x: particleLoc.x + 0.2,
-          y: particleLoc.y,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:basic_flame_particle', {
-          x: particleLoc.x - 0.2,
-          y: particleLoc.y,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:basic_flame_particle', {
-          x: particleLoc.x,
-          y: particleLoc.y + 0.2,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:basic_flame_particle', {
-          x: particleLoc.x,
-          y: particleLoc.y - 0.2,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:lava_particle', particleLoc);
-        player.dimension.spawnParticle('minecraft:mobflame_single', particleLoc);
-        
+
+        try {
+          player.dimension.spawnParticle('minecraft:basic_flame_particle', particleLoc);
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:basic_flame_particle', {
+            x: particleLoc.x + 0.2,
+            y: particleLoc.y,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:basic_flame_particle', {
+            x: particleLoc.x - 0.2,
+            y: particleLoc.y,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:basic_flame_particle', {
+            x: particleLoc.x,
+            y: particleLoc.y + 0.2,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:basic_flame_particle', {
+            x: particleLoc.x,
+            y: particleLoc.y - 0.2,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:lava_particle', particleLoc);
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:mobflame_single', particleLoc);
+        } catch (e){}
         // Melt ice/snow along the path
         if (block) {
           if (block.typeId === 'minecraft:ice' || 
@@ -373,11 +395,13 @@ export class TrickmasterSequence {
             // Impact particles on entity hit - burst of flames
             for (let j = 0; j < 12; j++) {
               const angle = (j / 12) * Math.PI * 2;
-              player.dimension.spawnParticle('minecraft:basic_flame_particle', {
-                x: entity.location.x + Math.cos(angle) * 0.5,
-                y: entity.location.y + 0.5,
-                z: entity.location.z + Math.sin(angle) * 0.5
-              });
+              try {
+                player.dimension.spawnParticle('minecraft:basic_flame_particle', {
+                  x: entity.location.x + Math.cos(angle) * 0.5,
+                  y: entity.location.y + 0.5,
+                  z: entity.location.z + Math.sin(angle) * 0.5
+                });
+              } catch (e){}
             }
             break;
           }
@@ -485,9 +509,13 @@ export class TrickmasterSequence {
           hasHitBlock = true;
           
           // Create ice explosion at impact
-          player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', particleLoc);
+          try {
+            player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', particleLoc);
+          } catch (e){}
           for (let j = 0; j < 10; j++) {
+            try {
             player.dimension.spawnParticle('minecraft:blue_flame_particle', particleLoc);
+            } catch (e){}
           }
           
           // Freeze area around impact (2 block radius)
@@ -544,33 +572,45 @@ export class TrickmasterSequence {
         }
         
         // Spawn ice ray particles - dense stream
-        player.dimension.spawnParticle('minecraft:blue_flame_particle', particleLoc);
-        player.dimension.spawnParticle('minecraft:blue_flame_particle', {
-          x: particleLoc.x + 0.2,
-          y: particleLoc.y,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:blue_flame_particle', {
-          x: particleLoc.x - 0.2,
-          y: particleLoc.y,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:blue_flame_particle', {
-          x: particleLoc.x,
-          y: particleLoc.y + 0.2,
-          z: particleLoc.z
-        });
-        player.dimension.spawnParticle('minecraft:blue_flame_particle', {
-          x: particleLoc.x,
-          y: particleLoc.y - 0.2,
-          z: particleLoc.z
-        });
+        try {
+          player.dimension.spawnParticle('minecraft:blue_flame_particle', particleLoc);
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:blue_flame_particle', {
+            x: particleLoc.x + 0.2,
+            y: particleLoc.y,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:blue_flame_particle', {
+            x: particleLoc.x - 0.2,
+            y: particleLoc.y,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:blue_flame_particle', {
+            x: particleLoc.x,
+            y: particleLoc.y + 0.2,
+            z: particleLoc.z
+          });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:blue_flame_particle', {
+            x: particleLoc.x,
+            y: particleLoc.y - 0.2,
+            z: particleLoc.z
+          });
         player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', particleLoc);
-        player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', {
-          x: particleLoc.x + 0.15,
-          y: particleLoc.y,
-          z: particleLoc.z + 0.15
-        });
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', {
+            x: particleLoc.x + 0.15,
+            y: particleLoc.y,
+            z: particleLoc.z + 0.15
+          });
+        } catch (e){}
         
         // Check for entities along the ray
         const entities = player.dimension.getEntities({
@@ -588,11 +628,13 @@ export class TrickmasterSequence {
             // Impact particles on entity
             for (let j = 0; j < 15; j++) {
               const angle = (j / 15) * Math.PI * 2;
-              player.dimension.spawnParticle('minecraft:blue_flame_particle', {
-                x: entity.location.x + Math.cos(angle) * 0.5,
-                y: entity.location.y + 0.5,
-                z: entity.location.z + Math.sin(angle) * 0.5
-              });
+              try {
+                player.dimension.spawnParticle('minecraft:blue_flame_particle', {
+                  x: entity.location.x + Math.cos(angle) * 0.5,
+                  y: entity.location.y + 0.5,
+                  z: entity.location.z + Math.sin(angle) * 0.5
+                });
+              } catch (e){}
             }
             
             player.sendMessage('§b§oTarget frozen!');
@@ -602,7 +644,9 @@ export class TrickmasterSequence {
         
         // End of lance or max range
         if (i === 24) {
-          player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', particleLoc);
+          try {
+            player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', particleLoc);
+          } catch (e){}
           player.playSound('random.glass', { pitch: 1.2, volume: 0.8 });
         }
       }, i * 1);
@@ -645,8 +689,9 @@ export class TrickmasterSequence {
             y: location.y + 0.1,
             z: location.z + Math.sin(angle) * r
           };
-          
-          player.dimension.spawnParticle('minecraft:blue_flame_particle', particleLoc);
+          try {
+            player.dimension.spawnParticle('minecraft:blue_flame_particle', particleLoc);
+          } catch (e){}
         }
       }, i * 3);
     }
