@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:guardian_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " B ",
+      "NPN",
+      " T "
+    ],
+    "key": {
+      "B": {
+        "item": "minecraft:beacon"
+      },
+      "N": {
+        "item": "minecraft:netherite_block"
+      },
+      "P": {
+        "item": "lotm:twilight_potion_seq6"
+      },
+      "T": {
+        "item": "minecraft:totem_of_undying"
+      }
+    },
+    "result": {
+      "item": "lotm:twilight_potion_seq5",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:twilight_potion_seq6"
+      }
+    ]
+  }
+}

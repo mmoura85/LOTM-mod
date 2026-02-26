@@ -7,7 +7,7 @@ export class WarriorSequence {
   static PATHWAY = 'twilight_giant';
   
   // Passive ability constants
-  static EFFECT_DURATION = 400;
+  static EFFECT_DURATION = 999999;
   static STRENGTH_AMPLIFIER = 1; // Strength II
   static SPEED_AMPLIFIER = 1; // Speed II
   static JUMP_AMPLIFIER = 1; // Jump Boost II
@@ -17,14 +17,14 @@ export class WarriorSequence {
    */
   static hasSequence(player) {
     return PathwayManager.getPathway(player) === this.PATHWAY &&
-           PathwayManager.getSequence(player) === this.SEQUENCE_NUMBER;
+           PathwayManager.getSequence(player) <= this.SEQUENCE_NUMBER;
   }
   
   /**
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Physical enhancements
     this.applyPhysicalEnhancements(player);

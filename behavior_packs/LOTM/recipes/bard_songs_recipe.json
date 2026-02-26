@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:bard_songs_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "SNS",
+      "GDG",
+      " S "
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:string"
+      },
+      "N": {
+        "item": "minecraft:music_disc_13"
+      },
+      "G": {
+        "item": "minecraft:gold_ingot"
+      },
+      "D": {
+        "item": "minecraft:diamond"
+      }
+    },
+    "result": {
+      "item": "lotm:bard_songs",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:diamond"
+      }
+    ]
+  }
+}

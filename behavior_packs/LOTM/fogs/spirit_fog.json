@@ -1,0 +1,66 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:fog_settings": {
+    "description": {
+      "identifier": "lotm:spirit_fog"
+    },
+    "distance": {
+      "air": {
+        "fog_start": 0.0,
+        "fog_end": 12.0,
+        "fog_color": "#4A2C7A",
+        "water_surface_transparency": 0.5
+      },
+      "weather": {
+        "fog_start": 0.0,
+        "fog_end": 12.0,
+        "fog_color": "#4A2C7A",
+        "water_surface_transparency": 0.5
+      },
+      "water": {
+        "fog_start": 0.0,
+        "fog_end": 8.0,
+        "fog_color": "#2D1A4D",
+        "water_surface_transparency": 0.3
+      }
+    },
+    "volumetric": {
+      "density": {
+        "air": {
+          "max_density": 0.5,
+          "max_density_height": 80,
+          "zero_density_height": 200,
+          "uniform_density": true
+        },
+        "water": {
+          "max_density": 0.7,
+          "max_density_height": 50,
+          "zero_density_height": 100,
+          "uniform_density": true
+        },
+        "lava": {
+          "max_density": 0.9,
+          "max_density_height": 30,
+          "zero_density_height": 60,
+          "uniform_density": true
+        },
+        "lava_resistance": {
+          "max_density": 0.9,
+          "max_density_height": 30,
+          "zero_density_height": 60,
+          "uniform_density": true
+        }
+      },
+      "media_coefficients": {
+        "air": {
+          "scattering": [0.5, 0.4, 0.6],
+          "absorption": [0.3, 0.2, 0.4]
+        },
+        "water": {
+          "scattering": [0.7, 0.5, 0.8],
+          "absorption": [0.5, 0.3, 0.6]
+        }
+      }
+    }
+  }
+}

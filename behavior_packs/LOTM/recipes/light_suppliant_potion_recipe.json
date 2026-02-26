@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:light_suppliant_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " T ",
+      "GPG",
+      " B "
+    ],
+    "key": {
+      "T": {
+        "item": "minecraft:torch"
+      },
+      "G": {
+        "item": "minecraft:glowstone_dust"
+      },
+      "P": {
+        "item": "lotm:sun_potion_seq9"
+      },
+      "B": {
+        "item": "minecraft:blaze_powder"
+      }
+    },
+    "result": {
+      "item": "lotm:sun_potion_seq8",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:sun_potion_seq9"
+      }
+    ]
+  }
+}

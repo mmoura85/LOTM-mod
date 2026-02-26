@@ -1,0 +1,36 @@
+{
+	"format_version": "1.20.50",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lotm:travelershat",
+			"menu_category": {
+				"category": "equipment",
+				"group": "itemGroup.name.helmet"
+			}
+		},
+		"components": {
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "travelershat",
+			"minecraft:glint": true,
+			"minecraft:wearable": {
+				"slot": "slot.armor.head",
+				"protection": 8
+			},
+			"minecraft:enchantable": {
+				"slot": "armor_head",
+				"value": 20
+			},
+			"minecraft:durability": {
+				"max_durability": 1500
+			},
+			"minecraft:repairable": {
+				"repair_items": [
+					{
+						"items": ["minecraft:leather"],
+						"repair_amount": 150
+					}
+				]
+			}
+		}
+	}
+}

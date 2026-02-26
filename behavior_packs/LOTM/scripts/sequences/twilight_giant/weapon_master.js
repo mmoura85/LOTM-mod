@@ -8,7 +8,7 @@ export class WeaponMasterSequence {
   static PATHWAY = 'twilight_giant';
   
   // Enhanced passive abilities
-  static EFFECT_DURATION = 400;
+  static EFFECT_DURATION = 999999;
   static STRENGTH_AMPLIFIER = 3; // Strength IV
   static SPEED_AMPLIFIER = 2; // Speed III (when sprinting)
   static SPEED_NORMAL = 1; // Speed II (when not sprinting)
@@ -19,14 +19,14 @@ export class WeaponMasterSequence {
    */
   static hasSequence(player) {
     return PathwayManager.getPathway(player) === this.PATHWAY &&
-           PathwayManager.getSequence(player) === this.SEQUENCE_NUMBER;
+           PathwayManager.getSequence(player) <= this.SEQUENCE_NUMBER;
   }
   
   /**
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    if (!this.hasSequence(player)) return;
+    // if (!this.hasSequence(player)) return;
     
     // Enhanced physical abilities with sprint detection
     this.applyPhysicalEnhancements(player);

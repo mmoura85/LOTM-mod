@@ -6,6 +6,9 @@
   "texture_data": {
     "traveler_portal": {
       "textures": "textures/blocks/traveler_portal"
+    },
+    "transfiguration_portal_block": {
+      "textures": "textures/blocks/transfiguration_portal_block"
     }
   }
 }

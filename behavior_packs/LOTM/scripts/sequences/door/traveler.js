@@ -8,7 +8,7 @@ export class TravelerSequence {
   static PATHWAY = 'door';
   
   // Passive ability constants - GREATLY ENHANCED from Scribe
-  static EFFECT_DURATION = 400;
+  static EFFECT_DURATION = 999999;
   static SPEED_AMPLIFIER = 4; // Speed V
   static JUMP_AMPLIFIER = 3; // Jump Boost IV
   
@@ -32,6 +32,16 @@ export class TravelerSequence {
   static INVISIBLE_HAND_RANGE = 16;
   static INVISIBLE_HAND_DURATION = 100; // 5 seconds channel
   static INVISIBLE_HAND_PICKUP_COOLDOWN = 40; // 2 seconds between pickups
+
+  // Spirit World Fog ability
+  static SPIRIT_FOG_SPIRIT_COST = 25;
+  static SPIRIT_FOG_DURATION = 300; // 15 seconds
+  static SPIRIT_FOG_RANGE = 32; // 32 block radius
+  static SPIRIT_FOG_COOLDOWN = 400; // 20 seconds
+
+  // Track fog state
+  static activeFog = new Map();
+  static fogCooldowns = new Map();
   
   // Track abilities state
   static blinkCooldowns = new Map();
@@ -41,7 +51,7 @@ export class TravelerSequence {
   static activeDoors = new Map(); // door id -> {creator, location, destinations, ticksRemaining}
   static doorCounter = 0;
   static invisibleHandActive = new Map(); // player name -> {ticksRemaining, lastPickup}
-  
+
   // Dynamic property keys for persistence
   static LOCATIONS_PROPERTY = 'lotm:traveler_locations';
   static SELECTED_LOCATION_PROPERTY = 'lotm:traveler_selected';
@@ -96,7 +106,8 @@ export class TravelerSequence {
     SAVE_LOCATION: 'save_location',
     VIEW_LOCATIONS: 'view_locations',
     PLACE_DOOR: 'place_door',
-    INVISIBLE_HAND: 'invisible_hand'
+    INVISIBLE_HAND: 'invisible_hand',
+    SPIRIT_FOG: 'spirit_fog'
   };
   
   /**
@@ -124,11 +135,11 @@ export class TravelerSequence {
    * Apply passive abilities
    */
   static applyPassiveAbilities(player) {
-    const pathway = PathwayManager.getPathway(player);
-    const sequence = PathwayManager.getSequence(player);
+    // const pathway = PathwayManager.getPathway(player);
+    // const sequence = PathwayManager.getSequence(player);
     
-    // Only apply if player is exactly this sequence
-    if (pathway !== this.PATHWAY || sequence !== this.SEQUENCE_NUMBER) return;
+    // // Only apply if player is exactly this sequence
+    // if (pathway !== this.PATHWAY || sequence !== this.SEQUENCE_NUMBER) return;
     
     // Load saved data on first tick (if not already loaded)
     if (!this.savedLocations.has(player.name)) {
@@ -171,6 +182,9 @@ export class TravelerSequence {
     
     // Process active doors
     this.processActiveDoors();
+
+    // Process spirit fog
+    this.processSpiritFog(player);
   }
   
   /**
@@ -223,6 +237,11 @@ export class TravelerSequence {
     const travelCd = this.travelCooldowns.get(player.name);
     if (travelCd && travelCd > 0) {
       this.travelCooldowns.set(player.name, travelCd - 1);
+    }
+
+    const fogCd = this.fogCooldowns.get(player.name);
+    if (fogCd && fogCd > 0) {
+      this.fogCooldowns.set(player.name, fogCd - 1);
     }
   }
   
@@ -298,8 +317,12 @@ export class TravelerSequence {
           z: startLoc.z + (safeDest.z - startLoc.z) * t
         };
         
-        player.dimension.spawnParticle('minecraft:portal_directional', particleLoc);
-        player.dimension.spawnParticle('minecraft:endrod', particleLoc);
+        try {
+          player.dimension.spawnParticle('minecraft:portal_directional', particleLoc);
+        } catch (e){}
+        try {
+          player.dimension.spawnParticle('minecraft:endrod', particleLoc);
+        } catch (e){}
       }, i * 2);
     }
     
@@ -315,11 +338,13 @@ export class TravelerSequence {
       // Spawn particles at destination
       for (let i = 0; i < 8; i++) {
         const angle = (i / 8) * Math.PI * 2;
-        player.dimension.spawnParticle('minecraft:portal_directional', {
-          x: safeDest.x + Math.cos(angle) * 0.5,
-          y: safeDest.y + 1,
-          z: safeDest.z + Math.sin(angle) * 0.5
-        });
+        try {
+          player.dimension.spawnParticle('minecraft:portal_directional', {
+            x: safeDest.x + Math.cos(angle) * 0.5,
+            y: safeDest.y + 1,
+            z: safeDest.z + Math.sin(angle) * 0.5
+          });
+        } catch (e){}
       }
       
       // Set cooldown
@@ -484,11 +509,13 @@ export class TravelerSequence {
     for (let i = 0; i < travelTime; i++) {
       system.runTimeout(() => {
         const angle = (i / travelTime) * Math.PI * 4;
-        player.dimension.spawnParticle('minecraft:portal_directional', {
-          x: player.location.x + Math.cos(angle) * 2,
-          y: player.location.y + 1,
-          z: player.location.z + Math.sin(angle) * 2
-        });
+        try {
+          player.dimension.spawnParticle('minecraft:portal_directional', {
+            x: player.location.x + Math.cos(angle) * 2,
+            y: player.location.y + 1,
+            z: player.location.z + Math.sin(angle) * 2
+          });
+        } catch (e){}
       }, i);
     }
     
@@ -510,11 +537,13 @@ export class TravelerSequence {
         for (let i = 0; i < 20; i++) {
           system.runTimeout(() => {
             const angle = (i / 20) * Math.PI * 2;
-            destDimension.spawnParticle('minecraft:portal_directional', {
-              x: destination.location.x + Math.cos(angle) * 2,
-              y: destination.location.y + 1,
-              z: destination.location.z + Math.sin(angle) * 2
-            });
+            try {
+              destDimension.spawnParticle('minecraft:portal_directional', {
+                x: destination.location.x + Math.cos(angle) * 2,
+                y: destination.location.y + 1,
+                z: destination.location.z + Math.sin(angle) * 2
+              });
+            } catch (e){}
           }, i * 2);
         }
         
@@ -697,30 +726,38 @@ export class TravelerSequence {
   }
   
   /**
-   * Spawn door particles
-   */
-  static spawnDoorParticles(dimension, location) {
-    // Wrap in try-catch to handle unloaded chunks
-    try {
-      // Simple portal particles only (avoid complex particle types)
-      for (let y = 0; y < 2; y++) {
-        // Create a ring of particles at each level
-        for (let i = 0; i < 8; i++) {
-          const angle = (i / 8) * Math.PI * 2;
-          const radius = 0.4;
-          
-          // Basic portal particles only
+ * Spawn door particles - FIXED VERSION with proper error handling
+ * Replace the existing spawnDoorParticles method in traveler.js
+ */
+static spawnDoorParticles(dimension, location) {
+  // Wrap in try-catch to handle unloaded chunks
+  try {
+    // Simple portal particles only (avoid complex particle types)
+    for (let y = 0; y < 2; y++) {
+      // Create a ring of particles at each level
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const radius = 0.4;
+        
+        try {
+          // Basic portal particles only - wrap each spawn individually
+          // This prevents one failed spawn from breaking the entire loop
           dimension.spawnParticle('minecraft:portal', {
             x: location.x + 0.5 + Math.cos(angle) * radius,
             y: location.y + y + 0.5,
             z: location.z + 0.5 + Math.sin(angle) * radius
           });
+        } catch (particleError) {
+          // Individual particle spawn failed - chunk unloaded, skip this one
+          // This is normal when chunks are far from players
         }
       }
-    } catch (e) {
-      // Silently fail if chunk is unloaded - this is normal
     }
+  } catch (e) {
+    // Outer catch - silently fail if dimension access fails
+    // This is normal when chunks are unloaded
   }
+}
   
   /**
    * Process active doors
@@ -831,11 +868,13 @@ export class TravelerSequence {
           for (let i = 0; i < 20; i++) {
             system.runTimeout(() => {
               const angle = (i / 20) * Math.PI * 2;
-              destDimension.spawnParticle('minecraft:portal_directional', {
-                x: destination.location.x + Math.cos(angle) * 2,
-                y: destination.location.y + 1,
-                z: destination.location.z + Math.sin(angle) * 2
-              });
+              try {
+                destDimension.spawnParticle('minecraft:portal_directional', {
+                  x: destination.location.x + Math.cos(angle) * 2,
+                  y: destination.location.y + 1,
+                  z: destination.location.z + Math.sin(angle) * 2
+                });
+              } catch (e){}
             }, i * 2);
           }
           
@@ -863,79 +902,298 @@ export class TravelerSequence {
     }
   }
   
-  /**
-   * Use Invisible Hand
-   */
-  static useInvisibleHand(player, activate = true) {
-    if (!this.hasSequence(player)) {
-      player.sendMessage('§cYou do not have access to this ability!');
+// ============================================
+// INVISIBLE HAND - TELEKINESIS REWORK
+// ============================================
+// Instead of pulling everything to you, you grab ONE target
+// and can move it around while holding it
+
+// Add these to TravelerSequence class:
+
+// Track grabbed entities/blocks
+static grabbedTargets = new Map(); // player name -> {entity/item, type, originalLoc}
+
+/**
+ * Use Invisible Hand - VERSION COMPATIBLE
+ */
+static useInvisibleHand(player, activate = true) {
+  if (!this.hasSequence(player)) {
+    player.sendMessage('§cYou do not have access to this ability!');
+    return false;
+  }
+  
+  if (activate) {
+    // Check if already holding something
+    const grabbed = this.grabbedTargets.get(player.name);
+    if (grabbed) {
+      player.sendMessage('§7You are already holding something!');
+      player.sendMessage('§7Sneak + Right-click to release it');
       return false;
     }
     
-    if (activate) {
-      // Activate invisible hand
-      const active = this.invisibleHandActive.get(player.name);
-      
-      if (active) {
-        player.sendMessage('§7Invisible Hand already active');
-        return false;
-      }
-      
-      if (!SpiritSystem.consumeSpirit(player, this.INVISIBLE_HAND_SPIRIT_COST)) {
-        player.sendMessage(`§cNot enough spirit! Need ${this.INVISIBLE_HAND_SPIRIT_COST}`);
-        return false;
-      }
-      
-      this.invisibleHandActive.set(player.name, {
-        ticksRemaining: this.INVISIBLE_HAND_DURATION,
-        lastPickup: 0
-      });
-      
-      player.sendMessage('§5§oInvisible Hand activated!');
-      player.playSound('mob.shulker.ambient', { pitch: 1.5, volume: 0.8 });
-      
-    } else {
-      // Deactivate
-      this.invisibleHandActive.delete(player.name);
-      player.sendMessage('§7Invisible Hand deactivated');
+    // Consume spirit
+    if (!SpiritSystem.consumeSpirit(player, this.INVISIBLE_HAND_SPIRIT_COST)) {
+      player.sendMessage(`§cNot enough spirit! Need ${this.INVISIBLE_HAND_SPIRIT_COST}`);
+      return false;
     }
     
-    return true;
+    // Find target player is looking at
+    const target = this.findLookingAtTarget(player);
+    
+    if (!target) {
+      player.sendMessage('§cNo valid target found!');
+      SpiritSystem.restoreSpirit(player, this.INVISIBLE_HAND_SPIRIT_COST);
+      return false;
+    }
+    
+    // Grab the target
+    this.grabbedTargets.set(player.name, {
+      target: target,
+      type: target.typeId,
+      originalLocation: { ...target.location }
+    });
+    
+    // Apply glowing effect - FIXED to work across all versions
+    try {
+      // Use the effect ID string directly
+      target.addEffect('glowing', 999999, {
+        amplifier: 0,
+        showParticles: false
+      });
+    } catch (e) {
+      // Some entities can't have effects - that's ok
+      // Or old version doesn't support glowing
+    }
+    
+    player.sendMessage('§5§lTarget grabbed!');
+    player.sendMessage('§7Move your crosshair to move the target');
+    player.sendMessage('§7Right-click: Drop at crosshair location');
+    player.sendMessage('§7Sneak + Right-click: Return to original spot');
+    player.playSound('mob.shulker.shoot', { pitch: 1.5, volume: 1.0 });
+    
+  } else {
+    // Deactivate - release target
+    const grabbed = this.grabbedTargets.get(player.name);
+    
+    if (!grabbed) {
+      player.sendMessage('§7No target held');
+      return false;
+    }
+    
+    // IMPORTANT: Remove from map FIRST to prevent processing
+    this.grabbedTargets.delete(player.name);
+    
+    // Check if target still exists
+    try {
+      if (!grabbed.target.isValid()) {
+        player.sendMessage('§7Target was destroyed');
+        return true;
+      }
+    } catch (e) {
+      // isValid() might not exist in old versions
+      player.sendMessage('§7Target released');
+      return true;
+    }
+    
+    // Check if sneaking (return to original spot) or not (drop at current location)
+    try {
+      if (player.isSneaking) {
+        // Return to original location
+        grabbed.target.teleport(grabbed.originalLocation, {
+          dimension: player.dimension
+        });
+        player.sendMessage('§7Target returned to original location');
+      } else {
+        // Drop at current location (already there from processInvisibleHand)
+        player.sendMessage('§7Target released');
+      }
+    } catch (e) {
+      player.sendMessage('§7Target released');
+    }
+    
+    // Remove glowing - try different methods for compatibility
+    try {
+      // Method 1: Try with effect object (newer versions)
+      const glowEffect = grabbed.target.getEffect('glowing');
+      if (glowEffect) {
+        grabbed.target.removeEffect('glowing');
+      }
+    } catch (e) {
+      // Method 2: Just try to remove directly
+      try {
+        grabbed.target.removeEffect('glowing');
+      } catch (err) {
+        // Some entities can't have effects removed - that's ok
+      }
+    }
+    
+    player.playSound('mob.shulker.ambient', { pitch: 0.8, volume: 1.0 });
   }
   
-  /**
-   * Process invisible hand
-   */
-  static processInvisibleHand(player) {
-    const handData = this.invisibleHandActive.get(player.name);
-    if (!handData) return;
+  return true;
+}
+
+/**
+ * Find what the player is looking at - FIXED entity filtering
+ */
+static findLookingAtTarget(player) {
+  const viewDirection = player.getViewDirection();
+  const eyeLoc = player.getHeadLocation();
+  const maxDistance = this.INVISIBLE_HAND_RANGE;
+  
+  // Check for entities
+  for (let i = 1; i <= maxDistance; i++) {
+    const checkLoc = {
+      x: eyeLoc.x + viewDirection.x * i,
+      y: eyeLoc.y + viewDirection.y * i,
+      z: eyeLoc.z + viewDirection.z * i
+    };
     
-    handData.ticksRemaining--;
-    handData.lastPickup++;
-    
-    // Check if can pick up
-    if (handData.lastPickup >= this.INVISIBLE_HAND_PICKUP_COOLDOWN) {
-      this.attemptInvisibleHandPickup(player, handData);
-    }
-    
-    // Show hand particles
-    if (handData.ticksRemaining % 5 === 0) {
-      const viewDirection = player.getViewDirection();
-      const handLoc = {
-        x: player.location.x + viewDirection.x * 3,
-        y: player.location.y + 1 + viewDirection.y * 3,
-        z: player.location.z + viewDirection.z * 3
-      };
+    // Check for entities at this location
+    try {
+      const entities = player.dimension.getEntities({
+        location: checkLoc,
+        maxDistance: 2.0, // Larger radius to catch mobs easier
+        excludeNames: [player.name]
+      });
       
-      player.dimension.spawnParticle('minecraft:soul_particle', handLoc);
+      for (const entity of entities) {
+        // Skip the player themselves (double-check)
+        if (entity.typeId === 'minecraft:player' && entity.name === player.name) {
+          continue;
+        }
+        
+        // Check sequence restrictions ONLY for other players
+        if (entity.typeId === 'minecraft:player') {
+          try {
+            const targetSequence = PathwayManager.getSequence(entity);
+            const playerSequence = PathwayManager.getSequence(player);
+            
+            if (targetSequence !== -1 && targetSequence < playerSequence) {
+              player.sendMessage('§cCannot grab higher sequence Beyonder!');
+              continue; // Can't grab higher sequence
+            }
+          } catch (e) {
+            // If sequence check fails, skip this player
+            continue;
+          }
+        }
+        
+        // Can grab all non-player entities (mobs, items, etc.)
+        return entity;
+      }
+    } catch (e) {
+      // getEntities failed, continue searching
     }
     
-    // End if duration expired
-    if (handData.ticksRemaining <= 0) {
-      this.invisibleHandActive.delete(player.name);
-      player.sendMessage('§7Invisible Hand faded');
+    // Check for blocks (inform user we can't grab them)
+    try {
+      const block = player.dimension.getBlock({
+        x: Math.floor(checkLoc.x),
+        y: Math.floor(checkLoc.y),
+        z: Math.floor(checkLoc.z)
+      });
+      
+      if (block && !block.isAir && !block.isLiquid) {
+        player.sendMessage('§7Cannot grab solid blocks - only entities');
+        return null;
+      }
+    } catch (e) {
+      // Block check failed, continue
     }
   }
+  
+  return null;
+}
+
+/**
+ * Process invisible hand each tick - move grabbed target
+ */
+static processInvisibleHand(player) {
+  const grabbed = this.grabbedTargets.get(player.name);
+  if (!grabbed) return;
+  
+  // Check if target still exists
+  try {
+    if (!grabbed.target.isValid()) {
+      this.grabbedTargets.delete(player.name);
+      player.sendMessage('§7Target was destroyed');
+      return;
+    }
+  } catch (e) {
+    // isValid() doesn't exist or failed - assume target is still valid
+  }
+  
+  try {
+    // Calculate position in front of player based on crosshair
+    const viewDirection = player.getViewDirection();
+    const eyeLoc = player.getHeadLocation();
+    const holdDistance = 5; // Hold target 5 blocks in front
+    
+    const targetPos = {
+      x: eyeLoc.x + viewDirection.x * holdDistance,
+      y: eyeLoc.y + viewDirection.y * holdDistance,
+      z: eyeLoc.z + viewDirection.z * holdDistance
+    };
+    
+    // Smoothly move target to this position
+    const currentLoc = grabbed.target.location;
+    const dx = targetPos.x - currentLoc.x;
+    const dy = targetPos.y - currentLoc.y;
+    const dz = targetPos.z - currentLoc.z;
+    
+    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    
+    if (distance > 0.5) {
+      // Teleport target to new position
+      try {
+        const rotation = grabbed.target.getRotation ? grabbed.target.getRotation() : { x: 0, y: 0 };
+        grabbed.target.teleport(targetPos, {
+          dimension: player.dimension,
+          rotation: rotation
+        });
+      } catch (e) {
+        // Teleport failed - release target
+        this.grabbedTargets.delete(player.name);
+        player.sendMessage('§cLost grip on target!');
+        return;
+      }
+    }
+    
+    // Spawn particles connecting player to target (less frequently to reduce lag)
+    try {
+      const ticks = system.getCurrentTick();
+      if (ticks % 5 === 0) {
+        // Create particle line
+        const steps = 6; // Reduced for performance
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          const particleLoc = {
+            x: eyeLoc.x + (targetPos.x - eyeLoc.x) * t,
+            y: eyeLoc.y + (targetPos.y - eyeLoc.y) * t,
+            z: eyeLoc.z + (targetPos.z - eyeLoc.z) * t
+          };
+          
+          player.dimension.spawnParticle('minecraft:soul_particle', particleLoc);
+        }
+      }
+    } catch (e) {
+      // Particle spawning failed - not critical
+    }
+    
+  } catch (e) {
+    // Failed to move target - release it
+    this.grabbedTargets.delete(player.name);
+    player.sendMessage('§cLost grip on target!');
+    
+    // Try to remove glowing effect
+    try {
+      grabbed.target.removeEffect('glowing');
+    } catch (err) {
+      // Ignore
+    }
+  }
+}
   
   /**
    * Attempt to pick up with invisible hand
@@ -1013,7 +1271,9 @@ export class TravelerSequence {
         // Visual effect
         for (let i = 0; i < 5; i++) {
           system.runTimeout(() => {
-            player.dimension.spawnParticle('minecraft:soul_particle', entity.location);
+            try {
+              player.dimension.spawnParticle('minecraft:soul_particle', entity.location);
+            } catch (e){}
           }, i * 2);
         }
         
@@ -1042,6 +1302,8 @@ export class TravelerSequence {
         return this.placeDoor(player);
       case this.ABILITIES.INVISIBLE_HAND:
         return this.useInvisibleHand(player, param);
+      case this.ABILITIES.SPIRIT_FOG:
+        return this.useSpiritFog(player);
       default:
         // Inherit Scribe abilities
         return ScribeSequence.handleAbilityUse(player, abilityId, param);
@@ -1064,7 +1326,9 @@ export class TravelerSequence {
       [this.ABILITIES.PLACE_DOOR]: 
         '§7Cost: 30 Spirit\n§7Place portal door (60s duration)\n§7Max 3 active doors\n§7Requires selected destination',
       [this.ABILITIES.INVISIBLE_HAND]: 
-        `§7Cost: ${this.INVISIBLE_HAND_SPIRIT_COST} Spirit\n§7Grab items and entities from distance`
+        `§7Cost: ${this.INVISIBLE_HAND_SPIRIT_COST} Spirit\n§7Grab items and entities from distance`,
+      [this.ABILITIES.SPIRIT_FOG]: 
+        `§7Cost: ${this.SPIRIT_FOG_SPIRIT_COST} Spirit\n§7Create mystical fog (15s)\n§7${this.SPIRIT_FOG_RANGE}m radius, slows enemies`
     };
     return descriptions[abilityId] || 'Unknown ability';
   }
@@ -1091,5 +1355,212 @@ export class TravelerSequence {
     for (const doorId of toRemove) {
       this.activeDoors.delete(doorId);
     }
+
+    // Clear any active fog
+    const fogData = this.activeFog.get(player.name);
+    if (fogData) {
+      this.clearFog(player.name, fogData);
+    }
+    this.fogCooldowns.delete(player.name);
+  }
+
+  /**
+   * Use Spirit World Fog - surrounds area with mystical fog
+   */
+  static useSpiritFog(player) {
+    if (!this.hasSequence(player)) {
+      player.sendMessage('§cYou do not have access to this ability!');
+      return false;
+    }
+    
+    // Check cooldown
+    const cooldown = this.fogCooldowns.get(player.name) || 0;
+    if (cooldown > 0) {
+      const remaining = Math.ceil(cooldown / 20);
+      player.sendMessage(`§cSpirit Fog on cooldown: ${remaining}s`);
+      return false;
+    }
+    
+    // Consume spirit
+    if (!SpiritSystem.consumeSpirit(player, this.SPIRIT_FOG_SPIRIT_COST)) {
+      player.sendMessage(`§cNot enough spirit! Need ${this.SPIRIT_FOG_SPIRIT_COST}`);
+      return false;
+    }
+    
+    // Activate fog
+    this.activeFog.set(player.name, {
+      ticksRemaining: this.SPIRIT_FOG_DURATION,
+      centerLocation: { ...player.location },
+      dimension: player.dimension.id,
+      fogPlayers: new Set()
+    });
+    
+    player.sendMessage('§5§lSpirit World Fog descends!');
+    player.playSound('ambient.weather.thunder', { pitch: 0.5, volume: 0.3 });
+    
+    // Initial fog application
+    this.applyFogToNearbyPlayers(player);
+    
+    return true;
+  }
+  
+  /**
+   * Apply fog to nearby players
+   */
+  static applyFogToNearbyPlayers(player) {
+    const fogData = this.activeFog.get(player.name);
+    if (!fogData) return;
+    
+    try {
+      const dimension = world.getDimension(fogData.dimension);
+      
+      // Find all players in range
+      const players = dimension.getPlayers({
+        location: fogData.centerLocation,
+        maxDistance: this.SPIRIT_FOG_RANGE
+      });
+      
+      for (const targetPlayer of players) {
+        // Add fog effect to player
+        // Using multiple fog types for mystical effect
+        try {
+          // Push fog layers
+          targetPlayer.runCommand(`fog @s push minecraft:fog_soulsand_valley  spirit_fog`);
+          fogData.fogPlayers.add(targetPlayer.name);
+        } catch (e) {
+          // Fallback to vanilla fog if custom fog not available
+          try {
+            // Use weather fog as fallback
+            targetPlayer.runCommand('fog @s push minecraft:weather_fog weather');
+          } catch (e2) {
+            // Fog command not available
+          }
+        }
+      }
+    } catch (e) {
+      // Failed to apply fog
+    }
+  }
+  
+  /**
+   * Process active fog each tick
+   */
+  static processSpiritFog(player) {
+    const fogData = this.activeFog.get(player.name);
+    if (!fogData) return;
+    
+    fogData.ticksRemaining--;
+    
+    // Reapply fog every 20 ticks (1 second) to catch new players
+    if (fogData.ticksRemaining % 20 === 0) {
+      this.applyFogToNearbyPlayers(player);
+    }
+    
+    // Spawn particles every 10 ticks
+    if (fogData.ticksRemaining % 10 === 0) {
+      this.spawnFogParticles(fogData);
+    }
+    
+    // Apply effects to enemies in fog (confusion, slowness)
+    if (fogData.ticksRemaining % 40 === 0) {
+      this.applyFogDebuffs(fogData, player);
+    }
+    
+    // Fog expired
+    if (fogData.ticksRemaining <= 0) {
+      this.clearFog(player.name, fogData);
+      player.sendMessage('§7The Spirit World Fog dissipates...');
+      player.playSound('ambient.weather.lightning.impact', { pitch: 1.5, volume: 0.2 });
+      
+      // Set cooldown
+      this.fogCooldowns.set(player.name, this.SPIRIT_FOG_COOLDOWN);
+    }
+  }
+  
+  /**
+   * Spawn fog particles
+   */
+  static spawnFogParticles(fogData) {
+    try {
+      const dimension = world.getDimension(fogData.dimension);
+      
+      // Create swirling particle effect
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2 + (Date.now() / 1000);
+        const radius = this.SPIRIT_FOG_RANGE * 0.7;
+        
+        const particleLoc = {
+          x: fogData.centerLocation.x + Math.cos(angle) * radius,
+          y: fogData.centerLocation.y + 1,
+          z: fogData.centerLocation.z + Math.sin(angle) * radius
+        };
+        
+        try{
+          dimension.spawnParticle('minecraft:water_evaporation_actor_emitter', particleLoc);
+        } catch (e){}
+        try {
+          dimension.spawnParticle('minecraft:soul_particle', particleLoc);
+        } catch (e){}
+      }
+    } catch (e) {
+      // Chunk unloaded or dimension not available
+    }
+  }
+  
+  /**
+   * Apply debuffs to hostile entities in fog
+   */
+  static applyFogDebuffs(fogData, caster) {
+    try {
+      const dimension = world.getDimension(fogData.dimension);
+      
+      const entities = dimension.getEntities({
+        location: fogData.centerLocation,
+        maxDistance: this.SPIRIT_FOG_RANGE,
+        excludeTypes: ['minecraft:item']
+      });
+      
+      for (const entity of entities) {
+        // Skip the caster
+        if (entity.id === caster.id) continue;
+        
+        // Apply confusion/slowness to non-players or hostile players
+        if (entity.typeId !== 'minecraft:player') {
+          entity.addEffect('slowness', 60, {
+            amplifier: 1,
+            showParticles: true
+          });
+          
+          entity.addEffect('weakness', 60, {
+            amplifier: 0,
+            showParticles: false
+          });
+        }
+      }
+    } catch (e) {
+      // Failed to apply debuffs
+    }
+  }
+  
+  /**
+   * Clear fog from all affected players
+   */
+  static clearFog(playerName, fogData) {
+    // Remove fog from all players who had it
+    for (const affectedPlayerName of fogData.fogPlayers) {
+      try {
+        const player = world.getAllPlayers().find(p => p.name === affectedPlayerName);
+        if (player) {
+          // Pop the fog effect
+          player.runCommand('fog @s remove spirit_fog');
+          // Fallback clear
+          player.runCommand('fog @s remove weather');
+        }
+      } catch (e) {
+        // Player may have left or fog already cleared
+      }
+    }
+    
+    this.activeFog.delete(playerName);
   }
 }

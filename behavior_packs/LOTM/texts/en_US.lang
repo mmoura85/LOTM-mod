@@ -102,7 +102,12 @@ item.lotm:spirit_world_key.name=Spirit World Key
 item.lotm:flashbang.name=Flashbang
 item.lotm:flame_fingers.name=Flame Fingers
 item.lotm:spark_crystal.name=Spark Crystal
-item.lotm:frost_stone.name=Frost Stone
+item.lotm:frost_stone.name=Frost 
+item.lotm:invisible_hand.name=Invisible Hand
+## Spirit Fog Catalyst - Lang Entries
+## Add to: resource_packs/LOTM/texts/en_US.lang
+
+item.lotm:spirit_fog_catalyst.name=Spirit Fog Catalyst
 
 ## Items - Twilight Giant Pathway
 item.lotm:twilight_potion_seq9.name=Warrior Potion
@@ -183,6 +188,9 @@ lotm.twilight_giant.seq2=Dawn Knight
 lotm.twilight_giant.seq1=Glory
 lotm.twilight_giant.seq0=Twilight Giant
 lotm.door.seq1=Door
+
+item.lotm:twilight_potion_seq5.name=Guardian Potion
+item.lotm:guardian_shield.name=Guardian's Protection
 lotm.door.seq0=Fool
 
 ## Twilight Giant Pathway Sequences
@@ -201,3 +209,44 @@ lotm.twilight_giant.seq0=Twilight Giant
 item.lotm:dawnsword=DawnSword
 item.lotm:dawnchestplate_=DawnChestPlate 
 item.lotm:tophat=TopHat
+
+
+
+## Items - Sun Pathway
+item.lotm:sun_potion_seq9.name=Bard Potion
+item.lotm:sun_potion_seq8.name=Light Suppliant Potion
+item.lotm:bard_songs.name=Bard's Songs
+item.lotm:solar_orb.name=Solar Orb
+
+## Sun Pathway Sequences
+lotm.sun.seq9=Bard
+lotm.sun.seq8=Light Suppliant
+lotm.sun.seq7=Solar High Priest
+lotm.sun.seq6=Notary
+lotm.sun.seq5=Priest of Light
+lotm.sun.seq4=Unshadowed
+lotm.sun.seq3=Brightness Elder
+lotm.sun.seq2=Flaming Angel
+lotm.sun.seq1=Eternal Blazing Sun
+lotm.sun.seq0=Sun
+
+
+item.lotm:revolver.name=Revolver
+item.lotm:bullet.name=Bullet
+
+item.lotm:soul_assurer_powers.name=Soul Assurer Powers
+item.lotm:darkness_potion_seq6.name=Soul Assurer Potion
+
+
+## Items - Twilight Giant Pathway (Demon Hunter)
+item.lotm:twilight_potion_seq4.name=Demon Hunter Potion
+item.lotm:demon_hunter_powers.name=Demon Hunter Powers
+
+## Items - Door Pathway (Secrets Sorcerer)
+item.lotm:door_potion_seq4.name=Secrets Sorcerer Potion
+item.lotm:secrets_sorcerer_powers.name=Secrets Sorcerer Powers
+item.lotm:transfiguration_portal.name=Transfiguration Portal
+item.lotm:prison_pocket.name=Prison Pocket
+
+
+tile.lotm:transfiguration_portal_block.name=Transfiguration Portal

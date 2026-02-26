@@ -1,0 +1,38 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:bard_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " D ",
+      "GWG",
+      " B "
+    ],
+    "key": {
+      "D": {
+        "item": "minecraft:music_disc_13"
+      },
+      "G": {
+        "item": "minecraft:gold_ingot"
+      },
+      "W": {
+        "item": "minecraft:potion",
+        "data": 0
+      },
+      "B": {
+        "item": "minecraft:bell"
+      }
+    },
+    "result": {
+      "item": "lotm:sun_potion_seq9",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:gold_ingot"
+      }
+    ]
+  }
+}
