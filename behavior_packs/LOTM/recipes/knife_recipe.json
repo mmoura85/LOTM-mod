@@ -1,0 +1,22 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:knife_craft" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " I",
+      "S "
+    ],
+    "key": {
+      "I": { "item": "minecraft:iron_ingot" },
+      "S": { "item": "minecraft:stick" }
+    },
+    "result": {
+      "item": "lotm:knife",
+      "count": 1
+    },
+    "unlock": [
+      { "item": "minecraft:iron_ingot" }
+    ]
+  }
+}

@@ -460,7 +460,7 @@ export class SecretsSorcererSequence {
       const netherDim = world.getDimension('nether');
       const prisonLoc = {
         x: Math.floor(target.location.x * 0.125), // Nether coordinates
-        y: 200, // High up in Nether (isolated)
+        y: 150, // High up in Nether (isolated)
         z: Math.floor(target.location.z * 0.125)
       };
       
@@ -582,8 +582,14 @@ export class SecretsSorcererSequence {
             
             // Search Nether first (most likely)
             const netherDim = world.getDimension('nether');
-            const netherEntities = netherDim.getEntities();
-            entity = netherEntities.find(e => e.id === entityId);
+            // NEW (just use the stored dimension ID + search with location filter):
+            // Store prison location when imprisoning, then search only near it:
+            const prisonLoc = { x: -484, y: 115, z: -38 };
+            const nearPrison = netherDim.getEntities({
+              location: prisonLoc,
+              maxDistance: 20
+            });
+            entity = nearPrison.find(e => e.id === entityId);
             
             // If not found in Nether, search original dimension
             if (!entity) {
@@ -690,8 +696,8 @@ export class SecretsSorcererSequence {
       const z = portalData.blockLocation.z;
       
       // Try to place custom blocks (or fall back to sea_lantern for testing)
-      const result1 = player.dimension.runCommand(`setblock ${x} ${y} ${z} lotm:traveler_portal`);
-      const result2 = player.dimension.runCommand(`setblock ${x} ${y + 1} ${z} lotm:traveler_portal`);
+      const result1 = player.dimension.runCommand(`setblock ${x} ${y} ${z} lotm:transfiguration_portal_block`);
+      const result2 = player.dimension.runCommand(`setblock ${x} ${y + 1} ${z} lotm:transfiguration_portal_block`);
       
       player.sendMessage(`§7Portal blocks placed: ${result1.successCount + result2.successCount}/2`);
     } catch (e) {

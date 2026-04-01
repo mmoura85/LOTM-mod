@@ -1,0 +1,39 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:ghoul",
+      "materials": {
+        "default": "zombie"
+      },
+      "textures": {
+        "default": "textures/entity/ghoul/base"
+      },
+      "geometry": {
+        "default": "geometry.ghoul"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+        ],
+        "animate": [
+          "move",
+          "look_at_target_default",
+          { "attack.rotations": "query.is_attacking" },
+          { "zombie_attack_bare_hand": "query.is_attacking" }
+        ]
+      },
+      "animations": {
+        "move": "animation.humanoid.move",
+        "look_at_target_default": "animation.humanoid.look_at_target.default",
+        "attack.rotations": "animation.humanoid.attack.rotations",
+        "zombie_attack_bare_hand": "animation.zombie.attack_bare_hand"
+      },
+      "render_controllers": [ "controller.render.lotm_ghoul" ],
+      "spawn_egg": {
+        "base_color": "#B5A090",
+        "overlay_color": "#DC5015"
+      }
+    }
+  }
+}

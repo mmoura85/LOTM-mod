@@ -1,0 +1,36 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:clown_mask_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "RWR",
+      "LLL",
+      "R R"
+    ],
+    "key": {
+      "R": {
+        "item": "minecraft:red_dye"
+      },
+      "W": {
+        "item": "minecraft:white_dye"
+      },
+      "L": {
+        "item": "minecraft:leather"
+      }
+    },
+    "result": {
+      "item": "lotm:clown_mask",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:seer_potion_seq8"
+      }
+    ]
+  }
+}

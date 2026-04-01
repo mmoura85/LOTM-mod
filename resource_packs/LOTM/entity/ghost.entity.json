@@ -1,0 +1,35 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:ghost",
+      "materials": {
+        "default": "entity_emissive"
+      },
+      "textures": {
+        "default": "textures/entity/ghost"
+      },
+      "geometry": {
+        "default": "geometry.ghost"
+      },
+      "animations": {
+        "idle": "animation.ghost.idle",
+        "fly": "animation.ghost.fly",
+				"general": "controller.animation.allay.general"
+      },
+      "scripts": {
+        "pre_animation": ["variable.holding_trident = query.is_item_name_any('slot.weapon.mainhand', 'minecraft:trident');"],
+        "animate": [
+          "general"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.lotm_ghost"
+      ],
+      "spawn_egg": {
+        "base_color": "#A0D8FF",
+        "overlay_color": "#4499CC"
+      }
+    }
+  }
+}

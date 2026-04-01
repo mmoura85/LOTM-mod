@@ -1,0 +1,103 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:rampager",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "lotm:phase_normal": {
+        "minecraft:attack": { "damage": 10 },
+        "minecraft:movement": { "value": 0.24 }
+      },
+      "lotm:phase_enraged": {
+        "minecraft:attack": { "damage": 18 },
+        "minecraft:movement": { "value": 0.35 }
+      },
+      "lotm:variant_shockwave": {
+        "minecraft:variant": { "value": 0 }
+      },
+      "lotm:variant_fireball": {
+        "minecraft:variant": { "value": 1 }
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["rampager", "monster", "mob"] },
+      "minecraft:physics": {},
+      "minecraft:jump.static": {},
+      "minecraft:can_climb": {},
+      "minecraft:health": { "value": 150, "max": 150 },
+      "minecraft:attack": { "damage": 10 },
+      "minecraft:movement": { "value": 0.24 },
+      "minecraft:collision_box": { "width": 0.9, "height": 2.7 },
+      "minecraft:knockback_resistance": { "value": 0.8 },
+      "minecraft:fire_immune": true,
+      "minecraft:nameable": {},
+      "minecraft:loot": { "table": "loot_tables/entities/lotm/rampager.json" },
+      "minecraft:experience_reward": { "on_death": "Math.Random(20,40)" },
+      "minecraft:despawn": { "despawn_from_distance": { "max_distance": 128 } },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_water": true,
+        "can_open_doors": true,
+        "can_break_doors": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:behavior.sonic_boom": {
+        "priority": 3,
+        "duration": 3.0,
+        "speed_multiplier": 1.2,
+        "attack_damage": 8,
+        "attack_range_horizontal": 12,
+        "attack_range_vertical": 16,
+        "attack_cooldown": 10,
+        "knockback_vertical_strength": 0.5,
+        "knockback_horizontal_strength": 2.5,
+        "knockback_height_cap": 0.5,
+        "duration_until_attack_sound": 1.7,
+        "charge_sound": "sonic_charge",
+        "attack_sound": "sonic_boom"
+      },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "within_radius": 24.0,
+        "must_see": false,
+        "entity_types": [
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "player" },
+            "max_dist": 24
+          }
+        ]
+      },
+      "minecraft:behavior.melee_attack": {
+        "priority": 4,
+        "speed_multiplier": 1.2,
+        "track_target": true,
+        "reach_multiplier": 1.4
+      },
+      "minecraft:behavior.random_stroll": { "priority": 8, "speed_multiplier": 0.5 },
+      "minecraft:behavior.look_at_player": { "priority": 9, "look_distance": 12 },
+      "minecraft:behavior.float": { "priority": 0 }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "randomize": [
+          {
+            "weight": 1,
+            "add": { "component_groups": ["lotm:phase_normal", "lotm:variant_shockwave"] }
+          },
+          {
+            "weight": 1,
+            "add": { "component_groups": ["lotm:phase_normal", "lotm:variant_fireball"] }
+          }
+        ]
+      },
+      "lotm:become_enraged": {
+        "add": { "component_groups": ["lotm:phase_enraged"] },
+        "remove": { "component_groups": ["lotm:phase_normal"] }
+      }
+    }
+  }
+}

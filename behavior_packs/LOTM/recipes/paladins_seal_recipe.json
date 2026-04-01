@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:paladins_seal_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "GGG",
+      "GNG",
+      "GGG"
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:gold_block"
+      },
+      "N": {
+        "item": "minecraft:nether_star"
+      }
+    },
+    "result": {
+      "item": "lotm:paladins_seal",
+      "count": 1
+    }
+  }
+}

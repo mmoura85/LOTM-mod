@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:short_sword_craft" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " I ",
+      " I ",
+      " S "
+    ],
+    "key": {
+      "I": { "item": "minecraft:iron_ingot" },
+      "S": { "item": "minecraft:stick" }
+    },
+    "result": {
+      "item": "lotm:short_sword",
+      "count": 1
+    },
+    "unlock": [
+      { "item": "minecraft:iron_ingot" }
+    ]
+  }
+}

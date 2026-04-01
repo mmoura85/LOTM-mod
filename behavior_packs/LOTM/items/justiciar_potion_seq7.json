@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:justiciar_potion_seq7",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "justiciar_potion_seq7",
+      "minecraft:display_name": {
+        "value": "\u00a76Interrogator Potion"
+      },
+      "minecraft:use_duration": 32,
+      "minecraft:use_animation": "drink",
+      "minecraft:food": {
+        "nutrition": 0,
+        "saturation_modifier": 0,
+        "can_always_eat": true
+      }
+    }
+  }
+}

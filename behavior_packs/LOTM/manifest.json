@@ -4,20 +4,20 @@
     "name": "Lord of the Mysteries - Behavior",
     "description": "Pathway system with spirit mechanics",
     "uuid": "a7f3c2e1-4b5d-4a1c-9f7e-2d8b6c1a3e4f",
-    "version": [1, 0, 0],
+    "version": [1, 10, 0],
     "min_engine_version": [1, 20, 0]
   },
   "modules": [
     {
       "type": "data",
       "uuid": "b8e4d3f2-5c6e-4b2d-8e9f-3e9c7d2b4f5a",
-      "version": [1, 0, 0]
+      "version": [1, 10, 0]
     },
     {
       "type": "script",
       "language": "javascript",
       "uuid": "c9f5e4a3-6d7f-4c3e-9fa0-4fad8e3c5a6b",
-      "version": [1, 0, 0],
+      "version": [1, 10, 0],
       "entry": "scripts/main.js"
     }
   ],

@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:judges_gavel",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "judges_gavel",
+      "minecraft:display_name": {
+        "value": "\u00a75Judge's Gavel"
+      },
+      "minecraft:use_duration": 1,
+      "minecraft:use_animation": "none"
+    }
+  }
+}

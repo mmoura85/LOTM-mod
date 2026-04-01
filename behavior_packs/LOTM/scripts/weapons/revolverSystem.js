@@ -8,7 +8,7 @@ import { world, system } from '@minecraft/server';
 
 export class RevolverSystem {
   // Weapon stats
-  static DAMAGE = 12; // 6 hearts (bow does ~9, crossbow does ~11)
+  static DAMAGE = 14; // 6 hearts (bow does ~9, crossbow does ~11)
   static RANGE = 50; // blocks
   static FIRE_RATE = 10; // ticks between shots (0.5 seconds)
   static DURABILITY_COST = 1; // durability per shot
@@ -16,6 +16,7 @@ export class RevolverSystem {
   // Ammo tracking
   static lastShotTime = new Map(); // player name -> tick
   static currentTick = 0; // Manual tick counter
+  static COPPER_DAMAGE = 10; // §6Copper Bullet§r — cheaper, lower damage
   
   /**
    * Initialize the tick counter (call this from main.js on load)
@@ -33,43 +34,60 @@ export class RevolverSystem {
     try {
       const inventory = player.getComponent('minecraft:inventory');
       if (!inventory || !inventory.container) return false;
-      
+
       for (let i = 0; i < inventory.container.size; i++) {
         const item = inventory.container.getItem(i);
-        if (item && item.typeId === 'lotm:bullet' && item.amount > 0) {
+        if (!item || item.amount <= 0) continue;
+        if (item.typeId === 'lotm:bullet' || item.typeId === 'lotm:copper_bullet') {
           return true;
         }
       }
-    } catch (e) {
-      // Inventory access failed
-    }
+    } catch (e) {}
     return false;
   }
   
   /**
    * Consume one bullet from inventory
    */
+  // Returns the typeId of the bullet consumed, or null on failure.
+// Standard bullets are always preferred over copper.
+
   static consumeBullet(player) {
     try {
       const inventory = player.getComponent('minecraft:inventory');
-      if (!inventory || !inventory.container) return false;
-      
+      if (!inventory || !inventory.container) return null;
+
+      // First pass — prefer standard bullets
       for (let i = 0; i < inventory.container.size; i++) {
         const item = inventory.container.getItem(i);
         if (item && item.typeId === 'lotm:bullet' && item.amount > 0) {
+          const consumed = item.typeId;
           if (item.amount === 1) {
             inventory.container.setItem(i, undefined);
           } else {
             item.amount--;
             inventory.container.setItem(i, item);
           }
-          return true;
+          return consumed;
         }
       }
-    } catch (e) {
-      // Inventory modification failed
-    }
-    return false;
+
+      // Second pass — fall back to copper bullets
+      for (let i = 0; i < inventory.container.size; i++) {
+        const item = inventory.container.getItem(i);
+        if (item && item.typeId === 'lotm:copper_bullet' && item.amount > 0) {
+          const consumed = item.typeId;
+          if (item.amount === 1) {
+            inventory.container.setItem(i, undefined);
+          } else {
+            item.amount--;
+            inventory.container.setItem(i, item);
+          }
+          return consumed;
+        }
+      }
+    } catch (e) {}
+    return null;
   }
   
   /**
@@ -85,58 +103,50 @@ export class RevolverSystem {
    */
   static fireRevolver(player) {
     try {
-      // Check cooldown
-      if (!this.canShoot(player)) {
-        return false;
-      }
-      
-      // Check for bullets
+      if (!this.canShoot(player)) return false;
+
       if (!this.hasBullets(player)) {
-        player.sendMessage('§cOut of ammo! Craft bullets: Iron Nugget + Gunpowder');
-        try {
-          player.playSound('block.barrel.close', { pitch: 1.0, volume: 0.5 });
-        } catch (e) {
-          // Sound failed
-        }
+        player.sendMessage('§cOut of ammo! Craft §7Bullets§c (Iron Nugget + Gunpowder) or §6Copper Bullets§c (Copper Ingot + Gunpowder)');
+        try { player.playSound('block.barrel.close', { pitch: 1.0, volume: 0.5 }); } catch (e) {}
         return false;
       }
-      
-      // Consume bullet
-      if (!this.consumeBullet(player)) {
+
+      // Consume bullet and record which type was loaded
+      const bulletType = this.consumeBullet(player);
+      if (!bulletType) {
         player.sendMessage('§cFailed to load bullet!');
         return false;
       }
-      
-      // Perform raycast to find hit target
+
+      // Damage is determined by bullet type
+      const isCopperBullet = bulletType === 'lotm:copper_bullet';
+      const bulletDamage   = isCopperBullet ? this.COPPER_DAMAGE : this.DAMAGE;
+
+      // Perform raycast
       const hitResult = this.performRaycast(player);
-      
-      // Visual and audio effects
+
+      // Muzzle flash + sound
       this.spawnMuzzleFlash(player);
       try {
-        player.playSound('random.explode', { pitch: 2.0, volume: 0.8 });
-      } catch (e) {
-        // Sound failed
-      }
-      
-      // Apply damage if hit something
+        // Copper bullets sound slightly different — a drier, lighter crack
+        player.playSound('random.explode', {
+          pitch: isCopperBullet ? 2.3 : 2.0,
+          volume: isCopperBullet ? 0.65 : 0.8
+        });
+      } catch (e) {}
+
+      // Apply damage if hit
       if (hitResult.hit) {
         if (hitResult.entity) {
-          this.damageEntity(player, hitResult.entity, hitResult.location);
+          this.damageEntity(player, hitResult.entity, hitResult.location, bulletDamage);
         }
-        
-        // Bullet impact effects
         this.spawnImpactEffects(player.dimension, hitResult.location);
       }
-      
-      // Damage revolver durability
+
       this.damageRevolver(player);
-      
-      // Set cooldown
       this.lastShotTime.set(player.name, this.currentTick);
-      
-      // Show bullet tracer
       this.spawnBulletTracer(player, hitResult.location);
-      
+
       return true;
     } catch (e) {
       player.sendMessage('§cRevolver error: ' + e);
@@ -271,73 +281,45 @@ export class RevolverSystem {
   /**
  * Damage the hit entity - WITH PATHWAY BUFFS
  */
-static damageEntity(shooter, target, hitLocation) {
-  try {
-    // Get pathway and sequence for buffs
-    let pathway = null;
-    let sequence = 10;
-    
+  static damageEntity(shooter, target, hitLocation, overrideDamage = null) {
     try {
-      pathway = PathwayManager.getPathway(shooter);
-      sequence = PathwayManager.getSequence(shooter);
+      let pathway = null;
+      let sequence = 10;
+      try {
+        pathway = PathwayManager.getPathway(shooter);
+        sequence = PathwayManager.getSequence(shooter);
+      } catch (e) {}
+
+      // Use override (from bullet type) if provided, otherwise class default
+      const baseDamage = overrideDamage !== null ? overrideDamage : this.DAMAGE;
+      const variance   = Math.random() * 2 - 1;
+
+      let multiplier = 1.0;
+      if (pathway === 'darkness' || pathway === 'twilight_giant') {
+        multiplier = RangedWeaponBuffs.getDamageMultiplier(pathway, sequence);
+      }
+
+      const finalDamage = Math.max(1, Math.floor((baseDamage + variance) * multiplier));
+
+      let success = false;
+      try {
+        success = target.applyDamage(finalDamage, { damagingEntity: shooter });
+      } catch (e) {
+        success = target.applyDamage(finalDamage);
+      }
+
+      if (pathway === 'darkness' || pathway === 'twilight_giant') {
+        RangedWeaponBuffs.applyAfterShotEffects(shooter, pathway, sequence, target);
+      }
+
+      try { target.dimension.playSound('random.hurt', { location: hitLocation, pitch: 1.0, volume: 0.8 }); } catch (e) {}
+      try { target.dimension.spawnParticle('minecraft:critical_hit_emitter', { x: hitLocation.x, y: hitLocation.y + 1, z: hitLocation.z }); } catch (e) {}
+
+      return success;
     } catch (e) {
-      // Player has no pathway
+      return false;
     }
-    
-    // Calculate base damage
-    const baseDamage = this.DAMAGE;
-    const variance = Math.random() * 2 - 1; // -1 to +1
-    
-    // Apply pathway damage multiplier
-    let multiplier = 1.0;
-    if (pathway === 'darkness' || pathway === 'twilight_giant') {
-      multiplier = RangedWeaponBuffs.getDamageMultiplier(pathway, sequence);
-    }
-    
-    const finalDamage = Math.max(1, Math.floor((baseDamage + variance) * multiplier));
-    
-    // Apply damage - try with options first, fallback to simple damage
-    let success = false;
-    try {
-      success = target.applyDamage(finalDamage, {
-        damagingEntity: shooter
-      });
-    } catch (e) {
-      // Options not supported, use simple damage
-      success = target.applyDamage(finalDamage);
-    }
-    
-    // Apply pathway special effects
-    if (pathway === 'darkness' || pathway === 'twilight_giant') {
-      RangedWeaponBuffs.applyAfterShotEffects(shooter, pathway, sequence, target);
-    }
-    
-    // Hit sound
-    try {
-      target.dimension.playSound('random.hurt', {
-        location: hitLocation,
-        pitch: 1.0,
-        volume: 0.8
-      });
-    } catch (e) {
-      // Sound failed
-    }
-    
-    // Blood particle
-    try {
-      target.dimension.spawnParticle('minecraft:critical_hit_emitter', {
-        x: hitLocation.x,
-        y: hitLocation.y + 1,
-        z: hitLocation.z
-      });
-    } catch (e) {
-      // Particle failed
-    }
-    
-  } catch (e) {
-    shooter.sendMessage('§cDamage failed: ' + e);
   }
-}
   
   /**
    * Spawn muzzle flash at gun barrel

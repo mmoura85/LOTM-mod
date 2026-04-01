@@ -250,3 +250,145 @@ item.lotm:prison_pocket.name=Prison Pocket
 
 
 tile.lotm:transfiguration_portal_block.name=Transfiguration Portal
+
+item.lotm:dawn_item.name=Dawn Abilities
+
+item.lotm:seer_potion_seq9.name=Seer Potion
+item.lotm:seer_potion_seq8.name=Clown Potion
+item.lotm:seer_potion_seq7.name=Magician Potion
+item.lotm:spirit_vision_orb.name=Spirit Vision Orb
+item.lotm:danger_sense_charm.name=Danger Sense Charm
+item.lotm:clown_mask.name=Clown Mask
+item.lotm:magician_wand.name=Magician's Wand
+lotm.seer.seq9=Seer
+lotm.seer.seq8=Clown
+lotm.seer.seq7=Magician
+item.lotm:paper_knife.name=Paper Knife
+item.lotm:paper_figurine_item.name=Paper Figurine
+item.lotm:paper_weapon_item.name=Paper Weapon
+
+
+## LOTM Plants & Herbs
+
+tile.lotm:moonflower.name=Moonflower
+item.lotm:moonflower_seed.name=Moonflower Seed
+item.lotm:moonflower_petal.name=Moonflower Petal
+
+tile.lotm:nightshade_herb.name=Nightshade Herb
+item.lotm:nightshade_herb_seed.name=Nightshade Seed
+item.lotm:nightshade_berry.name=Nightshade Berry
+
+tile.lotm:silver_fern.name=Silver Fern
+item.lotm:silver_fern_seed.name=Silver Fern Spore
+item.lotm:silver_frond.name=Silver Frond
+
+tile.lotm:dewdrop_lotus.name=Dewdrop Lotus
+item.lotm:dewdrop_lotus_seed.name=Lotus Seed
+item.lotm:lotus_petal.name=Lotus Petal
+
+tile.lotm:ghostweed.name=Ghostweed
+item.lotm:ghostweed_seed.name=Ghostweed Spore
+item.lotm:ghost_blossom.name=Ghost Blossom
+
+tile.lotm:witchgrass.name=Witchgrass
+item.lotm:witchgrass_seed.name=Witchgrass Seed
+item.lotm:witchgrass_tuft.name=Witchgrass Tuft
+
+tile.lotm:crimson_sage.name=Crimson Sage
+item.lotm:crimson_sage_seed.name=Crimson Sage Seed
+item.lotm:sage_leaf.name=Sage Leaf
+
+tile.lotm:verdant_thistle.name=Verdant Thistle
+item.lotm:verdant_thistle_seed.name=Thistle Seed
+item.lotm:thistle_spike.name=Thistle Spike
+
+tile.lotm:azurewort.name=Azurewort
+item.lotm:azurewort_seed.name=Azurewort Cutting
+item.lotm:azurewort_sprig.name=Azurewort Sprig
+
+tile.lotm:voidmoss.name=Voidmoss
+item.lotm:voidmoss_seed.name=Voidmoss Spore
+item.lotm:voidmoss_clump.name=Voidmoss Clump
+
+tile.lotm:emberbud.name=Emberbud
+item.lotm:emberbud_seed.name=Emberbud Ash
+item.lotm:emberbud_ash.name=Emberbud Ash
+
+tile.lotm:stargrass.name=Stargrass
+item.lotm:stargrass_seed.name=Stargrass Seed
+
+
+## Items - Justiciar Pathway
+item.lotm:justiciar_potion_seq9.name=Arbiter Potion
+item.lotm:arbiters_seal.name=Arbiter's Seal
+
+item.lotm:justiciar_potion_seq8.name=Sheriff Potion
+item.lotm:sheriffs_badge.name=Sheriff's Badge
+item.lotm:justiciar_potion_seq7.name=Interrogator Potion
+item.lotm:interrogators_brand.name=Interrogator's Brand
+item.lotm:justiciar_potion_seq6.name=Judge Potion
+item.lotm:judges_gavel.name=Judge's Gavel
+item.lotm:justiciar_potion_seq5.name=Disciplinary Paladin Potion
+item.lotm:paladins_seal.name=Paladin's Seal
+item.lotm:justiciar_potion_seq4.name=Imperative Mage Potion
+item.lotm:mages_codex.name=Mage's Codex
+
+
+## Pathways
+lotm.pathway.justiciar=Justiciar
+
+## Justiciar Pathway Sequences
+lotm.justiciar.seq9=Arbiter
+lotm.justiciar.seq8=Sheriff
+lotm.justiciar.seq7=Interrogator
+lotm.justiciar.seq6=Judge
+lotm.justiciar.seq5=Disciplinary Paladin
+lotm.justiciar.seq4=Imperative Mage
+lotm.justiciar.seq3=Chaos Hunter
+lotm.justiciar.seq2=Balancer
+lotm.justiciar.seq1=Hand of Order
+
+
+## Characteristics & Ingredients
+item.lotm:spiritual_essence.name=Spiritual Essence
+item.lotm:concentrated_essence.name=Concentrated Essence
+item.lotm:raw_characteristic.name=Raw Characteristic
+item.lotm:purified_characteristic.name=Purified Characteristic
+item.lotm:demonic_bone_powder.name=Demonic Bone Powder
+item.lotm:soul_crystal.name=Soul Crystal
+item.lotm:ectoplasm.name=Ectoplasm
+item.lotm:binding_dust.name=Binding Dust
+item.lotm:spirit_blood.name=Spirit Blood
+item.lotm:nightmare_fragment.name=Nightmare Fragment
+item.lotm:ancient_parchment.name=Ancient Parchment
+item.lotm:ghost_tear.name=Ghost Tear
+item.lotm:corruption_stain.name=Corruption Stain
+item.lotm:ghoul_flesh.name=Ghoul Flesh
+item.lotm:darkness_characteristic_seq9.name=Sleepless Characteristic
+item.lotm:darkness_characteristic_seq8.name=Midnight Poet Characteristic
+item.lotm:darkness_characteristic_seq7.name=Nightmare Characteristic
+item.lotm:darkness_characteristic_seq6.name=Soul Assurer Characteristic
+item.lotm:death_characteristic_seq9.name=Corpse Collector Characteristic
+item.lotm:door_characteristic_seq9.name=Apprentice Characteristic
+item.lotm:door_characteristic_seq8.name=Trickmaster Characteristic
+item.lotm:door_characteristic_seq7.name=Astrologer Characteristic
+item.lotm:door_characteristic_seq6.name=Scribe Characteristic
+item.lotm:door_characteristic_seq5.name=Traveler Characteristic
+item.lotm:door_characteristic_seq4.name=Secrets Sorcerer Characteristic
+item.lotm:twilight_giant_characteristic_seq9.name=Warrior Characteristic
+item.lotm:twilight_giant_characteristic_seq8.name=Pugilist Characteristic
+item.lotm:twilight_giant_characteristic_seq7.name=Weapon Master Characteristic
+item.lotm:twilight_giant_characteristic_seq6.name=Dawn Paladin Characteristic
+item.lotm:twilight_giant_characteristic_seq5.name=Guardian Characteristic
+item.lotm:twilight_giant_characteristic_seq4.name=Demon Hunter Characteristic
+item.lotm:sun_characteristic_seq9.name=Bard Characteristic
+item.lotm:sun_characteristic_seq8.name=LLight Suppliant Characteristic
+item.lotm:seer_characteristic_seq9.name=Seer Characteristic
+item.lotm:seer_characteristic_seq8.name=Clown Characteristic
+item.lotm:seer_characteristic_seq7.name=Magician Characteristic
+item.lotm:justiciar_characteristic_seq9.name=Arbiter Characteristic
+item.lotm:justiciar_characteristic_seq8.name=Sheriff Characteristic
+item.lotm:justiciar_characteristic_seq7.name=Interrogator Characteristic
+item.lotm:justiciar_characteristic_seq6.name=Judge Characteristic
+item.lotm:justiciar_characteristic_seq5.name=Disciplinary Paladin Characteristic
+item.lotm:justiciar_characteristic_seq4.name=Imperative Mage Characteristic

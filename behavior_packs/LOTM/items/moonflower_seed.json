@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:moonflower_seed",
+      "menu_category": {
+        "category": "nature"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 64,
+      "minecraft:icon": "moonflower_seed",
+      "minecraft:display_name": {
+        "value": "\u00a75Moonflower Seed"
+      },
+      "minecraft:block_placer": {
+        "block": "lotm:moonflower"
+      }
+    }
+  }
+}

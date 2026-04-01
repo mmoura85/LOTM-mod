@@ -1,0 +1,279 @@
+// ============================================================================
+// LOTM PLANT SYSTEM v3
+// plant_system.js → behavior_packs/LOTM/scripts/world/plant_system.js
+//
+// CHANGES FROM v2:
+//   - Removed handleHarvest() — loot tables now handle all drops correctly
+//     (blocks have minecraft:loot pointing to loot_tables/lotm/blocks/*)
+//   - Removed playerBreakBlock harvest listener (no longer needed)
+//   - Fixed setblock command state syntax for 1.21
+//   - initialize() is now a no-op (kept for API compatibility)
+//
+// INTEGRATION — in main.js:
+//   import { PlantSystem } from './world/plant_system.js';
+//   PlantSystem.initialize();        // still call this (harmless)
+//
+//   // Inside your existing system.runInterval loop, add ONE line:
+//   PlantSystem.tick();
+//
+// GROWTH:
+//   Growth is handled by the lotm:plant_growth custom block component
+//   registered in plant_growth.js. No script-side growth logic needed here.
+// ============================================================================
+
+import { world, system } from '@minecraft/server';
+
+export class PlantSystem {
+
+  // ── Plant definitions ──────────────────────────────────────────────────────
+  static PLANTS = [
+    {
+      id: 'moonflower',
+      seed: 'lotm:moonflower_seed',
+      biomes: ['dark_forest', 'roofed_forest'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.04,
+      spawnDensity: [1, 3],
+      soil: ['minecraft:grass_block','minecraft:podzol','minecraft:mycelium'],
+    },
+    {
+      id: 'nightshade_herb',
+      seed: 'lotm:nightshade_herb_seed',
+      biomes: ['swamp','swamp_hills','dark_forest','mangrove_swamp'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.05,
+      spawnDensity: [2, 5],
+      soil: ['minecraft:grass_block','minecraft:dirt','minecraft:mud'],
+    },
+    {
+      id: 'silver_fern',
+      seed: 'lotm:silver_fern_seed',
+      biomes: ['taiga','snowy_taiga','old_growth_pine_taiga','old_growth_spruce_taiga'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.06,
+      spawnDensity: [2, 4],
+      soil: ['minecraft:podzol','minecraft:grass_block','minecraft:dirt'],
+    },
+    {
+      id: 'dewdrop_lotus',
+      seed: 'lotm:dewdrop_lotus_seed',
+      biomes: ['swamp','swamp_hills','mangrove_swamp'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.035,
+      spawnDensity: [1, 3],
+      soil: ['minecraft:mud','minecraft:dirt','minecraft:grass_block'],
+    },
+    {
+      id: 'ghostweed',
+      seed: 'lotm:ghostweed_seed',
+      biomes: ['soul_sand_valley'],
+      dimension: 'minecraft:nether',
+      spawnChance: 0.05,
+      spawnDensity: [2, 4],
+      soil: ['minecraft:soul_sand','minecraft:soul_soil'],
+    },
+    {
+      id: 'witchgrass',
+      seed: 'lotm:witchgrass_seed',
+      biomes: ['swamp','swamp_hills','dark_forest','mangrove_swamp'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.07,
+      spawnDensity: [3, 6],
+      soil: ['minecraft:grass_block','minecraft:dirt','minecraft:mud'],
+    },
+    {
+      id: 'crimson_sage',
+      seed: 'lotm:crimson_sage_seed',
+      biomes: ['crimson_forest'],
+      dimension: 'minecraft:nether',
+      spawnChance: 0.06,
+      spawnDensity: [2, 4],
+      soil: ['minecraft:crimson_nylium','minecraft:netherrack'],
+    },
+    {
+      id: 'verdant_thistle',
+      seed: 'lotm:verdant_thistle_seed',
+      biomes: ['plains','sunflower_plains','meadow'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.08,
+      spawnDensity: [2, 5],
+      soil: ['minecraft:grass_block','minecraft:dirt','minecraft:coarse_dirt'],
+    },
+    {
+      id: 'azurewort',
+      seed: 'lotm:azurewort_seed',
+      biomes: ['beach','desert','cold_beach'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.04,
+      spawnDensity: [1, 3],
+      soil: ['minecraft:sand','minecraft:gravel'],
+    },
+    {
+      id: 'voidmoss',
+      seed: 'lotm:voidmoss_seed',
+      biomes: ['the_end','end_midlands','end_highlands'],
+      dimension: 'minecraft:the_end',
+      spawnChance: 0.06,
+      spawnDensity: [2, 4],
+      soil: ['minecraft:end_stone'],
+    },
+    {
+      id: 'emberbud',
+      seed: 'lotm:emberbud_seed',
+      biomes: ['basalt_deltas','nether_wastes'],
+      dimension: 'minecraft:nether',
+      spawnChance: 0.04,
+      spawnDensity: [1, 3],
+      soil: ['minecraft:netherrack','minecraft:basalt','minecraft:blackstone'],
+    },
+    {
+      id: 'stargrass',
+      seed: 'lotm:stargrass_seed',
+      biomes: ['mountains','windswept_hills','stony_peaks','frozen_peaks'],
+      dimension: 'minecraft:overworld',
+      spawnChance: 0.05,
+      spawnDensity: [2, 4],
+      soil: ['minecraft:stone','minecraft:cobblestone','minecraft:gravel'],
+    },
+  ];
+
+  // ── Internal state ─────────────────────────────────────────────────────────
+  static _tick        = 0;
+  static spawnedChunks = new Set();
+
+  // ── Initialize — call once at startup ─────────────────────────────────────
+  // No longer registers any events — loot tables handle drops,
+  // plant_growth.js custom component handles growth.
+  static initialize() {
+    // No-op — kept for API compatibility with main.js
+  }
+
+  // ── Tick — call this from inside your existing system.runInterval loop ─────
+  // Spawning only fires every 1200 ticks (60s) per batch, so overhead is
+  // negligible compared to your existing pathway tick work.
+  static tick() {
+    this._tick++;
+    if (this._tick % 1200 !== 0) return;
+
+    try {
+      const players = world.getAllPlayers();
+      for (let i = 0; i < players.length; i++) {
+        const delay = i * 10;
+        system.runTimeout(() => {
+          try { this.trySpawnAroundPlayer(players[i]); } catch (_) {}
+        }, delay);
+      }
+    } catch (_) {}
+  }
+
+  // ── Attempt to spawn plants in chunks near a player ───────────────────────
+  static trySpawnAroundPlayer(player) {
+    const loc = player.location;
+    const dim = player.dimension;
+
+    const dimPlants = this.PLANTS.filter(p => p.dimension === dim.id);
+    if (dimPlants.length === 0) return;
+
+    const playerChunkX = Math.floor(loc.x / 16);
+    const playerChunkZ = Math.floor(loc.z / 16);
+
+    // Pick 1 random nearby chunk per call
+    const offsets = [-2, -1, 0, 1, 2];
+    const ox = offsets[Math.floor(Math.random() * offsets.length)];
+    const oz = offsets[Math.floor(Math.random() * offsets.length)];
+    const chunkX = playerChunkX + ox;
+    const chunkZ = playerChunkZ + oz;
+
+    const key = `${dim.id}:${chunkX}:${chunkZ}`;
+    if (this.spawnedChunks.has(key)) return;
+    this.spawnedChunks.add(key);
+
+    system.runTimeout(() => {
+      this.spawnPlantsInChunk(dim, chunkX, chunkZ, dimPlants);
+    }, 5);
+  }
+
+  // ── Spawn plants in a single chunk ────────────────────────────────────────
+  static spawnPlantsInChunk(dimension, chunkX, chunkZ, dimPlants) {
+    const baseX = chunkX * 16;
+    const baseZ = chunkZ * 16;
+
+    for (const plant of dimPlants) {
+      if (Math.random() > plant.spawnChance * 5) continue;
+
+      const count = plant.spawnDensity[0] +
+        Math.floor(Math.random() * (plant.spawnDensity[1] - plant.spawnDensity[0] + 1));
+
+      let placed = 0;
+      for (let attempt = 0; attempt < 8 && placed < count; attempt++) {
+        const a = attempt;
+        system.runTimeout(() => {
+          if (placed >= count) return;
+          try {
+            const x = baseX + Math.floor(Math.random() * 16);
+            const z = baseZ + Math.floor(Math.random() * 16);
+            const surfaceY = this.getSurfaceY(dimension, x, z);
+            if (surfaceY === null) return;
+
+            const soilBlock = dimension.getBlock({ x, y: surfaceY, z });
+            if (!soilBlock || !plant.soil.includes(soilBlock.typeId)) return;
+
+            const aboveBlock = dimension.getBlock({ x, y: surfaceY + 1, z });
+            if (!aboveBlock || aboveBlock.typeId !== 'minecraft:air') return;
+
+            // Spawn at a random stage (weighted towards mature)
+            const stage = Math.random() < 0.25 ? 0 : (Math.random() < 0.4 ? 1 : 2);
+
+            // 1.21 block state setblock syntax: ["state_name"=value]
+            dimension.runCommand(
+              `setblock ${x} ${surfaceY + 1} ${z} lotm:${plant.id} ["lotm:growth_stage"=${stage}]`
+            );
+            placed++;
+          } catch (_) {
+            // Block out of range or chunk not loaded — silently skip
+          }
+        }, a * 2);
+      }
+    }
+  }
+
+  // ── Surface Y detection ───────────────────────────────────────────────────
+  static getSurfaceY(dimension, x, z) {
+    try {
+      const block = dimension.getTopmostBlock({ x, z });
+      if (block) return block.y;
+    } catch (_) {}
+
+    // Fallback: limited scan from near player height
+    try {
+      const players  = world.getAllPlayers();
+      const refY     = players.length > 0 ? Math.floor(players[0].location.y) : 64;
+      const startY   = Math.min(refY + 20, 256);
+      const minY     = Math.max(refY - 40, -64);
+      for (let y = startY; y > minY; y--) {
+        const b = dimension.getBlock({ x, y, z });
+        if (b && b.typeId !== 'minecraft:air') return y;
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
+  // ── Utility: give seeds to a player ───────────────────────────────────────
+  static giveSeeds(player, plantId, amount = 1) {
+    const plant = this.PLANTS.find(p => p.id === plantId);
+    if (!plant) return false;
+    try {
+      player.dimension.spawnItem({ typeId: plant.seed, amount }, player.location);
+    } catch (_) {}
+    return true;
+  }
+
+  // ── Debug: list all plants ─────────────────────────────────────────────────
+  static listPlants(player) {
+    player.sendMessage('§a§l=== LOTM Plants ===');
+    for (const p of this.PLANTS) {
+      player.sendMessage(`§e${p.id} §7→ §8${p.dimension.replace('minecraft:', '')}`);
+    }
+  }
+}
