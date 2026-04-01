@@ -4,20 +4,20 @@
     "name": "Lord of the Mysteries - Resources",
     "description": "Textures and UI for LotM mod",
     "uuid": "c1d2e3f4-a5b6-7c8d-9e0f-1a2b3c4d5e6f",
-    "version": [1, 0, 0],
+    "version": [1, 10, 0],
     "min_engine_version": [1, 21, 0]
   },
   "modules": [
     {
       "type": "resources",
       "uuid": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
-      "version": [1, 0, 0]
+      "version": [1, 10, 0]
     }
   ],
   "dependencies": [
     {
       "uuid": "a7f3c2e1-4b5d-4a1c-9f7e-2d8b6c1a3e4f",
-      "version": [1, 0, 0]
+      "version": [1, 10, 0]
     }
   ]
 }

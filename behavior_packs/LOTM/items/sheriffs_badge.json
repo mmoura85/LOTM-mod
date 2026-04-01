@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:sheriffs_badge",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "sheriffs_badge",
+      "minecraft:display_name": {
+        "value": "\u00a76Sheriff's Badge"
+      },
+      "minecraft:use_duration": 1,
+      "minecraft:use_animation": "none"
+    }
+  }
+}

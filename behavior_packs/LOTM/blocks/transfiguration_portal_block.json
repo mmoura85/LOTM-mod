@@ -2,32 +2,24 @@
   "format_version": "1.21.0",
   "minecraft:block": {
     "description": {
-      "identifier": "lotm:transfiguration_portal_block",
-      "menu_category": {
-        "category": "none"
-      }
+      "identifier": "lotm:transfiguration_portal_block"
     },
     "components": {
-      "minecraft:destructible_by_mining": {
-        "seconds_to_destroy": 0
-      },
-      "minecraft:destructible_by_explosion": {
-        "explosion_resistance": 0
-      },
-      "minecraft:friction": 0.1,
-      "minecraft:map_color": "#8B00FF",
-      "minecraft:light_emission": 10,
-      "minecraft:geometry": "geometry.full_block",
       "minecraft:material_instances": {
         "*": {
-          "texture": "magenta_stained_glass",
+          "texture": "traveler_portal",
           "render_method": "blend",
-          "face_dimming": false,
-          "ambient_occlusion": false
+          "ambient_occlusion": false,
+          "face_dimming": false
         }
       },
       "minecraft:collision_box": false,
-      "minecraft:selection_box": false
+      "minecraft:selection_box": false,
+      "minecraft:light_emission": 11,
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.1
+      },
+      "minecraft:map_color": "#8B00FF"
     }
   }
 }

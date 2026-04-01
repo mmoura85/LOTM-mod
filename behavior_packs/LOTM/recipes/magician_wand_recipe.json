@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:magician_wand_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "  G",
+      " B ",
+      "B  "
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:gold_ingot"
+      },
+      "B": {
+        "item": "minecraft:blaze_rod"
+      }
+    },
+    "result": {
+      "item": "lotm:magician_wand",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:seer_potion_seq7"
+      }
+    ]
+  }
+}

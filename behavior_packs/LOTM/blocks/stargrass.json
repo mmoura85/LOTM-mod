@@ -1,0 +1,166 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "lotm:stargrass",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "lotm:growth_stage": {
+          "values": {
+            "min": 0,
+            "max": 2
+          }
+        }
+      }
+    },
+    "components": {
+      "tag:minecraft:crop": {},
+      "lotm:plant_growth": {
+        "growth_state": "lotm:growth_stage",
+        "max_growth": 2,
+        "min_light_level": 8,
+        "growth_on_fertilize": [
+          1,
+          2
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.0
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 0
+      },
+      "minecraft:collision_box": false,
+      "minecraft:geometry": "geometry.lotm_plant_cross",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "stargrass_stage0",
+          "render_method": "alpha_test_single_sided",
+          "face_dimming": false,
+          "ambient_occlusion": false
+        }
+      },
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ],
+            "block_filter": [
+              {
+                "name": "minecraft:dirt"
+              },
+              {
+                "name": "minecraft:grass_block"
+              },
+              {
+                "name": "minecraft:coarse_dirt"
+              },
+              {
+                "name": "minecraft:sand"
+              }
+            ]
+          }
+        ]
+      },
+      "minecraft:precipitation_interactions": {
+        "precipitation_behavior": "none"
+      },
+      "minecraft:liquid_detection": {
+        "detection_rules": [
+          {
+            "liquid_type": "water",
+            "on_liquid_touches": "popped"
+          }
+        ]
+      },
+      "minecraft:movable": {
+        "movement_type": "popped"
+      },
+      "minecraft:connection_rule": {
+        "accepts_connections_from": "none"
+      },
+      "minecraft:loot": "loot_tables/lotm/blocks/stargrass_young.json"
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('lotm:growth_stage') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "stargrass_stage0",
+              "render_method": "alpha_test_single_sided",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -4,
+              0,
+              -4
+            ],
+            "size": [
+              8,
+              6,
+              8
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('lotm:growth_stage') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "stargrass_stage1",
+              "render_method": "alpha_test_single_sided",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -4,
+              0,
+              -4
+            ],
+            "size": [
+              8,
+              10,
+              8
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('lotm:growth_stage') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "stargrass_stage2",
+              "render_method": "alpha_test_single_sided",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -4,
+              0,
+              -4
+            ],
+            "size": [
+              8,
+              14,
+              8
+            ]
+          },
+          "minecraft:loot": "loot_tables/lotm/blocks/stargrass_mature.json"
+        }
+      }
+    ]
+  }
+}

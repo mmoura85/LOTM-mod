@@ -142,6 +142,235 @@
     },
     "prison_pocket": {
       "textures": "textures/items/prison_pocket"
+    },
+    "dawn_item": {
+      "textures": "textures/items/dawn_item"
+    },
+    "copper_bullet": {
+      "textures": "textures/items/copper_bullet"
+    },
+    "knife": {
+      "textures": "textures/items/knife"
+    },
+    "short_sword": {
+      "textures": "textures/items/short_sword"
+    },
+    "seer_potion_seq9":  { "textures": "textures/items/seer_potion_seq9"  },
+    "seer_potion_seq8":  { "textures": "textures/items/seer_potion_seq8"  },
+    "seer_potion_seq7":  { "textures": "textures/items/seer_potion_seq7"  },
+    "spirit_vision_orb": { "textures": "textures/items/spirit_vision_orb" },
+    "danger_sense_charm":{ "textures": "textures/items/danger_sense_charm"},
+    "clown_mask":        { "textures": "textures/items/clown_mask"        },
+    "magician_wand":     { "textures": "textures/items/magician_wand"     },
+    "paper_knife":       { "textures": "textures/items/paper_knife"       },
+    "paper_figurine":    { "textures": "textures/items/paper_figurine"    },
+    "paper_weapon":      { "textures": "textures/items/paper_weapon"      },
+    "moonflower_seed": {
+      "textures": "textures/items/moonflower_seed"
+    },
+    "moonflower_petal": {
+      "textures": "textures/items/moonflower_petal"
+    },
+    "nightshade_herb_seed": {
+      "textures": "textures/items/nightshade_herb_seed"
+    },
+    "nightshade_berry": {
+      "textures": "textures/items/nightshade_berry"
+    },
+    "silver_fern_seed": {
+      "textures": "textures/items/silver_fern_seed"
+    },
+    "silver_frond": {
+      "textures": "textures/items/silver_frond"
+    },
+    "dewdrop_lotus_seed": {
+      "textures": "textures/items/dewdrop_lotus_seed"
+    },
+    "lotus_petal": {
+      "textures": "textures/items/lotus_petal"
+    },
+    "ghostweed_seed": {
+      "textures": "textures/items/ghostweed_seed"
+    },
+    "ghost_blossom": {
+      "textures": "textures/items/ghost_blossom"
+    },
+    "witchgrass_seed": {
+      "textures": "textures/items/witchgrass_seed"
+    },
+    "witchgrass_tuft": {
+      "textures": "textures/items/witchgrass_tuft"
+    },
+    "crimson_sage_seed": {
+      "textures": "textures/items/crimson_sage_seed"
+    },
+    "sage_leaf": {
+      "textures": "textures/items/sage_leaf"
+    },
+    "verdant_thistle_seed": {
+      "textures": "textures/items/verdant_thistle_seed"
+    },
+    "thistle_spike": {
+      "textures": "textures/items/thistle_spike"
+    },
+    "azurewort_seed": {
+      "textures": "textures/items/azurewort_seed"
+    },
+    "azurewort_sprig": {
+      "textures": "textures/items/azurewort_sprig"
+    },
+    "voidmoss_seed": {
+      "textures": "textures/items/voidmoss_seed"
+    },
+    "voidmoss_clump": {
+      "textures": "textures/items/voidmoss_clump"
+    },
+    "emberbud_seed": {
+      "textures": "textures/items/emberbud_seed"
+    },
+    "emberbud_ash": {
+      "textures": "textures/items/emberbud_ash"
+    },
+    "stargrass_seed": {
+      "textures": "textures/items/stargrass_seed"
+    },
+    "justiciar_potion_seq9": { "textures": "textures/items/justiciar_potion_seq9" },
+    "arbiters_seal":         { "textures": "textures/items/arbiters_seal" },
+    "justiciar_potion_seq8": { "textures": "textures/items/justiciar_potion_seq8" },
+    "sheriffs_badge":        { "textures": "textures/items/sheriffs_badge" },
+    "justiciar_potion_seq7":  { "textures": "textures/items/justiciar_potion_seq7" },
+    "interrogators_brand":    { "textures": "textures/items/interrogators_brand" },
+    "justiciar_potion_seq6":  { "textures": "textures/items/justiciar_potion_seq6" },
+    "judges_gavel":           { "textures": "textures/items/judges_gavel" },
+    "justiciar_potion_seq5": { "textures": "textures/items/justiciar_potion_seq5" },
+    "paladins_seal":         { "textures": "textures/items/paladins_seal" },
+    "justiciar_potion_seq4": { "textures": "textures/items/justiciar_potion_seq4" },
+    "mages_codex":           { "textures": "textures/items/mages_codex" },
+    "spiritual_essence": {
+      "textures": "textures/items/spiritual_essence"
+    },
+    "concentrated_essence": {
+      "textures": "textures/items/concentrated_essence"
+    },
+    "raw_characteristic": {
+      "textures": "textures/items/raw_characteristic"
+    },
+    "purified_characteristic": {
+      "textures": "textures/items/purified_characteristic"
+    },
+    "demonic_bone_powder": {
+      "textures": "textures/items/demonic_bone_powder"
+    },
+    "soul_crystal": {
+      "textures": "textures/items/soul_crystal"
+    },
+    "ectoplasm": {
+      "textures": "textures/items/ectoplasm"
+    },
+    "binding_dust": {
+      "textures": "textures/items/binding_dust"
+    },
+    "spirit_blood": {
+      "textures": "textures/items/spirit_blood"
+    },
+    "nightmare_fragment": {
+      "textures": "textures/items/nightmare_fragment"
+    },
+    "ancient_parchment": {
+      "textures": "textures/items/ancient_parchment"
+    },
+    "ghost_tear": {
+      "textures": "textures/items/ghost_tear"
+    },
+    "corruption_stain": {
+      "textures": "textures/items/corruption_stain"
+    },
+    "ghoul_flesh": {
+      "textures": "textures/items/ghoul_flesh"
+    },
+    "darkness_characteristic_seq9": {
+      "textures": "textures/items/darkness_characteristic_seq9"
+    },
+    "darkness_characteristic_seq8": {
+      "textures": "textures/items/darkness_characteristic_seq8"
+    },
+    "darkness_characteristic_seq7": {
+      "textures": "textures/items/darkness_characteristic_seq7"
+    },
+    "darkness_characteristic_seq6": {
+      "textures": "textures/items/darkness_characteristic_seq6"
+    },
+    "death_characteristic_seq9": {
+      "textures": "textures/items/death_characteristic_seq9"
+    },
+    "door_characteristic_seq9": {
+      "textures": "textures/items/door_characteristic_seq9"
+    },
+    "door_characteristic_seq8": {
+      "textures": "textures/items/door_characteristic_seq8"
+    },
+    "door_characteristic_seq7": {
+      "textures": "textures/items/door_characteristic_seq7"
+    },
+    "door_characteristic_seq6": {
+      "textures": "textures/items/door_characteristic_seq6"
+    },
+    "door_characteristic_seq5": {
+      "textures": "textures/items/door_characteristic_seq5"
+    },
+    "door_characteristic_seq4": {
+      "textures": "textures/items/door_characteristic_seq4"
+    },
+    "twilight_giant_characteristic_seq9": {
+      "textures": "textures/items/twilight_giant_characteristic_seq9"
+    },
+    "twilight_giant_characteristic_seq8": {
+      "textures": "textures/items/twilight_giant_characteristic_seq8"
+    },
+    "twilight_giant_characteristic_seq7": {
+      "textures": "textures/items/twilight_giant_characteristic_seq7"
+    },
+    "twilight_giant_characteristic_seq6": {
+      "textures": "textures/items/twilight_giant_characteristic_seq6"
+    },
+    "twilight_giant_characteristic_seq5": {
+      "textures": "textures/items/twilight_giant_characteristic_seq5"
+    },
+    "twilight_giant_characteristic_seq4": {
+      "textures": "textures/items/twilight_giant_characteristic_seq4"
+    },
+    "sun_characteristic_seq9": {
+      "textures": "textures/items/sun_characteristic_seq9"
+    },
+    "sun_characteristic_seq8": {
+      "textures": "textures/items/sun_characteristic_seq8"
+    },
+    "seer_characteristic_seq9": {
+      "textures": "textures/items/seer_characteristic_seq9"
+    },
+    "seer_characteristic_seq8": {
+      "textures": "textures/items/seer_characteristic_seq8"
+    },
+    "seer_characteristic_seq7": {
+      "textures": "textures/items/seer_characteristic_seq7"
+    },
+    "justiciar_characteristic_seq9": {
+      "textures": "textures/items/justiciar_characteristic_seq9"
+    },
+    "justiciar_characteristic_seq8": {
+      "textures": "textures/items/justiciar_characteristic_seq8"
+    },
+    "justiciar_characteristic_seq7": {
+      "textures": "textures/items/justiciar_characteristic_seq7"
+    },
+    "justiciar_characteristic_seq6": {
+      "textures": "textures/items/justiciar_characteristic_seq6"
+    },
+    "justiciar_characteristic_seq5": {
+      "textures": "textures/items/justiciar_characteristic_seq5"
+    },
+    "justiciar_characteristic_seq4": {
+      "textures": "textures/items/justiciar_characteristic_seq4"
     }
   }
 }

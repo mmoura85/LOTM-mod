@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:justiciar_potion_seq9_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " G ",
+      "GBG",
+      " T "
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:gold_ingot"
+      },
+      "B": {
+        "item": "minecraft:glass_bottle"
+      },
+      "T": {
+        "item": "minecraft:ghast_tear"
+      }
+    },
+    "result": {
+      "item": "lotm:justiciar_potion_seq9",
+      "count": 1
+    }
+  }
+}

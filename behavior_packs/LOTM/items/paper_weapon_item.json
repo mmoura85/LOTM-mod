@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:paper_weapon_item",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 8,
+      "minecraft:icon": "paper_weapon",
+      "minecraft:display_name": {
+        "value": "§fPaper Weapon"
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 14,
+      "minecraft:durability": {
+        "max_durability": 1,
+        "damage_chance": {
+          "min": 100,
+          "max": 100
+        }
+      }
+    }
+  }
+}

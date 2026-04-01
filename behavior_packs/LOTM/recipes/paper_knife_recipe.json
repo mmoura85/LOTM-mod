@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:paper_knife_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:paper"
+      }
+    ],
+    "result": {
+      "item": "lotm:paper_knife",
+      "count": 3
+    },
+    "unlock": [
+      {
+        "item": "minecraft:paper"
+      }
+    ]
+  }
+}

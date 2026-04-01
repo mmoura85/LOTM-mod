@@ -1,0 +1,39 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:vengeful_ghost",
+      "materials": {
+        "default": "entity_alphatest",
+        "enchanted": "entity_alphatest_glint"
+      },
+      "textures": {
+        "default": "textures/entity/vengeful_ghost",
+        "enchanted": "textures/misc/enchanted_item_glint"
+      },
+      "geometry": {
+        "default": "geometry.ghost"
+      },
+      "animations": {
+        "idle": "animation.ghost.idle",
+        "fly": "animation.ghost.fly",
+        "general": "controller.animation.allay.general"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.holding_trident = query.is_item_name_any('slot.weapon.mainhand', 'minecraft:trident');"
+        ],
+        "animate": [
+          "general"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.lotm_ghost"
+      ],
+      "spawn_egg": {
+        "base_color": "#40A030",
+        "overlay_color": "#FF4000"
+      }
+    }
+  }
+}

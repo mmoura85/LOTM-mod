@@ -13,7 +13,8 @@ export class PathwayManager {
     SEER: 'seer',
     APPRENTICE: 'apprentice',
     SUN: 'sun',
-    TWILIGHT_GIANT: 'twilight_giant'
+    TWILIGHT_GIANT: 'twilight_giant',
+    JUSTICIAR: 'justiciar'
   };
   
   // Spirit growth rates (spirit added per sequence advancement)
@@ -24,7 +25,8 @@ export class PathwayManager {
     [this.PATHWAYS.TWILIGHT_GIANT]: 12, // Very physical - slowest growth
     [this.PATHWAYS.SUN]: 18,            // Balanced pathway
     [this.PATHWAYS.SEER]: 35,           // Mystical pathway - faster growth
-    [this.PATHWAYS.APPRENTICE]: 28      // Mystical pathway - faster growth
+    [this.PATHWAYS.APPRENTICE]: 28,      // Mystical pathway - faster growth
+    [this.PATHWAYS.JUSTICIAR]: 25     // Physical pathway - slower growth
   };
   
   /**

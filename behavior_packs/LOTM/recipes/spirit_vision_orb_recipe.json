@@ -1,0 +1,36 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:spirit_vision_orb_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "GPG",
+      "PEP",
+      "GPG"
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:glass"
+      },
+      "P": {
+        "item": "minecraft:purple_dye"
+      },
+      "E": {
+        "item": "minecraft:ender_eye"
+      }
+    },
+    "result": {
+      "item": "lotm:spirit_vision_orb",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:seer_potion_seq9"
+      }
+    ]
+  }
+}

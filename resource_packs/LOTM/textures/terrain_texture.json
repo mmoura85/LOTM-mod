@@ -9,6 +9,114 @@
     },
     "transfiguration_portal_block": {
       "textures": "textures/blocks/transfiguration_portal_block"
+    },
+    "moonflower_stage0": {
+      "textures": "textures/blocks/moonflower_stage0"
+    },
+    "moonflower_stage1": {
+      "textures": "textures/blocks/moonflower_stage1"
+    },
+    "moonflower_stage2": {
+      "textures": "textures/blocks/moonflower_stage2"
+    },
+    "nightshade_herb_stage0": {
+      "textures": "textures/blocks/nightshade_herb_stage0"
+    },
+    "nightshade_herb_stage1": {
+      "textures": "textures/blocks/nightshade_herb_stage1"
+    },
+    "nightshade_herb_stage2": {
+      "textures": "textures/blocks/nightshade_herb_stage2"
+    },
+    "silver_fern_stage0": {
+      "textures": "textures/blocks/silver_fern_stage0"
+    },
+    "silver_fern_stage1": {
+      "textures": "textures/blocks/silver_fern_stage1"
+    },
+    "silver_fern_stage2": {
+      "textures": "textures/blocks/silver_fern_stage2"
+    },
+    "dewdrop_lotus_stage0": {
+      "textures": "textures/blocks/dewdrop_lotus_stage0"
+    },
+    "dewdrop_lotus_stage1": {
+      "textures": "textures/blocks/dewdrop_lotus_stage1"
+    },
+    "dewdrop_lotus_stage2": {
+      "textures": "textures/blocks/dewdrop_lotus_stage2"
+    },
+    "ghostweed_stage0": {
+      "textures": "textures/blocks/ghostweed_stage0"
+    },
+    "ghostweed_stage1": {
+      "textures": "textures/blocks/ghostweed_stage1"
+    },
+    "ghostweed_stage2": {
+      "textures": "textures/blocks/ghostweed_stage2"
+    },
+    "witchgrass_stage0": {
+      "textures": "textures/blocks/witchgrass_stage0"
+    },
+    "witchgrass_stage1": {
+      "textures": "textures/blocks/witchgrass_stage1"
+    },
+    "witchgrass_stage2": {
+      "textures": "textures/blocks/witchgrass_stage2"
+    },
+    "crimson_sage_stage0": {
+      "textures": "textures/blocks/crimson_sage_stage0"
+    },
+    "crimson_sage_stage1": {
+      "textures": "textures/blocks/crimson_sage_stage1"
+    },
+    "crimson_sage_stage2": {
+      "textures": "textures/blocks/crimson_sage_stage2"
+    },
+    "verdant_thistle_stage0": {
+      "textures": "textures/blocks/verdant_thistle_stage0"
+    },
+    "verdant_thistle_stage1": {
+      "textures": "textures/blocks/verdant_thistle_stage1"
+    },
+    "verdant_thistle_stage2": {
+      "textures": "textures/blocks/verdant_thistle_stage2"
+    },
+    "azurewort_stage0": {
+      "textures": "textures/blocks/azurewort_stage0"
+    },
+    "azurewort_stage1": {
+      "textures": "textures/blocks/azurewort_stage1"
+    },
+    "azurewort_stage2": {
+      "textures": "textures/blocks/azurewort_stage2"
+    },
+    "voidmoss_stage0": {
+      "textures": "textures/blocks/voidmoss_stage0"
+    },
+    "voidmoss_stage1": {
+      "textures": "textures/blocks/voidmoss_stage1"
+    },
+    "voidmoss_stage2": {
+      "textures": "textures/blocks/voidmoss_stage2"
+    },
+    "emberbud_stage0": {
+      "textures": "textures/blocks/emberbud_stage0"
+    },
+    "emberbud_stage1": {
+      "textures": "textures/blocks/emberbud_stage1"
+    },
+    "emberbud_stage2": {
+      "textures": "textures/blocks/emberbud_stage2"
+    },
+    "stargrass_stage0": {
+      "textures": "textures/blocks/stargrass_stage0"
+    },
+    "stargrass_stage1": {
+      "textures": "textures/blocks/stargrass_stage1"
+    },
+    "stargrass_stage2": {
+      "textures": "textures/blocks/stargrass_stage2"
     }
   }
 }

@@ -8,7 +8,7 @@
     "pattern": [
       " D ",
       "EWE",
-      " A "
+      " E "
     ],
     "key": {
       "D": {
@@ -20,9 +20,6 @@
       "W": {
         "item": "minecraft:potion",
         "data": 0
-      },
-      "A": {
-        "item": "minecraft:amethyst_shard"
       }
     },
     "result": {

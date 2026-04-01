@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:mages_codex_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "GGG",
+      "GEG",
+      "GGG"
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:gold_block"
+      },
+      "E": {
+        "item": "minecraft:enchanted_book"
+      }
+    },
+    "result": {
+      "item": "lotm:mages_codex",
+      "count": 1
+    }
+  }
+}

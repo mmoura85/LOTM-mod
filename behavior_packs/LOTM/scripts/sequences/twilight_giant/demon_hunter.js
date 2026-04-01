@@ -39,6 +39,29 @@ export class DemonHunterSequence {
   
   // Mind Concealment (passive - blocks divination)
   static CONCEALMENT_ACTIVE = true;
+
+  // ---- Selected Ability (persisted) ----
+  static selectedAbilities = new Map();
+  static SELECTED_ABILITY_PROPERTY = 'lotm:demonhunter_selected_ability';
+
+  static getSelectedAbility(player) {
+    if (!this.selectedAbilities.has(player.name)) {
+      try {
+        const saved = player.getDynamicProperty(this.SELECTED_ABILITY_PROPERTY);
+        if (saved) this.selectedAbilities.set(player.name, saved);
+      } catch (e) {}
+    }
+    return this.selectedAbilities.get(player.name) || this.ABILITIES.EYE_OF_DEMON_HUNTING;
+  }
+
+  static setSelectedAbility(player, abilityId) {
+    this.selectedAbilities.set(player.name, abilityId);
+    try { player.setDynamicProperty(this.SELECTED_ABILITY_PROPERTY, abilityId); } catch (e) {}
+  }
+
+  static useSelectedAbility(player) {
+    return this.handleAbilityUse(player, this.getSelectedAbility(player));
+  }
   
   // Track active abilities
   static eyeOfDemonHuntingActive = new Map(); // player name -> {ticksRemaining, targets[]}
@@ -107,7 +130,7 @@ export class DemonHunterSequence {
     this.processOintment(player);
     
     // IMPORTANT: Process inherited Guardian abilities
-    GuardianSequence.processGuardianProtection(player);
+    GuardianSequence.processProtection(player);
     GuardianSequence.processLightOfDawn(player);
     
     // Tick down cooldowns (own + inherited)
@@ -135,15 +158,14 @@ export class DemonHunterSequence {
     }
     
     // Speed VII - "whips up hurricane-force winds"
-    const speed = player.getEffect('speed');
+    // Speed: only reapply if the CORRECT level isn't active
+    // (isSprinting changes frame by frame — we don't want to reapply every 4 ticks)
     const isSprinting = player.isSprinting;
-    const speedLevel = isSprinting ? this.SPEED_AMPLIFIER : this.SPEED_AMPLIFIER - 1;
-    
-    if (!speed || speed.amplifier !== speedLevel || speed.duration < 200) {
-      player.addEffect('speed', this.EFFECT_DURATION, {
-        amplifier: speedLevel,
-        showParticles: false
-      });
+    const desiredSpeed = isSprinting ? this.SPEED_AMPLIFIER : this.SPEED_AMPLIFIER - 1;
+    const speed = player.getEffect('speed');
+    // Only reapply if we have the WRONG level or it's about to expire
+    if (!speed || speed.amplifier !== desiredSpeed || speed.duration < 40) {
+      player.addEffect('speed', this.EFFECT_DURATION, { amplifier: desiredSpeed, showParticles: false });
     }
     
     // Jump Boost V
@@ -203,42 +225,38 @@ export class DemonHunterSequence {
   /**
    * Apply Spiritual Intuition
    */
+  // Track how often we scan for hostile mobs (per player)
+  static intuitionTicks = new Map(); // playerName -> tick counter
+
   static applySpiritualIntuition(player) {
-    // Night vision (see in darkness)
+    // Night vision is always on
     const nightVision = player.getEffect('night_vision');
     if (!nightVision || nightVision.duration < 200) {
-      player.addEffect('night_vision', this.EFFECT_DURATION, {
-        amplifier: 0,
-        showParticles: false
-      });
+      player.addEffect('night_vision', this.EFFECT_DURATION, { amplifier: 0, showParticles: false });
     }
-    
-    // Glowing effect on nearby hostile mobs (spiritual sensing)
+
+    // Throttle: only scan for nearby hostiles every 80 ticks (4 seconds)
+    // was running every 4 ticks — this alone is a 20x improvement
+    const t = this.intuitionTicks.get(player.name) || 0;
+    this.intuitionTicks.set(player.name, t + 1);
+    if (t % 80 !== 0) return;
+
     try {
       const nearbyEntities = player.dimension.getEntities({
         location: player.location,
         maxDistance: 30,
         excludeTypes: ['minecraft:item', 'minecraft:player']
       });
-      
+
+      const hostileKeywords = ['zombie', 'skeleton', 'creeper', 'spider', 'enderman', 'witch', 'phantom', 'pillager', 'vindicator', 'evoker', 'warden', 'blaze', 'ghast'];
       for (const entity of nearbyEntities) {
-        // Apply glowing to hostile mobs
-        if (entity.typeId.includes('zombie') || 
-            entity.typeId.includes('skeleton') ||
-            entity.typeId.includes('creeper') ||
-            entity.typeId.includes('spider') ||
-            entity.typeId.includes('enderman') ||
-            entity.typeId.includes('witch') ||
-            entity.typeId.includes('phantom')) {
-          entity.addEffect('glowing', 60, {
-            amplifier: 0,
-            showParticles: false
-          });
+        const isHostile = hostileKeywords.some(kw => entity.typeId.includes(kw));
+        if (isHostile) {
+          // Apply 90-tick glowing (4.5 seconds) — covers the next scan interval
+          try { entity.addEffect('glowing', 90, { amplifier: 0, showParticles: false }); } catch (e) {}
         }
       }
-    } catch (e) {
-      // Failed to apply glowing
-    }
+    } catch (e) {}
   }
   
   /**

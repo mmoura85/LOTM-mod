@@ -1,0 +1,52 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:rampager",
+      "materials": {
+        "default": "zombie"
+      },
+      "textures": {
+        "shockwave": "textures/entity/rampager/shockwave",
+        "fireball": "textures/entity/rampager/fireball"
+      },
+      "geometry": {
+        "default": "geometry.rampager"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.animation_speed = Math.min(0.5, 3.0 * query.modified_move_speed);",
+          "variable.anim_pos_mod = 49.388962;",
+          "variable.bob = query.life_time * 20;",
+          "variable.modified_bob = variable.bob * 0.1 * 57.2958;",
+          "variable.pi = 180;",
+          "variable.halfpi = variable.pi / 2.0;",
+          "variable.left_arm_x_rot = -(45.8366 * math.cos(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed);",
+          "variable.right_arm_x_rot = -(45.8366 * math.sin(query.modified_distance_moved * variable.anim_pos_mod) * variable.animation_speed);"
+        ],
+        "animate": [
+          "base_pose",
+          { "move": "!query.is_sonic_boom" },
+          "bob",
+          "look_at_target",
+          { "melee_attack": "variable.attack_time > 0.0" },
+          "sonic_boom_controller"
+        ]
+      },
+      "animations": {
+        "base_pose": "animation.humanoid.base_pose.v1.0",
+        "move": "animation.warden.move",
+        "bob": "animation.warden.bob",
+        "look_at_target": "animation.warden.look_at_target.default",
+        "melee_attack": "animation.warden.attack",
+        "sonic_boom": "animation.warden.sonic_boom",
+        "sonic_boom_controller": "controller.animation.warden.sonic_boom"
+      },
+      "render_controllers": [ "controller.render.lotm_rampager" ],
+      "spawn_egg": {
+        "base_color": "#4A0E0E",
+        "overlay_color": "#8B0000"
+      }
+    }
+  }
+}
