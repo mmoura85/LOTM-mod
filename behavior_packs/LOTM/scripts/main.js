@@ -6,6 +6,7 @@ import { MidnightPoetSequence } from './sequences/darkness/midnight_poet.js';
 import { NightmareSequence } from './sequences/darkness/nightmare.js';
 import { SoulAssurerSequence } from './sequences/darkness/soul_assurer.js';
 import { CorpseCollectorSequence } from './sequences/death/corpse_collector.js';
+import { GravediggerSequence } from './sequences/death/gravedigger.js';
 import { ApprenticeSequence } from './sequences/door/apprentice.js';
 import { TrickmasterSequence } from './sequences/door/trickmaster.js';
 import { AstrologerSequence } from './sequences/door/astrologer.js';
@@ -32,16 +33,32 @@ import { ImperativeMageSequence } from './sequences/justiciar/imperative_mage.js
 import { BardSequence } from './sequences/sun/bard.js';
 import { LightSuppliantSequence } from './sequences/sun/light_suppliant.js';
 
+// Hanged Man
+import { SecretsSuppliantSequence } from './sequences/hanged_man/secrets_suppliant.js';
+import { ListenerSequence } from './sequences/hanged_man/listener.js';
+import { ShadowAsceticSequence } from './sequences/hanged_man/shadow_ascetic.js';
+import { RoseBishopSequence }  from './sequences/hanged_man/rose_bishop.js';
+import { ShepherdSequence } from './sequences/hanged_man/shepherd.js';
+
+// Hermit
+import { MysteryPryerSequence } from './sequences/hermit/mystery_pryer.js';
+import { MeleeScholarSequence }  from './sequences/hermit/melee_scholar.js';
+import { WarlockSequence } from './sequences/hermit/warlock.js';
+import { ScrollProfessorSequence } from './sequences/hermit/scroll_professor.js';
+
 // UI
 import { SunPathwayMenus } from './ui/sun_pathway_menus.js';
 import { DarknessPathwayMenus } from './ui/darkness_pathway_menus.js';
 import { DoorPathwayMenus } from './ui/door_pathway_menus.js';
 import { TwilightGiantMenus } from './ui/twilight_giant_menus.js';
+import { HangedManMenus }      from './ui/hanged_man_menus.js';
+import { HermitPathwayMenus }    from './ui/hermit_pathway_menus.js';
+import { WarlockMenus }    from './ui/warlock_menus.js';
+import { ScrollProfessorMenus }    from './ui/scroll_professor_menus.js';
 
 // Weapons
 import { RevolverSystem } from './weapons/revolverSystem.js';
 import { RangedWeaponBuffs } from './weapons/rangedWeaponBuffs.js';
-
 // Plants
 import { registerPlantGrowth } from './world/plant_growth.js';
 
@@ -68,6 +85,34 @@ const selectedSecretsSorcererAbilities = new Map();
 // ============================================================================
 function initialize() {
   world.sendMessage('§aLord of the Mysteries mod loaded!');
+
+  ShepherdSequence.registerSequenceClasses({
+    // Darkness
+    'MidnightPoetSequence':   MidnightPoetSequence,
+    'NightmareSequence':      NightmareSequence,
+    'SoulAssurerSequence':    SoulAssurerSequence,
+    // Twilight Giant
+    'DawnPaladinSequence':    DawnPaladinSequence,
+    'GuardianSequence':       GuardianSequence,
+    // Door
+    'ApprenticeSequence':     ApprenticeSequence,
+    'TrickmasterSequence':    TrickmasterSequence,
+    'AstrologerSequence':     AstrologerSequence,
+    'ScribeSequence':         ScribeSequence,
+    'TravelerSequence':       TravelerSequence,
+    // Death
+    'CorpseCollectorSequence': CorpseCollectorSequence,
+    // Sun
+    'BardSequence':           BardSequence,
+    'LightSuppliantSequence': LightSuppliantSequence,
+    // Seer
+    'SeerSequence':           SeerSequence,
+    'ClownSequence':          ClownSequence,
+    'MagicianSequence':       MagicianSequence,
+    // Justiciar
+    'ArbiterSequence':        ArbiterSequence,
+    'SheriffSequence':        SheriffSequence,
+  });
 
   system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
@@ -123,7 +168,11 @@ function initialize() {
         else if (sequence === 7) NightmareSequence.applyPassiveAbilities(player);
         else if (sequence === 6) SoulAssurerSequence.applyPassiveAbilities(player);
       } else if (pathway === PathwayManager.PATHWAYS.DEATH) {
-        if (sequence === 9) CorpseCollectorSequence.applyPassiveAbilities(player);
+        if (sequence === 9) {
+          CorpseCollectorSequence.applyPassiveAbilities(player);
+        } else if (sequence === 8) {
+          GravediggerSequence.applyPassiveAbilities(player);
+        }
       } else if (pathway === PathwayManager.PATHWAYS.DOOR) {
         if      (sequence === 9) ApprenticeSequence.applyPassiveAbilities(player);
         else if (sequence === 8) TrickmasterSequence.applyPassiveAbilities(player);
@@ -152,6 +201,17 @@ function initialize() {
         else if (sequence === 6) JudgeSequence.applyPassiveAbilities(player);
         else if (sequence === 5) DisciplinaryPaladinSequence.applyPassiveAbilities(player);
         else if (sequence === 4) ImperativeMageSequence.applyPassiveAbilities(player);
+      } else if (pathway === PathwayManager.PATHWAYS.HANGED_MAN) {
+        if      (sequence === 9) SecretsSuppliantSequence.applyPassiveAbilities(player);
+        else if (sequence === 8) ListenerSequence.applyPassiveAbilities(player);
+        else if (sequence === 7) ShadowAsceticSequence.applyPassiveAbilities(player);
+        else if (sequence === 6) RoseBishopSequence.applyPassiveAbilities(player);
+        else if (sequence === 5) ShepherdSequence.applyPassiveAbilities(player);
+      } else if (pathway === PathwayManager.PATHWAYS.HERMIT) {
+      if      (sequence === 9) MysteryPryerSequence.applyPassiveAbilities(player);
+        else if (sequence === 8) MeleeScholarSequence.applyPassiveAbilities(player);
+        else if (sequence === 7) WarlockSequence.applyPassiveAbilities(player);
+        else if (sequence === 6) ScrollProfessorSequence.applyPassiveAbilities(player);
       }
     }
 
@@ -214,6 +274,16 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
   if (itemId === 'lotm:death_potion_seq9') {
     PathwayManager.assignPathway(player, PathwayManager.PATHWAYS.DEATH);
     player.sendMessage('§aYou have become a §8Corpse Collector§a!');
+  }
+  if (itemId === 'lotm:death_potion_seq8') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.DEATH, itemId)) return;
+    if (!_requireSequence(player, sequence, 9, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    const currentMax = SpiritSystem.getMaxSpirit(player);
+    SpiritSystem.setMaxSpirit(player, currentMax + 20);
+    player.sendMessage('§8You have become a §7Gravedigger§8!');
+    player.sendMessage('§7Craft a §8Spirit Whistle§7 to command the spirits');
   }
 
   // ── DOOR ──────────────────────────────────────────────────────────────────
@@ -401,13 +471,145 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     player.sendMessage("§7Craft the §eMage's Codex");
   }
 
+  // ── Hanged Man ─────────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:hanged_man_potion_seq9') {
+    PathwayManager.assignPathway(player, PathwayManager.PATHWAYS.HANGED_MAN);
+    SpiritSystem.initializePlayer(player, SecretsSuppliantSequence.BASE_SPIRIT);
+    player.sendMessage('§5§lYou have become a Secrets Suppliant!');
+    player.sendMessage('§7The veil between worlds grows thin before you...');
+    player.sendMessage('§7Craft Secrets Suppliant Powers to use your abilities');
+    player.playSound('block.beacon.activate', { pitch: 1.4, volume: 1.0 });
+  }
+
+  if (itemId === 'lotm:hanged_man_potion_seq8') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HANGED_MAN, itemId)) return;
+    if (!_requireSequence(player, sequence, 9, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§5§lYou have become a Listener!');
+    player.sendMessage('§7The whispers between worlds have found you...');
+    player.sendMessage('§4Warning: the voices will slowly consume your mind.');
+    player.sendMessage('§7Use Secrets Suppliant Powers or a new item to access abilities');
+    player.playSound('mob.endermen.stare', { pitch: 0.3, volume: 1.0 });
+  }
+
+  if (itemId === 'lotm:hanged_man_potion_seq7') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HANGED_MAN, itemId)) return;
+    if (!_requireSequence(player, sequence, 8, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§8§lYou have become a Shadow Ascetic!');
+    player.sendMessage('§8The shadows bend to your will...');
+    player.sendMessage('§7You can now toggle the voices on and off.');
+    player.sendMessage('§7Craft Secrets Suppliant Powers to use your abilities');
+    player.playSound('mob.endermen.portal', { pitch: 0.3, volume: 1.0 });
+  }
+
+  if (itemId === 'lotm:hanged_man_potion_seq6') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HANGED_MAN, itemId)) return;
+    if (!_requireSequence(player, sequence, 7, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    // Boost spirit pool
+    const currentMax = SpiritSystem.getMaxSpirit(player);
+    SpiritSystem.setMaxSpirit(player, currentMax + 40);
+    player.sendMessage('§c§lYou have become a Rose Bishop!');
+    player.sendMessage('§cFlesh and Blood bend to your will...');
+    player.sendMessage('§4Warning: your body craves flesh to sustain its power.');
+    player.sendMessage('§7Craft Secrets Suppliant Powers to use your abilities');
+    // Initialise flesh hunger to neutral
+    RoseBishopSequence.setFleshHunger(player, 50);
+    player.playSound('mob.player.hurt', { pitch: 0.4, volume: 1.0 });
+  }
+
+  if (itemId === 'lotm:hanged_man_potion_seq5') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HANGED_MAN, itemId)) return;
+    if (!_requireSequence(player, sequence, 6, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    const currentMax = SpiritSystem.getMaxSpirit(player);
+    SpiritSystem.setMaxSpirit(player, currentMax + 60);
+    player.sendMessage('§5§lYou have become a Shepherd!');
+    player.sendMessage('§5The souls of beyonders are yours to consume...');
+    player.sendMessage('§7Use lotm:beyonder_soul to graze abilities from characteristics.');
+    player.sendMessage('§7(+60 max spirit)');
+    player.playSound('mob.endermen.portal', { pitch: 0.3, volume: 1.0 });
+  }
+
+  // Rose Bishop flesh consumption passive bonus
+  const fleshFoods = [
+    'minecraft:rotten_flesh', 'minecraft:raw_beef', 'minecraft:raw_porkchop',
+    'minecraft:raw_mutton', 'minecraft:raw_chicken', 'minecraft:raw_rabbit',
+    'minecraft:raw_cod', 'minecraft:raw_salmon'
+  ];
+  if (fleshFoods.includes(itemId)) {
+    RoseBishopSequence.onFleshItemEaten(player, itemId);
+  }
+  // LOTM flesh items also trigger on itemCompleteUse (they have food components):
+  if (itemId === 'lotm:ghoul_flesh' || itemId === 'lotm:spirit_blood') {
+    RoseBishopSequence.onFleshItemEaten(player, itemId);
+  }
+
+
+  // ── HERMIT ──────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:hermit_potion_seq9') {
+    PathwayManager.assignPathway(player, PathwayManager.PATHWAYS.HERMIT);
+    SpiritSystem.initializePlayer(player, 220); // High spirituality base
+    player.sendMessage('§5You have become a §dMystery Pryer§5!');
+    player.sendMessage('§7Your spiritual perception has awakened...');
+    player.sendMessage('§7Craft the Mystery Pryer\'s Eye to use your abilities');
+    player.playSound('mob.elder_guardian.curse', { pitch: 1.5, volume: 1.0 });
+  }
+  if (itemId === 'lotm:hermit_potion_seq8') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HERMIT, itemId)) return;
+    if (!_requireSequence(player, sequence, 9, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    const currentMax = SpiritSystem.getMaxSpirit(player);
+    SpiritSystem.setMaxSpirit(player, currentMax + 25);
+    player.sendMessage('§5You have become a §dMelee Scholar§5!');
+    player.sendMessage('§7Combat knowledge flows through your spirit! (+25 max spirit)');
+    player.sendMessage('§7Craft the Scholar\'s Martial Tome to use your abilities');
+  }
+
+  if (itemId === 'lotm:hermit_potion_seq7') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HERMIT, itemId)) return;
+    if (!_requireSequence(player, sequence, 8, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§5You have become a §dWarlock§5!');
+    player.sendMessage('§7The mysteries of spellcasting open before you...');
+    player.sendMessage('§7Craft the §5Warlock\'s Wand §7to cast spells.');
+    player.sendMessage('§7Craft §5powder ingredients §7to fuel your spells.');
+    player.playSound('mob.elder_guardian.curse', { pitch: 1.0, volume: 1.0 });
+  }
+
+  if (itemId === 'lotm:hermit_potion_seq6') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HERMIT, itemId)) return;
+    if (!_requireSequence(player, sequence, 7, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§5You have become a §dScroll Professor§5!');
+    player.sendMessage('§7The art of scroll-making flows into your mind...');
+    player.sendMessage('§7Craft scrolls and right-click them to cast powerful spells.');
+    player.playSound('mob.elder_guardian.curse', { pitch: 0.8, volume: 1.0 });
+  }
+
+
   // ── SPIRIT RESTORATION ────────────────────────────────────────────────────
   if (itemId === 'lotm:spirit_restoration_potion') {
     SpiritSystem.restoreSpirit(player, 50);
     player.sendMessage('§bRestored 50 Spirit!');
+    ListenerSequence.onSpiritPotionDrank(player);  // existing
+    // Rose Bishop: also restore flesh hunger slightly
+    const { pathway: rp, sequence: rs } = _getPS(player);
+    if (rp === PathwayManager.PATHWAYS.HANGED_MAN && rs <= 6) {
+      const prev = RoseBishopSequence.getFleshHunger(player);
+      RoseBishopSequence.setFleshHunger(player, prev + 10);
+      player.sendMessage('§cThe potion sustains your flesh slightly. (+10 flesh hunger)');
+    }
   }
 });
-
 // ============================================================================
 // ITEM USE (right-click)
 // ============================================================================
@@ -429,9 +631,27 @@ world.afterEvents.itemUse.subscribe((event) => {
   if (itemId === 'lotm:soul_assurer_powers') {
     const { pathway, sequence } = _getPS(player);
     if (pathway === PathwayManager.PATHWAYS.DARKNESS && sequence === 6) {
-      player.isSneaking ? cycleSoulAssurerAbility(player) : useSoulAssurerAbility(player);
+      if (player.isSneaking) {
+        // Open full menu showing ALL available abilities
+        DarknessPathwayMenus.showSoulAssurerMenu(player);
+      } else {
+        // Use currently selected ability
+        useSoulAssurerAbility(player);
+      }
     } else {
       player.sendMessage('§cYou must be a Soul Assurer (Sequence 6) to use this!');
+    }
+    return;
+  }
+
+  
+  // ── DEATH ──────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:spirit_whistle') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway === PathwayManager.PATHWAYS.DEATH && sequence <= 8) {
+      GravediggerSequence.handleWhistle(player, player.isSneaking);
+    } else {
+      player.sendMessage('§cYou must be a Gravedigger (Sequence 8) to use this!');
     }
     return;
   }
@@ -668,6 +888,137 @@ world.afterEvents.itemUse.subscribe((event) => {
     return;
   }
 
+  // ── HANGED MAN ──────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:secrets_suppliant_powers') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HANGED_MAN) {
+      player.sendMessage('§cYou must be on the Hanged Man pathway!');
+      return;
+    }
+    if (sequence > 9 || sequence < 5) {
+      player.sendMessage('§cThis item requires Sequence 6–9 of the Hanged Man pathway!');
+      return;
+    }
+
+    if (player.isSneaking) {
+      // Sneak = open full ability menu
+      HangedManMenus.showAbilityMenu(player).catch(() => {});
+    } else {
+      // Normal use = use currently selected ability
+      const cls = HangedManMenus._getSequenceClass(sequence);
+      if (cls) cls.useSelectedAbility(player);
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:beyonder_soul') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HANGED_MAN || sequence > 5) {
+      player.sendMessage('§cOnly Shepherds (Sequence 5) can graze Beyonder Souls!');
+      player.sendMessage('§7You can trade or hold it for a Shepherd.');
+      return;
+    }
+    if (player.isSneaking) {
+      HangedManMenus.showGrazeMenu(player).catch(function() {});
+    } else {
+      // Non-sneak: show quick info about what's in inventory
+      const charFound = ShepherdSequence._findCharacteristicInInventory(player);
+      if (charFound) {
+        player.sendMessage(`§5Found characteristic: §f${charFound.typeId.replace('lotm:', '').replace(/_/g, ' ')}`);
+        player.sendMessage('§7Sneak + use the soul to begin grazing.');
+      } else {
+        player.sendMessage('§7Beyonder Soul ready. Add a Beyonder Characteristic to your inventory.');
+        player.sendMessage('§7Then sneak + use this soul to graze an ability.');
+      }
+    }
+    return;
+  }
+
+ // ── HERMIT ──────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:mystery_pryer_powers') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HERMIT) {
+      player.sendMessage('§cOnly Hermit Pathway beyonders can use this!');
+      return;
+    }
+    if (player.isSneaking) {
+      HermitPathwayMenus.showMysteryPryerMenu(player);
+    } else {
+      // Cycle abilities on non-sneak use
+      const abilities = MysteryPryerSequence.getAllAbilities();
+      const current   = player.getDynamicProperty('lotm:hermit_pryer_mode') || abilities[0].id;
+      const idx       = abilities.findIndex(a => a.id === current);
+      if (!player.isSneaking) {
+        MysteryPryerSequence.handleAbilityUse(player, current);
+      }
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:melee_scholar_powers') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HERMIT) {
+      player.sendMessage('§cOnly Hermit Pathway beyonders can use this!');
+      return;
+    }
+    if (player.isSneaking) {
+      HermitPathwayMenus.showMeleeScholarMenu(player);
+    } else {
+      const current = player.getDynamicProperty('lotm:hermit_scholar_mode') || 'combat_insight';
+      MeleeScholarSequence.handleAbilityUse(player, current);
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:warlocks_wand') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HERMIT || sequence > 7) {
+      player.sendMessage('§cOnly Warlocks and above can use this!');
+      return;
+    }
+
+    if (player.isSneaking) {
+      // Sneak + right-click: open menu to select spell
+      WarlockMenus.showSpellMenu(player);
+    } else {
+      // Right-click: cast currently selected spell
+      WarlockSequence.castSelectedSpell(player);
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:spell_pouch') {
+    const { pathway } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HERMIT) {
+      player.sendMessage('§cOnly Hermit Pathway beyonders can use the Spell Pouch!');
+      return;
+    }
+    WarlockSequence.openSpellPouch(player);
+    return;
+  }
+
+  const scrollIds = [
+    'lotm:scroll_burning', 'lotm:scroll_sun', 'lotm:scroll_healing',
+    'lotm:scroll_freeze', 'lotm:scroll_storm', 'lotm:scroll_force_field',
+    'lotm:scroll_armour', 'lotm:scroll_raise_earth'
+  ];
+  if (scrollIds.includes(itemId)) {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HERMIT || sequence > 6) {
+      player.sendMessage('§cOnly Scroll Professors and above can use this!');
+      return;
+    }
+    if (player.isSneaking) {
+      ScrollProfessorMenus.showScrollMenu(player);
+    } else {
+      // Map item ID to scroll ID
+      const scrollId = itemId.replace('lotm:', '');
+      ScrollProfessorSequence.castScroll(player, scrollId);
+    }
+    return;
+  }
+
+
   // ── WEAPONS ───────────────────────────────────────────────────────────────
   if (itemId === 'lotm:revolver') {
     RevolverSystem.fireRevolver(player);
@@ -787,6 +1138,19 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
     }
   }
 
+   // ── Death — bonus vs undead ────────────────────────────
+
+   if (pathway === PathwayManager.PATHWAYS.DEATH) {
+    if (sequence === 9) {
+      CorpseCollectorSequence.applySmiteBonus?.(attacker, victim) ??
+        // inline fallback for seq 9 which doesn't have the method yet:
+        (CorpseCollectorSequence.isUndeadCreature(victim) &&
+          (() => { try { victim.applyDamage(4); } catch(e) {} })());
+    } else if (sequence <= 8) {
+      GravediggerSequence.applySmiteBonus(attacker, victim);
+    }
+  }
+
   // ── Knife hit effects ─────────────────────────────────────────────────────
   if (held?.typeId === 'lotm:knife') {
     try { victim.addEffect('slowness', 10, { amplifier: 0, showParticles: false }); } catch (_) {}
@@ -799,6 +1163,35 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
       const dir = attacker.getViewDirection();
       victim.applyKnockback(dir.x, dir.z, 0.6, 0.3);
     } catch (_) {}
+  }
+
+    // ── Shadow sword Hanged Man ───────────────────────────────────────────────
+  if (held?.typeId === 'lotm:shadow_sword') {
+    const pathway = PathwayManager.getPathway(attacker);
+    const sequence = PathwayManager.getSequence(attacker);
+    if (pathway === PathwayManager.PATHWAYS.HANGED_MAN && sequence <= 7) {
+      ShadowAsceticSequence.onShadowSwordHit(attacker, victim);
+    }
+  }
+
+  // Rose Bishop sated damage bonus — add after existing ointment checks:
+  if (held) {
+    const { pathway: rp, sequence: rs } = _getPS(attacker);
+    if (rp === PathwayManager.PATHWAYS.HANGED_MAN && rs <= 6) {
+      const hunger = RoseBishopSequence.getFleshHunger(attacker);
+      if (hunger >= 80) {
+        // Sated bonus — extra corrosive damage
+        try { victim.applyDamage(RoseBishopSequence.SATED_BONUS_DAMAGE); } catch (e) {}
+        // Occasional flesh tear visual
+        if (Math.random() < 0.2) {
+          try {
+            victim.dimension.spawnParticle('minecraft:critical_hit_emitter', {
+              x: victim.location.x, y: victim.location.y + 1, z: victim.location.z
+            });
+          } catch (e) {}
+        }
+      }
+    }
   }
 });
 
@@ -840,10 +1233,14 @@ function cycleNightmareAbility(player) {
   const current   = selectedNightmareAbilities.get(player.name) || abilities[0];
   const next      = abilities[(abilities.indexOf(current) + 1) % abilities.length];
   selectedNightmareAbilities.set(player.name, next);
-  player.sendMessage(`§aSelected: ${NightmareSequence.getAbilityDescription(next).split('\n')[0]}`);
-}
-function useNightmareAbility(player) {
-  NightmareSequence.handleAbilityUse(player, selectedNightmareAbilities.get(player.name) || NightmareSequence.ABILITIES.NIGHTMARE_STATE);
+
+  // Show NAME and cost, not the full description
+  const names = {
+    'nightmare_state':  '§5Nightmare State §8| §b50 Spirit',
+    'dream_invasion':   '§bDream Invasion §8| §b40 Spirit',
+    'nightmare_limbs':  '§cNightmare Limbs §8| §b30 Spirit'
+  };
+  player.sendMessage(`§7Selected: ${names[next] || next}`);
 }
 
 // ── Soul Assurer helpers ───────────────────────────────────────────────────

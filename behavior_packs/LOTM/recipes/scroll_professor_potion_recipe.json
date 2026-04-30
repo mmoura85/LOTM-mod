@@ -1,0 +1,39 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:scroll_professor_potion"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " P ",
+      "SWS",
+      " B "
+    ],
+    "key": {
+      "P": {
+        "item": "minecraft:paper"
+      },
+      "S": {
+        "item": "minecraft:amethyst_shard"
+      },
+      "W": {
+        "item": "lotm:hermit_potion_seq7"
+      },
+      "B": {
+        "item": "minecraft:blaze_powder"
+      }
+    },
+    "result": {
+      "item": "lotm:hermit_potion_seq6",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_potion_seq7"
+      }
+    ]
+  }
+}

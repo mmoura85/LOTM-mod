@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:gravel_dust_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:flint"
+      }
+    ],
+    "result": {
+      "item": "lotm:gravel_dust",
+      "count": 4
+    },
+    "unlock": [
+      {
+        "item": "minecraft:gravel"
+      }
+    ]
+  }
+}

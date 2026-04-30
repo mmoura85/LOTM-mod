@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:flesh_bomb",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 8,
+      "minecraft:icon": "flesh_bomb",
+      "minecraft:display_name": {
+        "value": "§4Flesh Bomb"
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 1
+    }
+  }
+}

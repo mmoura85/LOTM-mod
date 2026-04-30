@@ -11,9 +11,25 @@
             {
               "function": "set_count",
               "count": {
-                "min": 1,
-                "max": 2
+                "min": 2,
+                "max": 4
               }
+            }
+          ]
+        },
+        {
+          "rolls": { "min": 0, "max": 1 },
+          "entries": [
+            {
+              "type": "item",
+              "name": "lotm:beyonder_soul",
+              "weight": 8,
+              "functions": [{ "function": "set_count", "count": { "min": 1, "max": 1 } }]
+            },
+            {
+              "type": "item",
+              "name": "minecraft:air",
+              "weight": 92
             }
           ]
         },

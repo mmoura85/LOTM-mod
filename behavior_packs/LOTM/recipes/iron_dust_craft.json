@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:iron_dust_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:iron_nugget"
+      },
+      {
+        "item": "minecraft:iron_nugget"
+      },
+      {
+        "item": "minecraft:gravel"
+      }
+    ],
+    "result": {
+      "item": "lotm:iron_dust",
+      "count": 4
+    },
+    "unlock": [
+      {
+        "item": "minecraft:iron_nugget"
+      }
+    ]
+  }
+}

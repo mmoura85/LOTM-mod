@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:bone_ash_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:bone"
+      },
+      {
+        "item": "minecraft:rotten_flesh"
+      }
+    ],
+    "result": {
+      "item": "lotm:bone_ash",
+      "count": 4
+    },
+    "unlock": [
+      {
+        "item": "minecraft:bone"
+      }
+    ]
+  }
+}

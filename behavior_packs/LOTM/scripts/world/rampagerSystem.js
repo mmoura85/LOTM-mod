@@ -34,10 +34,13 @@ export class RampagerSystem {
     } catch (e) {}
 
     // Fireball variant only - variant 1
+    // Variant 0 (shockwave) uses native minecraft:behavior.sonic_boom, no script needed
+    let variant = 0;
     try {
-      const variant = rampager.getComponent('minecraft:variant')?.value ?? 0;
-      if (variant !== 1) return;
+      variant = rampager.getComponent('minecraft:variant')?.value ?? 0;
     } catch (e) { return; }
+
+    if (variant !== 1) return;
 
     // Find nearest player
     const target = this.findNearestPlayer(rampager);

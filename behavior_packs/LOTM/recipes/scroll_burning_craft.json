@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:scroll_burning_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:paper"
+      },
+      {
+        "item": "lotm:ember_powder"
+      },
+      {
+        "item": "minecraft:blaze_powder"
+      }
+    ],
+    "result": {
+      "item": "lotm:scroll_burning",
+      "count": 2
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_potion_seq6"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:listener_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " P ",
+      "ABA",
+      " A "
+    ],
+    "key": {
+      "P": { "item": "minecraft:phantom_membrane" },
+      "A": { "item": "minecraft:ender_pearl" },
+      "B": { "item": "minecraft:potion", "data": 0 },
+    },
+    "result": {
+      "item": "lotm:hanged_man_potion_seq8",
+      "count": 1
+    },
+    "unlock": [{ "item": "lotm:hanged_man_potion_seq9" }]
+  }
+}

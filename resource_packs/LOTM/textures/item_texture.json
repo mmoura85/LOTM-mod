@@ -371,6 +371,60 @@
     },
     "justiciar_characteristic_seq4": {
       "textures": "textures/items/justiciar_characteristic_seq4"
-    }
+    },
+    "death_potion_seq8": {
+    "textures": "textures/items/death_potion_seq8"
+    },
+    "spirit_whistle": {
+      "textures": "textures/items/spirit_whistle"
+    },
+    "hanged_man_potion_seq9": {
+      "textures": "textures/items/hanged_man_potion_seq9"
+    },
+    "secrets_suppliant_powers": {
+      "textures": "textures/items/secrets_suppliant_powers"
+    },
+    "hanged_man_characteristic_seq9": {
+      "textures": "textures/items/hanged_man_characteristic_seq9"
+    },
+    "hanged_man_potion_seq8": { "textures": "textures/items/hanged_man_potion_seq8" },
+    "hanged_man_characteristic_seq8": { "textures": "textures/items/hanged_man_characteristic_seq8" },
+    "hanged_man_potion_seq7":        { "textures": "textures/items/hanged_man_potion_seq7" },
+    "hanged_man_characteristic_seq7":{ "textures": "textures/items/hanged_man_characteristic_seq7" },
+    "shadow_sword":                  { "textures": "textures/items/shadow_sword" },
+    "flesh_bomb":                   { "textures": "textures/items/flesh_bomb" },
+    "hanged_man_potion_seq6":       { "textures": "textures/items/hanged_man_potion_seq6" },
+    "hanged_man_characteristic_seq6":{ "textures": "textures/items/hanged_man_characteristic_seq6" },
+    "beyonder_soul":               { "textures": "textures/items/beyonder_soul" },
+    "hanged_man_potion_seq5":      { "textures": "textures/items/hanged_man_potion_seq5" },
+    "hanged_man_characteristic_seq5": { "textures": "textures/items/hanged_man_characteristic_seq5" },
+    "hermit_potion_seq9":         { "textures": "textures/items/hermit_potion_seq9" },
+    "hermit_potion_seq8":         { "textures": "textures/items/hermit_potion_seq8" },
+    "mystery_pryer_powers":       { "textures": "textures/items/mystery_pryer_powers" },
+    "melee_scholar_powers":       { "textures": "textures/items/melee_scholar_powers" },
+    "hermit_characteristic_seq9": { "textures": "textures/items/hermit_characteristic_seq9" },
+    "hermit_characteristic_seq8": { "textures": "textures/items/hermit_characteristic_seq8" },
+    "hermit_potion_seq7":        { "textures": "textures/items/hermit_potion_seq7" },
+    "warlocks_wand":             { "textures": "textures/items/warlocks_wand" },
+    "spell_pouch":               { "textures": "textures/items/spell_pouch" },
+    "hermit_characteristic_seq7":{ "textures": "textures/items/hermit_characteristic_seq7" },
+    "iron_dust":                 { "textures": "textures/items/iron_dust" },
+    "bone_ash":                  { "textures": "textures/items/bone_ash" },
+    "ember_powder":              { "textures": "textures/items/ember_powder" },
+    "sunflower_dust":            { "textures": "textures/items/sunflower_dust" },
+    "storm_dust":                { "textures": "textures/items/storm_dust" },
+    "tide_powder":               { "textures": "textures/items/tide_powder" },
+    "stone_dust":                { "textures": "textures/items/stone_dust" },
+    "gravel_dust":               { "textures": "textures/items/gravel_dust" },
+    "hermit_potion_seq6":         { "textures": "textures/items/hermit_potion_seq6" },
+    "hermit_characteristic_seq6": { "textures": "textures/items/hermit_characteristic_seq6" },
+    "scroll_burning":             { "textures": "textures/items/scroll_burning" },
+    "scroll_sun":                 { "textures": "textures/items/scroll_sun" },
+    "scroll_healing":             { "textures": "textures/items/scroll_healing" },
+    "scroll_freeze":              { "textures": "textures/items/scroll_freeze" },
+    "scroll_storm":               { "textures": "textures/items/scroll_storm" },
+    "scroll_force_field":         { "textures": "textures/items/scroll_force_field" },
+    "scroll_armour":              { "textures": "textures/items/scroll_armour" },
+    "scroll_raise_earth":         { "textures": "textures/items/scroll_raise_earth" }
   }
 }

@@ -1,0 +1,16 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:shepherd_potion" },
+    "tags": ["crafting_table"],
+    "pattern": [ "SRS", "RBR", "SES" ],
+    "key": {
+      "S": { "item": "lotm:spirit_blood" },
+      "R": { "item": "minecraft:rotten_flesh" },
+      "B": { "item": "minecraft:potion", "data": 0 },
+      "E": { "item": "minecraft:ender_eye" }
+    },
+    "result": { "item": "lotm:hanged_man_potion_seq5", "count": 1 },
+    "unlock": [{ "item": "lotm:hanged_man_potion_seq6" }]
+  }
+}

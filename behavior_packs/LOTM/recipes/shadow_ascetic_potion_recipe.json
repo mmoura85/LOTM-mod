@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:shadow_ascetic_potion" },
+    "tags": ["crafting_table"],
+    "pattern": [ " S ", "SBS", " E " ],
+    "key": {
+      "S": { "item": "lotm:ghoul_flesh" },
+      "B": { "item": "minecraft:potion", "data": 0 },
+      "E": { "item": "minecraft:ender_pearl" }
+    },
+    "result": { "item": "lotm:hanged_man_potion_seq7", "count": 1 },
+    "unlock": [{ "item": "lotm:hanged_man_potion_seq8" }]
+  }
+}

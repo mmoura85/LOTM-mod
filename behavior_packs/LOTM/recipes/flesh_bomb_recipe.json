@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:flesh_bomb_craft" },
+    "tags": ["crafting_table"],
+    "pattern": [ "GBG", "BSB", "GBG" ],
+    "key": {
+      "G": { "item": "lotm:ghoul_flesh" },
+      "B": { "item": "lotm:spirit_blood" },
+      "S": { "item": "minecraft:soul_sand" }
+    },
+    "result": { "item": "lotm:flesh_bomb", "count": 3 },
+    "unlock": [{ "item": "lotm:ghoul_flesh" }]
+  }
+}

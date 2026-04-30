@@ -14,7 +14,9 @@ export class PathwayManager {
     APPRENTICE: 'apprentice',
     SUN: 'sun',
     TWILIGHT_GIANT: 'twilight_giant',
-    JUSTICIAR: 'justiciar'
+    JUSTICIAR: 'justiciar',
+    HANGED_MAN: 'hanged_man',
+    HERMIT: 'hermit'
   };
   
   // Spirit growth rates (spirit added per sequence advancement)
@@ -26,7 +28,9 @@ export class PathwayManager {
     [this.PATHWAYS.SUN]: 18,            // Balanced pathway
     [this.PATHWAYS.SEER]: 35,           // Mystical pathway - faster growth
     [this.PATHWAYS.APPRENTICE]: 28,      // Mystical pathway - faster growth
-    [this.PATHWAYS.JUSTICIAR]: 25     // Physical pathway - slower growth
+    [this.PATHWAYS.JUSTICIAR]: 25,     // Physical pathway - slower growth
+    [this.PATHWAYS.HANGED_MAN]: 30,
+    [this.PATHWAYS.HERMIT]: 40,   // Mystical focus — solid spirit growth
   };
   
   /**
@@ -72,7 +76,9 @@ export class PathwayManager {
       baseSpirit = 150;
     } else if (pathway === this.PATHWAYS.TWILIGHT_GIANT) {
       baseSpirit = 50; // Physical pathway, lower spirit
-    }
+    } else if (pathway === this.PATHWAYS.HANGED_MAN) {
+      baseSpirit = 140; // High spirituality pathway
+    } 
     
     SpiritSystem.initializePlayer(player, baseSpirit);
     
@@ -135,7 +141,8 @@ export class PathwayManager {
       [this.PATHWAYS.SEER]: 'Seer',
       [this.PATHWAYS.APPRENTICE]: 'Apprentice',
       [this.PATHWAYS.SUN]: 'Sun',
-      [this.PATHWAYS.TWILIGHT_GIANT]: 'Twilight Giant'
+      [this.PATHWAYS.TWILIGHT_GIANT]: 'Twilight Giant',
+      [this.PATHWAYS.HANGED_MAN]: 'Hanged Man'
     };
     return names[pathway] || 'Unknown';
   }

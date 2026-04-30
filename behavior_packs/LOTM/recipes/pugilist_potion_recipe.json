@@ -8,20 +8,17 @@
     "pattern": [
       " D ",
       "GPG",
-      " N "
+      " G "
     ],
     "key": {
       "D": {
-        "item": "minecraft:diamond"
+        "item": "minecraft:emerald"
       },
       "G": {
-        "item": "minecraft:gold_ingot"
+        "item": "minecraft:iron_ingot"
       },
       "P": {
         "item": "lotm:twilight_potion_seq9"
-      },
-      "N": {
-        "item": "minecraft:netherite_scrap"
       }
     },
     "result": {

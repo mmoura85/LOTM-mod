@@ -1,0 +1,16 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:rose_bishop_potion" },
+    "tags": ["crafting_table"],
+    "pattern": [ " R ", "GBG", " S " ],
+    "key": {
+      "R": { "item": "minecraft:red_mushroom" },
+      "G": { "item": "lotm:ghoul_flesh" },
+      "B": { "item": "minecraft:potion", "data": 0 },
+      "S": { "item": "lotm:spirit_blood" }
+    },
+    "result": { "item": "lotm:hanged_man_potion_seq6", "count": 1 },
+    "unlock": [{ "item": "lotm:hanged_man_potion_seq7" }]
+  }
+}

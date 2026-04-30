@@ -19,8 +19,8 @@
         "animate": [
           "move",
           "look_at_target_default",
-          { "attack.rotations": "query.is_attacking" },
-          { "zombie_attack_bare_hand": "query.is_attacking" }
+          { "attack.rotations": "variable.attack_time > 0.0" },
+          { "zombie_attack_bare_hand": "variable.attack_time > 0.0" }
         ]
       },
       "animations": {
