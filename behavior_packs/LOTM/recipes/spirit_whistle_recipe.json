@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:spirit_whistle_craft" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " B ",
+      " S ",
+      " S "
+    ],
+    "key": {
+      "B": { "item": "minecraft:bone" },
+      "S": { "item": "minecraft:soul_sand" }
+    },
+    "result": { "item": "lotm:spirit_whistle", "count": 1 },
+    "unlock": [{ "item": "lotm:death_potion_seq8" }]
+  }
+}

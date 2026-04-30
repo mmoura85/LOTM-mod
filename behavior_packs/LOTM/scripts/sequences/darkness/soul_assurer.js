@@ -5,6 +5,7 @@
 import { world, system } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
+import { MidnightPoetSequence } from './midnight_poet.js';
 import { NightmareSequence } from './nightmare.js';
 
 export class SoulAssurerSequence {
@@ -465,17 +466,16 @@ export class SoulAssurerSequence {
       return NightmareSequence.handleAbilityUse(player, abilityId);
     }
     
-    // Check if it's an inherited song (from Midnight Poet)
+    // Songs - route through MidnightPoetSequence
     const songAbilities = [
       'song_of_fear',
       'song_of_pacification',
       'song_of_cleansing'
     ];
-    
     if (songAbilities.includes(abilityId)) {
-      return NightmareSequence.handleAbilityUse(player, abilityId);
+      return MidnightPoetSequence.useSong(player, abilityId);
     }
-    
+
     return false;
   }
   
@@ -501,35 +501,56 @@ export class SoulAssurerSequence {
    */
   static getAllAbilities() {
     return [
+      // Own abilities
       {
         id: this.ABILITIES.REQUIEM,
         name: '§bRequiem',
-        description: 'Suppress Spirit Body',
+        description: 'Suppress Spirit Body, freeze targets',
         cost: this.REQUIEM_SPIRIT_COST
       },
       {
         id: this.ABILITIES.AGITATE,
         name: '§cAgitate',
-        description: 'Heighten aggression',
+        description: 'Heighten aggression of targets',
         cost: this.AGITATE_SPIRIT_COST
       },
+      // Enhanced inherited from Nightmare
       {
         id: this.ABILITIES.DREAM_INVASION,
-        name: '§5Dream Invasion (Enhanced)',
-        description: '150m range, 12 targets',
+        name: '§5Dream Invasion §7(Enhanced)',
+        description: '150m range, darkness + slowness',
         cost: this.DREAM_INVASION_SPIRIT_COST
       },
       {
         id: this.ABILITIES.NIGHTMARE_STATE,
         name: '§5Nightmare State',
-        description: 'Incorporeal form',
+        description: 'Become incorporeal',
         cost: NightmareSequence.NIGHTMARE_STATE_SPIRIT_COST
       },
       {
         id: this.ABILITIES.NIGHTMARE_LIMBS,
         name: '§cNightmare Limbs',
-        description: 'Attacking tentacles',
+        description: 'Sculk tentacles attack nearby enemies',
         cost: NightmareSequence.NIGHTMARE_LIMBS_SPIRIT_COST
+      },
+      // Inherited from Midnight Poet
+      {
+        id: 'song_of_fear',
+        name: '§cSong of Fear',
+        description: 'Makes enemies flee in terror',
+        cost: MidnightPoetSequence.FEAR_SPIRIT_COST
+      },
+      {
+        id: 'song_of_pacification',
+        name: '§bSong of Pacification',
+        description: 'Calms and immobilises enemies',
+        cost: MidnightPoetSequence.PACIFY_SPIRIT_COST
+      },
+      {
+        id: 'song_of_cleansing',
+        name: '§aSong of Cleansing',
+        description: 'Removes debuffs from nearby allies',
+        cost: MidnightPoetSequence.CLEANSE_SPIRIT_COST
       }
     ];
   }

@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:mystery_pryer_powers",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "mystery_pryer_powers",
+      "minecraft:display_name": {
+        "value": "§5Mystery Pryer's Eye"
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 1
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:scroll_force_field_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:paper"
+      },
+      {
+        "item": "minecraft:glass"
+      },
+      {
+        "item": "minecraft:amethyst_shard"
+      },
+      {
+        "item": "minecraft:amethyst_shard"
+      }
+    ],
+    "result": {
+      "item": "lotm:scroll_force_field",
+      "count": 2
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_potion_seq6"
+      }
+    ]
+  }
+}

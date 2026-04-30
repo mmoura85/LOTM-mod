@@ -144,4 +144,84 @@ export class DarknessPathwayMenus {
     };
     return abilities[abilityId] || 'Unknown';
   }
+
+  static async showSoulAssurerMenu(player) {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+
+    if (pathway !== 'darkness' || sequence !== 6) {
+      player.sendMessage('§cYou must be a Soul Assurer (Sequence 6) to use this!');
+      return;
+    }
+
+    const selected = SoulAssurerSequence.getAllAbilities();
+    const currentId = selectedSoulAssurerAbilities.get(player.name) ||
+                      SoulAssurerSequence.ABILITIES.REQUIEM;
+
+    const form = new ActionFormData()
+      .title('§bSoul Assurer Powers')
+      .body(
+        '§7Select an ability to set as default.\n' +
+        '§7Right-click to activate default.\n\n' +
+        '§7Current: §e' + this._getSoulAssurerName(currentId)
+      );
+
+    for (const ability of selected) {
+      const isSelected = ability.id === currentId;
+      const marker = isSelected ? '§a✓ ' : '';
+
+      // Get cooldown if applicable
+      let cdText = '';
+      const cdMap = this._getSoulAssurerCooldownMap(ability.id);
+      if (cdMap) {
+        const cd = cdMap.get(player.name) || 0;
+        if (cd > 0) cdText = ` §c(${Math.ceil(cd/20)}s)`;
+      }
+
+      form.button(
+        `${marker}${ability.name}${cdText}\n§7${ability.description} §8| §e${ability.cost} Spirit`
+      );
+    }
+
+    form.button('§cActivate Now\n§7Use selected ability', 'textures/ui/automation_glyph');
+    form.button('§7Cancel', 'textures/ui/cancel');
+
+    const response = await form.show(player);
+    if (response.canceled) return;
+
+    if (response.selection < selected.length) {
+      const chosen = selected[response.selection];
+      selectedSoulAssurerAbilities.set(player.name, chosen.id);
+      player.sendMessage(`§aSelected: ${chosen.name}`);
+      player.playSound('random.orb', { pitch: 1.2, volume: 0.5 });
+      this.showSoulAssurerMenu(player);
+    } else if (response.selection === selected.length) {
+      useSoulAssurerAbility(player);
+    }
+  }
+
+  static _getSoulAssurerName(abilityId) {
+    const names = {
+      'requiem':           'Requiem',
+      'agitate':           'Agitate',
+      'dream_invasion':    'Dream Invasion (Enhanced)',
+      'nightmare_state':   'Nightmare State',
+      'nightmare_limbs':   'Nightmare Limbs',
+      'song_of_fear':      'Song of Fear',
+      'song_of_pacification': 'Song of Pacification',
+      'song_of_cleansing': 'Song of Cleansing'
+    };
+    return names[abilityId] || 'Unknown';
+  }
+
+  static _getSoulAssurerCooldownMap(abilityId) {
+    switch(abilityId) {
+      case 'requiem':         return SoulAssurerSequence.requiemCooldowns;
+      case 'agitate':         return SoulAssurerSequence.agitateCooldowns;
+      case 'dream_invasion':  return NightmareSequence.dreamInvasionCooldowns;
+      case 'nightmare_state': return NightmareSequence.nightmareCooldowns;
+      case 'nightmare_limbs': return NightmareSequence.nightmareLimbsCooldowns;
+      default: return null;
+    }
+  }
 }

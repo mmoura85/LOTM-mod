@@ -22,8 +22,8 @@ export class NightmareSequence {
   // Dream Invasion ability - FIXED: No camera zoom
   static DREAM_INVASION_SPIRIT_COST = 40;
   static DREAM_INVASION_RANGE = 50; // Reduced from 100
-  static DREAM_INVASION_DURATION = 200; // 10 seconds
-  static DREAM_INVASION_COOLDOWN = 400; // 20 seconds
+  static DREAM_INVASION_DURATION = 400; // 10 seconds
+  static DREAM_INVASION_COOLDOWN = 600; // 20 seconds
   static MAX_DREAM_TARGETS = 10;
   
   // Nightmare Limbs ability - FIXED: Visible tentacles
@@ -368,53 +368,67 @@ export class NightmareSequence {
       player.sendMessage('§cYou do not have access to this ability!');
       return false;
     }
-    
-    // Check cooldown
+
     const cooldown = this.dreamInvasionCooldowns.get(player.name) || 0;
     if (cooldown > 0) {
       player.sendMessage(`§cDream Invasion on cooldown: ${Math.ceil(cooldown / 20)}s`);
       return false;
     }
-    
-    // Consume spirit
+
     if (!SpiritSystem.consumeSpirit(player, this.DREAM_INVASION_SPIRIT_COST)) {
       player.sendMessage(`§cNot enough spirit! Need ${this.DREAM_INVASION_SPIRIT_COST}`);
       return false;
     }
-    
-    // Find nearby entities
+
     const entities = player.dimension.getEntities({
       location: player.location,
       maxDistance: this.DREAM_INVASION_RANGE,
       excludeTypes: ['minecraft:item']
     });
-    
+
     const targets = [];
-    let targetCount = 0;
-    
     for (const entity of entities) {
       if (entity.id === player.id) continue;
-      if (targetCount >= this.MAX_DREAM_TARGETS) break;
-      
+      if (targets.length >= this.MAX_DREAM_TARGETS) break;
       targets.push(entity);
-      targetCount++;
     }
-    
+
     if (targets.length === 0) {
       player.sendMessage('§cNo targets in range!');
       SpiritSystem.restoreSpirit(player, this.DREAM_INVASION_SPIRIT_COST);
       return false;
     }
-    
-    // Activate Dream Invasion
+
     this.dreamInvasionActive.set(player.name, {
       targets: targets,
       ticksRemaining: this.DREAM_INVASION_DURATION
     });
-    
-    player.sendMessage(`§5§lDream Invasion activated on ${targets.length} target(s)!`);
-    player.playSound('block.bell.hit', { pitch: 0.5, volume: 1.0 });
-    
+
+    player.sendMessage(`§5§lDream Invasion! §7Darkness falls on ${targets.length} target(s)!`);
+    player.playSound('block.bell.hit', { pitch: 0.3, volume: 1.0 });
+
+    // Apply immediately on activation
+    for (const target of targets) {
+      try {
+        // Darkness - 15 seconds (300 ticks)
+        target.addEffect('darkness', 300, { amplifier: 0, showParticles: true });
+        // Slowness III - 20 seconds (400 ticks)
+        target.addEffect('slowness', 400, { amplifier: 2, showParticles: true });
+        // Weakness I - 15 seconds
+        target.addEffect('weakness', 300, { amplifier: 0, showParticles: false });
+
+        // Soul particles on target
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * Math.PI * 2;
+          player.dimension.spawnParticle('minecraft:soul_particle', {
+            x: target.location.x + Math.cos(a),
+            y: target.location.y + 1,
+            z: target.location.z + Math.sin(a)
+          });
+        }
+      } catch (e) {}
+    }
+
     return true;
   }
   
@@ -424,51 +438,27 @@ export class NightmareSequence {
   static processDreamInvasion(player) {
     const invasion = this.dreamInvasionActive.get(player.name);
     if (!invasion) return;
-    
+
     invasion.ticksRemaining--;
-    
-    // Apply sleep effects to targets
-    for (const target of invasion.targets) {
-      try {
-        // Simulate sleep with effects
-        target.addEffect('slowness', 60, { amplifier: 10, showParticles: true });
-        target.addEffect('weakness', 60, { amplifier: 5, showParticles: false });
-        target.addEffect('blindness', 60, { amplifier: 0, showParticles: true });
-        
-        // Spawn sleep particles
-        if (invasion.ticksRemaining % 20 === 0) {
-          target.dimension.spawnParticle('minecraft:villager_happy', {
+
+    // Ambient soul particles on targets every 40 ticks
+    if (invasion.ticksRemaining % 40 === 0) {
+      for (const target of invasion.targets) {
+        try {
+          player.dimension.spawnParticle('minecraft:soul_particle', {
             x: target.location.x,
-            y: target.location.y + 1,
+            y: target.location.y + 1.5,
             z: target.location.z
           });
-          
-          // Add "Z" particles for sleep effect
-          for (let i = 0; i < 3; i++) {
-            system.runTimeout(() => {
-              target.dimension.spawnParticle('minecraft:crop_growth_emitter', {
-                x: target.location.x,
-                y: target.location.y + 1 + (i * 0.3),
-                z: target.location.z
-              });
-            }, i * 5);
-          }
-        }
-      } catch (e) {
-        // Target may have died
+        } catch (e) {}
       }
     }
-    
-    // Player movement restricted but NO camera changes
-    player.addEffect('slowness', 20, { amplifier: 255, showParticles: false });
-    
-    // End effect
+
     if (invasion.ticksRemaining <= 0) {
       this.dreamInvasionActive.delete(player.name);
       this.dreamInvasionCooldowns.set(player.name, this.DREAM_INVASION_COOLDOWN);
-      
-      player.sendMessage('§7Dream Invasion ends...');
-      player.playSound('block.bell.hit', { pitch: 1.5, volume: 0.8 });
+      player.sendMessage('§7Dream Invasion fades...');
+      player.playSound('block.bell.hit', { pitch: 1.2, volume: 0.6 });
     }
   }
   
@@ -515,84 +505,164 @@ export class NightmareSequence {
   static processNightmareLimbs(player) {
     const ticksRemaining = this.nightmareLimbsActive.get(player.name);
     if (!ticksRemaining) return;
-    
+
     const newTicks = ticksRemaining - 1;
     this.nightmareLimbsActive.set(player.name, newTicks);
-    
-    // Spawn VISIBLE tentacle particles (dense particle streams)
-    if (newTicks % 3 === 0) {
-      // Create 4 tentacles rotating around player
-      for (let i = 0; i < 4; i++) {
-        const baseAngle = (i / 4) * Math.PI * 2;
-        const waveAngle = baseAngle + (newTicks * 0.1);
-        const radius = 1.5;
-        
-        // Create tentacle "segments" going outward
-        for (let segment = 0; segment < 5; segment++) {
-          const segmentRadius = radius * (segment / 5);
-          const height = 1 + Math.sin(newTicks * 0.1 + segment) * 0.5;
-          
-          const tentacleLoc = {
-            x: player.location.x + Math.cos(waveAngle) * segmentRadius,
-            y: player.location.y + height,
-            z: player.location.z + Math.sin(waveAngle) * segmentRadius
-          };
-          
-          // Dark particles for tentacles
-          player.dimension.spawnParticle('minecraft:soul_particle', tentacleLoc);
-          player.dimension.spawnParticle('minecraft:portal', tentacleLoc);
-          
-          // Add ink splash particles at tips
-          if (segment === 4) {
-            player.dimension.spawnParticle('minecraft:squid_ink_bubble', tentacleLoc);
-          }
+
+    const loc = player.location;
+    const dim = player.dimension;
+    const t = newTicks;
+
+    // ── 4 tentacles rotating around player ────────────────────────────────
+    // Each tentacle is drawn as a chain of segments from player outward
+    // The tip "reaches" toward nearby entities
+
+    if (t % 2 === 0) {  // every 2 ticks for smooth animation
+      const numTentacles = 4;
+      const baseAngle = (t * 0.08); // slowly rotate over time
+
+      for (let tentIdx = 0; tentIdx < numTentacles; tentIdx++) {
+        const angle = baseAngle + (tentIdx / numTentacles) * Math.PI * 2;
+
+        // Tentacle "reach" length oscillates - makes them writhe
+        const reach = 3.0 + Math.sin(t * 0.15 + tentIdx * 1.5) * 1.5;
+        const segments = 8;
+
+        for (let seg = 0; seg < segments; seg++) {
+          const progress = seg / segments; // 0 = base (player), 1 = tip
+
+          // Curve the tentacle with a sine wave - gives organic writhing
+          const wave = Math.sin(t * 0.2 + seg * 0.8 + tentIdx) * 0.4 * progress;
+          const wavePerp = Math.cos(t * 0.2 + seg * 0.8 + tentIdx) * 0.3 * progress;
+
+          // Position along tentacle
+          const segAngle = angle + wave;
+          const segDist = progress * reach;
+
+          const px = loc.x + Math.cos(segAngle) * segDist + Math.sin(segAngle + Math.PI/2) * wavePerp;
+          const py = loc.y + 1.2 + Math.sin(t * 0.1 + seg * 0.5) * 0.3 * progress - progress * 0.5;
+          const pz = loc.z + Math.sin(segAngle) * segDist + Math.cos(segAngle + Math.PI/2) * wavePerp;
+
+          const pos = { x: px, y: py, z: pz };
+
+          // Base segments: sculk soul (dark blue tendrils)
+          // Tip segments: squid ink (darker, thicker)
+          try {
+            if (progress < 0.5) {
+              dim.spawnParticle('minecraft:sculk_soul', pos);
+            } else if (progress < 0.8) {
+              dim.spawnParticle('minecraft:warden_tendril_clicks', pos);
+            } else {
+              // Tip - squid ink splash
+              dim.spawnParticle('minecraft:squid_ink_bubble', pos);
+              dim.spawnParticle('minecraft:soul_particle', pos);
+            }
+          } catch (e) {}
+        }
+
+        // ── Tip charges toward nearest entity ────────────────────────────
+        // Every 10 ticks, find a target and "lash" toward it
+        if (t % 10 === tentIdx * 2) {
+          try {
+            const tipX = loc.x + Math.cos(angle) * (this.NIGHTMARE_LIMBS_RANGE * 0.7);
+            const tipZ = loc.z + Math.sin(angle) * (this.NIGHTMARE_LIMBS_RANGE * 0.7);
+            const tipLoc = { x: tipX, y: loc.y + 1, z: tipZ };
+
+            const nearby = dim.getEntities({
+              location: tipLoc,
+              maxDistance: 2.5,
+              excludeTypes: ['minecraft:item', 'minecraft:player']
+            });
+
+            for (const target of nearby) {
+              // Draw a sculk charge "lash" line from tip to target
+              const tx = target.location.x - tipX;
+              const ty = (target.location.y + 1) - (loc.y + 1);
+              const tz = target.location.z - tipZ;
+              const tlen = Math.sqrt(tx*tx + ty*ty + tz*tz);
+
+              if (tlen > 0 && tlen < 4) {
+                const lashSteps = 6;
+                for (let l = 0; l < lashSteps; l++) {
+                  const lp = l / lashSteps;
+                  try {
+                    dim.spawnParticle('minecraft:sculk_charge_pop', {
+                      x: tipX + (tx/tlen) * lp * tlen,
+                      y: (loc.y + 1) + ty * lp,
+                      z: tipZ + (tz/tlen) * lp * tlen
+                    });
+                  } catch (e) {}
+                }
+
+                // Deal damage
+                try { target.applyDamage(this.NIGHTMARE_LIMBS_DAMAGE); } catch (e) {}
+
+                // Hit sound
+                try {
+                  dim.playSound('mob.warden.tendril_clicks', {
+                    location: target.location,
+                    pitch: 1.5 + Math.random() * 0.5,
+                    volume: 0.6
+                  });
+                } catch (e) {
+                  try {
+                    dim.playSound('mob.wither.hurt', {
+                      location: target.location,
+                      pitch: 1.8,
+                      volume: 0.4
+                    });
+                  } catch (e2) {}
+                }
+              }
+            }
+          } catch (e) {}
         }
       }
     }
-    
-    // Auto-attack nearby enemies with tentacle strikes
-    if (newTicks % 20 === 0) {
-      const nearbyEntities = player.dimension.getEntities({
-        location: player.location,
-        maxDistance: this.NIGHTMARE_LIMBS_RANGE,
-        excludeTypes: ['minecraft:player', 'minecraft:item']
-      });
-      
-      for (const entity of nearbyEntities) {
+
+    // ── Ambient sculk "pulse" ring at base every 20 ticks ─────────────────
+    if (t % 20 === 0) {
+      const ringSteps = 16;
+      for (let i = 0; i < ringSteps; i++) {
+        const a = (i / ringSteps) * Math.PI * 2;
         try {
-          entity.applyDamage(this.NIGHTMARE_LIMBS_DAMAGE);
-          
-          // Visual feedback - tentacle strike
-          for (let i = 0; i < 10; i++) {
-            system.runTimeout(() => {
-              entity.dimension.spawnParticle('minecraft:critical_hit_emitter', {
-                x: entity.location.x,
-                y: entity.location.y + 1,
-                z: entity.location.z
-              });
-              entity.dimension.spawnParticle('minecraft:soul_particle', {
-                x: entity.location.x,
-                y: entity.location.y + 0.5,
-                z: entity.location.z
-              });
-            }, i * 2);
-          }
-          
-          // Sound effect
-          player.playSound('mob.wither.hurt', { pitch: 1.2, volume: 0.8 });
-        } catch (e) {
-          // Entity may have died
-        }
+          dim.spawnParticle('minecraft:sculk_soul', {
+            x: loc.x + Math.cos(a) * 1.2,
+            y: loc.y + 0.1,
+            z: loc.z + Math.sin(a) * 1.2
+          });
+        } catch (e) {}
       }
+      try {
+        dim.playSound('mob.warden.listening', {
+          location: loc,
+          pitch: 0.6 + Math.random() * 0.3,
+          volume: 0.4
+        });
+      } catch (e) {}
     }
-    
-    // End effect
+
+    // ── End effect ─────────────────────────────────────────────────────────
     if (newTicks <= 0) {
       this.nightmareLimbsActive.delete(player.name);
       this.nightmareLimbsCooldowns.set(player.name, this.NIGHTMARE_LIMBS_COOLDOWN);
-      
-      player.sendMessage('§7Your Nightmare Limbs retract...');
-      player.playSound('mob.wither.hurt', { pitch: 0.8, volume: 0.5 });
+
+      // Retraction burst
+      for (let i = 0; i < 24; i++) {
+        const a = (i / 24) * Math.PI * 2;
+        try {
+          dim.spawnParticle('minecraft:sculk_soul', {
+            x: loc.x + Math.cos(a) * 2,
+            y: loc.y + 1,
+            z: loc.z + Math.sin(a) * 2
+          });
+        } catch (e) {}
+      }
+
+      player.sendMessage('§7Your Nightmare Limbs retract into shadow...');
+      try {
+        dim.playSound('mob.warden.hurt', { location: loc, pitch: 0.8, volume: 0.5 });
+      } catch (e) {}
     }
   }
   

@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:spell_pouch",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "spell_pouch",
+      "minecraft:display_name": {
+        "value": "§5Spell Pouch"
+      }
+    }
+  }
+}

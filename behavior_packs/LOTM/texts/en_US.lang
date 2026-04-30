@@ -5,6 +5,8 @@ item.lotm:poet_songs.name=Midnight Poet's Songs
 
 ## Items - Death Pathway
 item.lotm:death_potion_seq9.name=Corpse Collector Potion
+item.lotm:death_potion_seq8.name=Gravedigger Potion
+item.lotm:spirit_whistle.name=Spirit Whistle
 
 ## Items - Door Pathway
 item.lotm:door_potion_seq9.name=Apprentice Potion
@@ -27,6 +29,55 @@ item.lotm:twilight_potion_seq8.name=Pugilist Potion
 item.lotm:twilight_potion_seq7.name=Weapon Master Potion
 item.lotm:twilight_potion_seq6.name=Dawn Paladin Potion
 
+
+## Items - Hanged Man Pathway
+item.lotm:hanged_man_potion_seq9.name=Secrets Suppliant Potion
+item.lotm:secrets_suppliant_powers.name=Secrets Suppliant Powers
+item.lotm:hanged_man_characteristic_seq9.name=Secrets Suppliant Characteristic
+item.lotm:hanged_man_potion_seq8.name=Listener Potion
+item.lotm:hanged_man_characteristic_seq8.name=Listener Characteristic
+item.lotm:hanged_man_potion_seq7.name=Shadow Ascetic Potion
+item.lotm:hanged_man_characteristic_seq7.name=Shadow Ascetic Characteristic
+item.lotm:shadow_sword.name=Shadow Blade
+item.lotm:flesh_bomb.name=Flesh Bomb
+item.lotm:hanged_man_potion_seq6.name=Rose Bishop Potion
+item.lotm:hanged_man_characteristic_seq6.name=Rose Bishop Characteristic
+item.lotm:beyonder_soul.name=Beyonder Soul
+item.lotm:hanged_man_potion_seq5.name=Shepherd Potion
+item.lotm:hanged_man_characteristic_seq5.name=Shepherd Characteristic
+
+## Items - Hermit Pathway
+item.lotm:hermit_potion_seq9.name=Mystery Pryer Potion
+item.lotm:hermit_potion_seq8.name=Melee Scholar Potion
+item.lotm:mystery_pryer_powers.name=Mystery Pryer's Eye
+item.lotm:melee_scholar_powers.name=Scholar's Martial Tome
+item.lotm:hermit_characteristic_seq9.name=Mystery Pryer Characteristic
+item.lotm:hermit_characteristic_seq8.name=Melee Scholar Characteristic
+
+item.lotm:hermit_potion_seq7.name=Warlock Potion
+item.lotm:warlocks_wand.name=Warlock's Wand
+item.lotm:spell_pouch.name=Spell Pouch
+item.lotm:hermit_characteristic_seq7.name=Warlock Characteristic
+item.lotm:iron_dust.name=Iron Dust
+item.lotm:bone_ash.name=Bone Ash
+item.lotm:ember_powder.name=Ember Powder
+item.lotm:sunflower_dust.name=Sunflower Dust
+item.lotm:storm_dust.name=Lightning Dust
+item.lotm:tide_powder.name=Tide Powder
+item.lotm:stone_dust.name=Stone Dust
+item.lotm:gravel_dust.name=Gravel Dust
+item.lotm:hermit_potion_seq6.name=Scroll Professor Potion
+item.lotm:hermit_characteristic_seq6.name=Scroll Professor Characteristic
+item.lotm:scroll_burning.name=Burning Scroll
+item.lotm:scroll_sun.name=Sun Scroll
+item.lotm:scroll_healing.name=Healing Scroll
+item.lotm:scroll_freeze.name=Freeze Scroll
+item.lotm:scroll_storm.name=Storm Scroll
+item.lotm:scroll_force_field.name=Force Field Scroll
+item.lotm:scroll_armour.name=Armour Scroll
+item.lotm:scroll_raise_earth.name=Raise Earth Scroll
+
+
 ## Items - General
 item.lotm:spirit_restoration_potion.name=Spirit Restoration Potion
 
@@ -38,6 +89,8 @@ lotm.pathway.twilight_giant=Twilight Giant
 lotm.pathway.seer=Seer
 lotm.pathway.apprentice=Apprentice
 lotm.pathway.sun=Sun
+lotm.pathway.hanged_man=Hanged Man
+lotm.pathway.hermit=Hermit
 
 ## Sequences
 lotm.sequence.9=Sequence 9
@@ -50,6 +103,19 @@ lotm.sequence.3=Sequence 3
 lotm.sequence.2=Sequence 2
 lotm.sequence.1=Sequence 1
 lotm.sequence.0=Sequence 0
+
+## Hermit Pathway Sequences
+lotm.hermit.seq9=Mystery Pryer
+lotm.hermit.seq8=Melee Scholar
+lotm.hermit.seq7=Warlock
+lotm.hermit.seq6=Scroll Professor
+
+## Hanged Man Pathway Sequences
+lotm.hanged_man.seq9=Secrets Suppliant
+lotm.hanged_man.seq8=Listener
+lotm.hanged_man.seq7=Shadow Ascetic
+lotm.hanged_man.seq6=Rose Bishop
+lotm.hanged_man.seq5=Shepherd
 
 ## Darkness Pathway Sequences
 lotm.darkness.seq9=Sleepless

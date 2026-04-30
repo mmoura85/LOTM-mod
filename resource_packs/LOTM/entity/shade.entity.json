@@ -4,32 +4,32 @@
     "description": {
       "identifier": "lotm:shade",
       "materials": {
-        "default": "entity_alphatest",
-        "enchanted": "entity_alphatest_glint"
+        "default": "vex"
       },
       "textures": {
         "default": "textures/entity/shade",
-        "enchanted": "textures/misc/enchanted_item_glint"
+        "charging": "textures/entity/shade"
       },
       "geometry": {
-        "default": "geometry.ghost"
-      },
-      "animations": {
-        "idle": "animation.ghost.idle",
-        "fly": "animation.ghost.fly",
-        "general": "controller.animation.allay.general"
+        "default": "geometry.shade"
       },
       "scripts": {
         "pre_animation": [
-          "variable.holding_trident = query.is_item_name_any('slot.weapon.mainhand', 'minecraft:trident');"
+          "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ],
+        "scale": "0.4",
         "animate": [
-          "general"
+          "vex_move",
+          "look_at_target",
+          { "attack.rotations": "variable.attack_time > 0.0" }
         ]
       },
-      "render_controllers": [
-        "controller.render.lotm_ghost"
-      ],
+      "animations": {
+        "look_at_target": "animation.humanoid.look_at_target.default",
+        "attack.rotations": "animation.shade.attack.rotations",
+        "vex_move": "animation.shade.move"
+      },
+      "render_controllers": [ "controller.render.vex" ],
       "spawn_egg": {
         "base_color": "#0A0510",
         "overlay_color": "#AA0000"

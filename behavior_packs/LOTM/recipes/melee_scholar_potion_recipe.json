@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:melee_scholar_potion"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " B ",
+      "DPD",
+      " I "
+    ],
+    "key": {
+      "B": { "item": "minecraft:book" },
+      "D": { "item": "minecraft:emerald" },
+      "P": { "item": "lotm:hermit_potion_seq9" },
+      "I": { "item": "minecraft:iron_sword" }
+    },
+    "result": {
+      "item": "lotm:hermit_potion_seq8",
+      "count": 1
+    },
+    "unlock": [
+      { "item": "lotm:hermit_potion_seq9" }
+    ]
+  }
+}
