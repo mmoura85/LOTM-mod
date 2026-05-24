@@ -59,7 +59,7 @@ export class WarlockSequence {
     HAND_OF_FORCE: {
       id: 'hand_of_force',
       name: '§5Hand of Force',
-      spiritCost: 10,
+      spiritCost: 20,
       powderItem: 'lotm:iron_dust',
       powderCount: 1,
       cooldown: 1,
@@ -68,7 +68,7 @@ export class WarlockSequence {
     EXORCISM: {
       id: 'exorcism',
       name: '§fExorcism',
-      spiritCost: 8,
+      spiritCost: 18,
       powderItem: 'lotm:bone_ash',
       powderCount: 1,
       cooldown: 1,
@@ -77,7 +77,7 @@ export class WarlockSequence {
     FLAMES: {
       id: 'flames',
       name: '§cFlames',
-      spiritCost: 5,
+      spiritCost: 15,
       powderItem: 'lotm:ember_powder',
       powderCount: 1,
       cooldown: 1,
@@ -86,7 +86,7 @@ export class WarlockSequence {
     PURIFICATION: {
       id: 'purification',
       name: '§aPurification',
-      spiritCost: 15,
+      spiritCost: 25,
       powderItem: 'lotm:sunflower_dust',
       powderCount: 2,
       cooldown: 1,
@@ -95,7 +95,7 @@ export class WarlockSequence {
     LIGHTNING: {
       id: 'lightning',
       name: '§eLightning',
-      spiritCost: 10,
+      spiritCost: 20,
       powderItem: 'lotm:storm_dust',
       powderCount: 1,
       cooldown: 1,
@@ -104,7 +104,7 @@ export class WarlockSequence {
     SEA_WAVE: {
       id: 'sea_wave',
       name: '§bSea Wave',
-      spiritCost: 8,
+      spiritCost: 18,
       powderItem: 'lotm:tide_powder',
       powderCount: 1,
       cooldown: 1,
@@ -113,7 +113,7 @@ export class WarlockSequence {
     EARTH_WALL: {
       id: 'earth_wall',
       name: '§6Earth Wall',
-      spiritCost: 12,
+      spiritCost: 22,
       powderItem: 'lotm:stone_dust',
       powderCount: 3,
       cooldown: 1,
@@ -122,7 +122,7 @@ export class WarlockSequence {
     ORE_SENSE: {
       id: 'ore_sense',
       name: '§7Ore Sense',
-      spiritCost: 10,
+      spiritCost: 20,
       powderItem: 'lotm:gravel_dust',
       powderCount: 1,
       cooldown: 1,
@@ -131,7 +131,7 @@ export class WarlockSequence {
     TUNNEL: {
       id: 'tunnel',
       name: '§8Tunnel',
-      spiritCost: 10,
+      spiritCost: 25,
       powderItem: 'lotm:stone_dust',
       powderCount: 4,
       cooldown: 1,
@@ -1284,6 +1284,41 @@ export class WarlockSequence {
       player.sendMessage('§7Nothing to mine there.');
     }
     return true;
+  }
+
+
+  static executeSpellDirect(player, spellId) {
+    this.spellCooldowns.set(`${player.name}_${spellId}`, (this.SPELLS[spellId.toUpperCase()]?.cooldown ?? 1) * 20);
+    this.castCooldowns.set(player.name, this.CAST_COOLDOWN);
+    this._spawnCastParticles(player);
+
+    switch (spellId) {
+      case this.SPELLS.HAND_OF_FORCE.id: return this._castHandOfForce(player);
+      case this.SPELLS.EXORCISM.id:      return this._castExorcism(player);
+      case this.SPELLS.FLAMES.id:        return this._castFlames(player);
+      case this.SPELLS.PURIFICATION.id:  return this._castPurification(player);
+      case this.SPELLS.LIGHTNING.id:     return this._castLightning(player);
+      case this.SPELLS.SEA_WAVE.id:      return this._castSeaWave(player);
+      case this.SPELLS.EARTH_WALL.id:    return this._castEarthWall(player);
+      case this.SPELLS.ORE_SENSE.id:     return this._castOreSense(player);
+      case this.SPELLS.TUNNEL.id:        return this._castTunnel(player);
+      default: return false;
+    }
+  }
+
+  static _castSpell(player, spellId) {
+    switch(spellId) {
+      case 'hand_of_force': return this._castHandOfForce(player);
+      case 'exorcism':      return this._castExorcism(player);
+      case 'flames':        return this._castFlames(player);
+      case 'purification':  return this._castPurification(player);
+      case 'lightning':     return this._castLightning(player);
+      case 'sea_wave':      return this._castSeaWave(player);
+      case 'earth_wall':    return this._castEarthWall(player);
+      case 'ore_sense':     return this._castOreSense(player);
+      case 'tunnel':        return this._castTunnel(player);
+      default: return false;
+    }
   }
 
   // =============================================

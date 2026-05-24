@@ -14,7 +14,7 @@ export class DemonHunterSequence {
   // Passive abilities - GODLIKE strength
   static EFFECT_DURATION = 999999;
   static STRENGTH_AMPLIFIER = 7; // Strength VIII (terrifying physical strength)
-  static SPEED_AMPLIFIER = 6; // Speed VII (hurricane-force winds)
+  static SPEED_AMPLIFIER = 4; // Speed VII (hurricane-force winds)
   static JUMP_AMPLIFIER = 4; // Jump Boost V
   
   // Enhanced spirituality

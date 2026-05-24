@@ -12,10 +12,10 @@
     ],
     "key": {
       "S": {
-        "item": "minecraft:nether_star"
+        "item": "minecraft:fire_charge"
       },
       "N": {
-        "item": "minecraft:netherite_ingot"
+        "item": "minecraft:iron_ingot"
       },
       "P": {
         "item": "lotm:twilight_potion_seq7"

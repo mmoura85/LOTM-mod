@@ -73,20 +73,20 @@ export class SpiritSystem {
     
     if (currentTick >= this.REGEN_INTERVAL) {
       const current = this.getSpirit(player);
-      const max = this.getMaxSpirit(player);
+      const max     = this.getMaxSpirit(player);
 
-      // Sequence 7 and higher: +50% regen (0.075 per tick = 1.5/sec)
+      // Use a LOCAL variable — never mutate the shared static property
+      let regenAmount = this.REGEN_AMOUNT; // base: 2
+
       if (sequence !== undefined && sequence <= 7) {
-        this.REGEN_AMOUNT = 6;
+        regenAmount = 6;
       }
-      
-      // Sequence 4 and higher: +100% regen (0.1 per tick = 2/sec)
       if (sequence !== undefined && sequence <= 4) {
-        this.REGEN_AMOUNT = 16;
+        regenAmount = 16;
       }
       
       if (current < max) {
-        this.restoreSpirit(player, this.REGEN_AMOUNT);
+        this.restoreSpirit(player, regenAmount);
       }
       
       player.setDynamicProperty(this.REGEN_TICK_PROPERTY, 0);

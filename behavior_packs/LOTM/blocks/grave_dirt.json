@@ -1,0 +1,30 @@
+{
+	"format_version": "1.21.100",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lotm:grave_dirt",
+			"menu_category": {
+				"category": "nature"
+			}
+		},
+		"components": {
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0.8
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 2
+			},
+			"minecraft:geometry": "geometry.grave_dirt",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "grave_dirt",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:map_color": "#2d1a0a",
+			"tag:minecraft:is_shovel_item_destructible": {}
+		}
+	}
+}

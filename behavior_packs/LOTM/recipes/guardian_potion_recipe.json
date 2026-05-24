@@ -12,10 +12,10 @@
     ],
     "key": {
       "B": {
-        "item": "minecraft:beacon"
+        "item": "minecraft:blaze_rod"
       },
       "N": {
-        "item": "minecraft:netherite_block"
+        "item": "minecraft:nether_wart"
       },
       "P": {
         "item": "lotm:twilight_potion_seq6"

@@ -6,14 +6,11 @@
     },
     "tags": ["crafting_table"],
     "pattern": [
-      " N ",
+      " D ",
       "DPD",
       " T "
     ],
     "key": {
-      "N": {
-        "item": "minecraft:nether_star"
-      },
       "D": {
         "item": "minecraft:diamond"
       },

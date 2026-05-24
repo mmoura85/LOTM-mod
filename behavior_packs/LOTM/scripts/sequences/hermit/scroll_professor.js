@@ -105,6 +105,20 @@ export class ScrollProfessorSequence {
       name: '§6📜 Raise Earth Scroll',
       spiritCost: 20,
       description: 'Raise a 3×3 platform under your feet'
+    },
+    SLOW_FALL: {
+      id: 'scroll_slow_fall',
+      itemId: 'lotm:scroll_slow_fall',
+      name: '§b📜 Slow Fall Scroll',
+      spiritCost: 8,
+      description: 'Apply Slow Falling to self or targeted entity (15s)'
+    },
+    EARTH_SPIKE: {
+      id: 'scroll_earth_spike',
+      itemId: 'lotm:scroll_earth_spike',
+      name: '§6📜 Earth Spike Scroll',
+      spiritCost: 15,
+      description: 'Launch 3 dripstone spikes at your target'
     }
   };
 
@@ -200,6 +214,9 @@ export class ScrollProfessorSequence {
       case this.SCROLLS.FORCE_FIELD.id: return this._castForceField(player);
       case this.SCROLLS.ARMOUR.id:      return this._castArmour(player);
       case this.SCROLLS.RAISE_EARTH.id: return this._castRaiseEarth(player);
+      case this.SCROLLS.SLOW_FALL.id:   return this._castSlowFall(player);
+      case this.SCROLLS.EARTH_SPIKE.id: return this._castEarthSpike(player);
+
       default: return false;
     }
   }
@@ -790,6 +807,283 @@ export class ScrollProfessorSequence {
       } catch (_) {}
     }
     this.raisedEarths.delete(player.name);
+  }
+
+  static _castSlowFall(player) {
+    const DURATION = 300; // 15 seconds
+
+    // Find entity in crosshair
+    const target = this._findTargetedEntity(player, 20);
+
+    if (target) {
+      try { target.addEffect('slow_falling', DURATION, { amplifier: 0, showParticles: true }); } catch (_) {}
+      const name = target.nameTag || target.typeId.replace('minecraft:', '').replace('lotm:', '');
+      player.sendMessage(`§b§l❄ SLOW FALL! §7Applied to §f${name}§7 (15s).`);
+    } else {
+      player.addEffect('slow_falling', DURATION, { amplifier: 0, showParticles: true });
+      player.sendMessage('§b§l❄ SLOW FALL! §7Gravity loosens its grip (15s).');
+    }
+
+    player.playSound('mob.bat.hurt', { pitch: 0.5, volume: 0.8 });
+
+    // Feather ring particles
+    const loc = target ? target.location : player.location;
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2;
+      try { player.dimension.spawnParticle('minecraft:endrod', {
+        x: loc.x + Math.cos(a) * 0.8,
+        y: loc.y + 1.0 + i * 0.04,
+        z: loc.z + Math.sin(a) * 0.8
+      }); } catch (_) {}
+    }
+    return true;
+  }
+
+  // =============================================
+  // SCROLL: EARTH SPIKE
+  // Fires 3 pointed_dripstone spikes forward.
+  // Uses recursive runTimeout (no nested runInterval).
+  // =============================================
+  static _castEarthSpike(player) {
+    const origin = player.getHeadLocation();
+    const view   = player.getViewDirection();
+    const dim    = player.dimension;
+ 
+    const SPIKES   = 3;
+    const SPACING  = 0.9;   // side-spread
+    const STEPS    = 22;    // ~16 blocks range at 0.75 step size
+    const STEP_SZ  = 0.75;
+    const DAMAGE   = 12;
+ 
+    player.sendMessage('§6§l⬆ EARTH SPIKE!');
+    player.playSound('dig.stone', { pitch: 0.5, volume: 1.2 });
+ 
+    // Right vector: perpendicular to view in horizontal plane
+    const rx = view.z, rz = -view.x;
+    const rLen = Math.sqrt(rx * rx + rz * rz) || 1;
+    const normRx = rx / rLen, normRz = rz / rLen;
+ 
+    for (let s = 0; s < SPIKES; s++) {
+      const offset = (s - 1) * SPACING;
+      const sx = origin.x + normRx * offset;
+      const sy = origin.y;
+      const sz = origin.z + normRz * offset;
+ 
+      // Stagger by 2 ticks between spikes for visual spread
+      system.runTimeout(() => {
+        this._runSpike(player, dim, sx, sy, sz, view, STEPS, STEP_SZ, DAMAGE);
+      }, s * 2);
+    }
+ 
+    return true;
+  }
+ 
+  // Each spike is driven by sequential runTimeouts, 1 tick apart.
+  // Using cobblestone as trail — neutral block, no orientation issues.
+  static _runSpike(player, dim, sx, sy, sz, view, steps, stepSz, damage) {
+    let prevBx = null, prevBy = null, prevBz = null;
+    let hitState = { hit: false };
+ 
+    const step = (i) => {
+      system.runTimeout(() => {
+        if (hitState.hit) return;
+ 
+        const dist = i * stepSz;
+        const tx = sx + view.x * dist;
+        const ty = sy + view.y * dist;
+        const tz = sz + view.z * dist;
+        const bx = Math.floor(tx);
+        const by = Math.floor(ty);
+        const bz = Math.floor(tz);
+ 
+        // ── Remove previous trail block ──
+        if (prevBx !== null && (prevBx !== bx || prevBy !== by || prevBz !== bz)) {
+          try { dim.runCommand(`setblock ${prevBx} ${prevBy} ${prevBz} air`); } catch (_) {}
+        }
+ 
+        // ── Entity hit — wide 2-block sphere ──
+        try {
+          const nearby = dim.getEntities({
+            location: { x: tx, y: ty, z: tz },
+            maxDistance: 2.0
+          });
+          for (const e of nearby) {
+            if (e.typeId === 'minecraft:player' && e.id === player.id) continue;
+            if (e.typeId === 'minecraft:item' || e.typeId === 'minecraft:xp_orb') continue;
+            hitState.hit = true;
+ 
+            // Damage
+            try { e.applyDamage(damage, { cause: 'projectile', damagingEntity: player }); } catch (_) {
+              try { e.applyDamage(damage); } catch (_2) {}
+            }
+ 
+            // Clean up trail
+            if (prevBx !== null) {
+              try { dim.runCommand(`setblock ${prevBx} ${prevBy} ${prevBz} air`); } catch (_) {}
+            }
+ 
+            // Impact burst
+            for (let p = 0; p < 10; p++) {
+              const pa = (p / 10) * Math.PI * 2;
+              try { dim.spawnParticle('minecraft:endrod', {
+                x: e.location.x + Math.cos(pa) * 0.6,
+                y: e.location.y + 1,
+                z: e.location.z + Math.sin(pa) * 0.6
+              }); } catch (_) {}
+            }
+            try { dim.spawnParticle('minecraft:large_explosion', { x: tx, y: ty, z: tz }); } catch (_) {}
+            player.playSound('dig.stone', { pitch: 1.5, volume: 1.0 });
+            player.sendMessage(`§6§oSpike hits!`);
+            return;
+          }
+        } catch (_) {}
+ 
+        if (hitState.hit) return;
+ 
+        // ── Block collision (skip air, liquids, and our own trail) ──
+        try {
+          const block = dim.getBlock({ x: bx, y: by, z: bz });
+          if (block && !block.isAir && !block.isLiquid && block.typeId !== 'minecraft:cobblestone') {
+            hitState.hit = true;
+            if (prevBx !== null) {
+              try { dim.runCommand(`setblock ${prevBx} ${prevBy} ${prevBz} air`); } catch (_) {}
+            }
+            player.playSound('dig.stone', { pitch: 1.8, volume: 0.8 });
+            return;
+          }
+        } catch (_) {}
+ 
+        // ── Place cobblestone trail block ──
+        // Only place if position changed from last step (avoids overlapping)
+        if (prevBx === null || bx !== prevBx || by !== prevBy || bz !== prevBz) {
+          try { dim.runCommand(`setblock ${bx} ${by} ${bz} cobblestone`); } catch (_) {}
+        }
+ 
+        // ── Particle trail ──
+        try { dim.spawnParticle('minecraft:endrod', { x: tx, y: ty, z: tz }); } catch (_) {}
+ 
+        prevBx = bx; prevBy = by; prevBz = bz;
+ 
+        // ── Schedule next step (1 tick apart = fast) ──
+        if (i + 1 < steps) {
+          step(i + 1);
+        } else {
+          // Reached max range — clean up last block
+          if (prevBx !== null) {
+            try { dim.runCommand(`setblock ${prevBx} ${prevBy} ${prevBz} air`); } catch (_) {}
+          }
+        }
+ 
+      }, 1); // 1 tick per step
+    };
+ 
+    step(0);
+  }
+
+  // Recursive spike step — avoids runInterval inside runTimeout
+  static _launchSpikeStep(player, dim, sx, sy, sz, view, step, maxSteps, stepSz, damage, baseDelay, state) {
+    system.runTimeout(() => {
+      if (state.hit || step >= maxSteps) {
+        // Clean up last block if we ran out of steps
+        if (!state.hit && step > 0) {
+          const prevDist = (step - 1) * stepSz;
+          const px = Math.floor(sx + view.x * prevDist);
+          const py = Math.floor(sy + view.y * prevDist);
+          const pz = Math.floor(sz + view.z * prevDist);
+          try { dim.runCommand(`setblock ${px} ${py} ${pz} air`); } catch (_) {}
+        }
+        return;
+      }
+
+      const dist = step * stepSz;
+      const tx = sx + view.x * dist;
+      const ty = sy + view.y * dist;
+      const tz = sz + view.z * dist;
+      const bx = Math.floor(tx), by = Math.floor(ty), bz = Math.floor(tz);
+
+      // Remove previous step's block
+      if (step > 0) {
+        const prevDist = (step - 1) * stepSz;
+        const px = Math.floor(sx + view.x * prevDist);
+        const py = Math.floor(sy + view.y * prevDist);
+        const pz = Math.floor(sz + view.z * prevDist);
+        if (px !== bx || py !== by || pz !== bz) {
+          try { dim.runCommand(`setblock ${px} ${py} ${pz} air`); } catch (_) {}
+        }
+      }
+
+      // Entity hit check
+      try {
+        const nearby = dim.getEntities({
+          location: { x: tx, y: ty, z: tz },
+          maxDistance: 1.0,
+          excludeTypes: ['minecraft:item', 'minecraft:xp_orb', 'minecraft:arrow', 'minecraft:player']
+        });
+        for (const e of nearby) {
+          if (e.id === player.id) continue;
+          state.hit = true;
+          try { e.applyDamage(damage, { cause: 'projectile', damagingEntity: player }); } catch (_) {}
+          try { dim.runCommand(`setblock ${bx} ${by} ${bz} air`); } catch (_) {}
+          // Impact burst
+          for (let p = 0; p < 8; p++) {
+            const pa = (p / 8) * Math.PI * 2;
+            try { dim.spawnParticle('minecraft:endrod', {
+              x: tx + Math.cos(pa) * 0.5,
+              y: ty + 0.5,
+              z: tz + Math.sin(pa) * 0.5
+            }); } catch (_) {}
+          }
+          player.playSound('dig.stone', { pitch: 1.5, volume: 1.0 });
+          return;
+        }
+      } catch (_) {}
+
+      // Block collision
+      try {
+        const block = dim.getBlock({ x: bx, y: by, z: bz });
+        if (block && !block.isAir && !block.isLiquid && block.typeId !== 'minecraft:pointed_dripstone') {
+          state.hit = true;
+          if (step > 0) {
+            const prevDist = (step - 1) * stepSz;
+            try { dim.runCommand(`setblock ${Math.floor(sx + view.x * prevDist)} ${Math.floor(sy + view.y * prevDist)} ${Math.floor(sz + view.z * prevDist)} air`); } catch (_) {}
+          }
+          player.playSound('dig.stone', { pitch: 1.8, volume: 0.8 });
+          return;
+        }
+      } catch (_) {}
+
+      // Place dripstone + trail particle
+      try { dim.runCommand(`setblock ${bx} ${by} ${bz} minecraft:pointed_dripstone ["dripstone_thickness"="tip","hanging"=false]`); } catch (_) {}
+      try { dim.spawnParticle('minecraft:endrod', { x: tx, y: ty, z: tz }); } catch (_) {}
+
+      // Schedule next step (2 ticks later)
+      this._launchSpikeStep(player, dim, sx, sy, sz, view, step + 1, maxSteps, stepSz, damage, 0, state);
+
+    }, baseDelay + step * 2);
+  }
+
+  // Helper — find entity in player's crosshair within maxRange blocks
+  static _findTargetedEntity(player, maxRange) {
+    try {
+      const view = player.getViewDirection();
+      const loc  = player.getHeadLocation();
+      const entities = player.dimension.getEntities({
+        location: loc, maxDistance: maxRange,
+        excludeTypes: ['minecraft:item', 'minecraft:xp_orb', 'minecraft:arrow']
+      });
+      let closest = null, bestDot = 0.9;
+      for (const e of entities) {
+        if (e.id === player.id) continue;
+        const dx = e.location.x - loc.x;
+        const dy = (e.location.y + 1) - (loc.y);
+        const dz = e.location.z - loc.z;
+        const len = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (len < 0.1) continue;
+        const dot = (dx * view.x + dy * view.y + dz * view.z) / len;
+        if (dot > bestDot) { bestDot = dot; closest = e; }
+      }
+      return closest;
+    } catch (_) { return null; }
   }
 
   // =============================================

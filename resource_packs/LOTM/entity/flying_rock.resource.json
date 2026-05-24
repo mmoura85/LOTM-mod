@@ -1,0 +1,22 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:flying_rock",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/flying_rock"
+      },
+      "geometry": {
+        "default": "geometry.flying_rock"
+      },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": {
+        "base_color": "#7a7a7a",
+        "overlay_color": "#b0c8ff"
+      }
+    }
+  }
+}

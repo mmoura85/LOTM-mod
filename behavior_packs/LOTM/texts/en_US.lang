@@ -76,10 +76,33 @@ item.lotm:scroll_storm.name=Storm Scroll
 item.lotm:scroll_force_field.name=Force Field Scroll
 item.lotm:scroll_armour.name=Armour Scroll
 item.lotm:scroll_raise_earth.name=Raise Earth Scroll
+item.lotm:scroll_slow_fall.name=Slow Fall Scroll
+item.lotm:scroll_earth_spike.name=Earth Spike Scroll
 
+item.lotm:hermit_potion_seq5.name=Constellations Master Potion
+item.lotm:hermit_characteristic_seq5.name=Constellations Master Characteristic
+item.lotm:constellations_tome.name=Constellations Tome
+tile.lotm:star_bridge_block.name=Star Bridge 
+
+entity.lotm:brownbear.name=Corrupted Bear
+item.spawn_egg.entity.lotm:brownbear.name=Spawn Corrupted Bear
+entity.lotm:voidwatcher.name=Voidwatcher
+item.spawn_egg.entity.lotm:voidwatcher.name=Spawn Voidwatcher
+
+entity.lotm:clown.name=Clown Beyonder
+item.spawn_egg.entity.lotm:clown.name=Spawn Clown Beyonder
 
 ## Items - General
 item.lotm:spirit_restoration_potion.name=Spirit Restoration Potion
+
+item.lotm:flying_rock_core.name=Flying Rock Core
+entity.lotm:flying_rock.name=Flying Rock
+
+
+tile.lotm:grave_headstone.name=Grave Headstone
+tile.lotm:grave_slab.name=Grave Slab
+tile.lotm:grave_dirt.name=Disturbed Grave Dirt
+tile.lotm:grave_cross.name=Grave Cross
 
 ## Pathways
 lotm.pathway.darkness=Darkness
@@ -109,6 +132,7 @@ lotm.hermit.seq9=Mystery Pryer
 lotm.hermit.seq8=Melee Scholar
 lotm.hermit.seq7=Warlock
 lotm.hermit.seq6=Scroll Professor
+lotm.hermit.seq5=Constellations Master
 
 ## Hanged Man Pathway Sequences
 lotm.hanged_man.seq9=Secrets Suppliant

@@ -1,0 +1,49 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lotm:clown",
+			"min_engine_version": "1.8.0",
+			"materials": {
+				"default": "vindicator"
+			},
+			"textures": {
+				"default": "textures/entity/clown"
+			},
+			"geometry": {
+				"default": "geometry.clown"
+			},
+			"spawn_egg": {
+				"base_color": "#5c558a",
+				"overlay_color": "#93695f"
+			},
+			"scripts": {
+				"scale": "0.9375",
+				"animate": [
+					"vindicator_base",
+					"vindicator_walk",
+					"controller_look_at_target",
+					"controller_vindicator_base",
+					"controller_riding"
+				]
+			},
+			"animations": {
+				"look_at_target_default":    "animation.humanoid.look_at_target.default",
+				"look_at_target_gliding":    "animation.humanoid.look_at_target.gliding",
+				"look_at_target_swimming":   "animation.humanoid.look_at_target.swimming",
+				"riding.arms":               "animation.clown.riding.arms",
+				"riding.legs":               "animation.clown.riding.legs",
+				"vindicator_base":           "animation.clown.base",
+				"vindicator_attack":         "animation.clown.attack",
+				"vindicator_hand_attack":    "animation.clown.hand_attack",
+				"vindicator_walk":           "animation.clown.walk",
+				"celebrating":               "animation.humanoid.celebrating",
+				"controller_look_at_target": "controller.animation.humanoid.look_at_target",
+				"controller_vindicator_base":"controller.animation.vindicator.base",
+				"controller_riding":         "controller.animation.humanoid.riding"
+			},
+			"render_controllers": ["controller.render.vindicator"],
+			"enable_attachables": true
+		}
+	}
+}

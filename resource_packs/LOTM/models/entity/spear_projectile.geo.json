@@ -1,0 +1,30 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.spear_projectile",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 2,
+        "visible_bounds_offset": [0, 0, 0]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [0, 0, 0],
+          "rotation": [0, 0, -45],
+          "cubes": [
+            {
+              "comment": "Spear shaft — thin flat quad oriented diagonally",
+              "origin": [-6, -1, -0.5],
+              "size":   [12,  2,  1],
+              "uv":     [0, 0]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:grave_headstone_craft" },
+    "tags": ["crafting_table"],
+    "pattern": ["SS", "SS", " S"],
+    "key": { "S": { "item": "minecraft:stone_bricks" } },
+    "result": { "item": "lotm:grave_headstone", "count": 2 }
+  }
+}

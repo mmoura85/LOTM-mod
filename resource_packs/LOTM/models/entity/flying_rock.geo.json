@@ -1,0 +1,53 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.flying_rock",
+        "texture_width": 64,
+        "texture_height": 64,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 2,
+        "visible_bounds_offset": [0, 0.5, 0]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [0, 0, 0],
+          "cubes": [
+            {
+              "comment": "Main rock body — wide flat slab",
+              "origin": [-10, 0, -8],
+              "size":   [20, 5, 16],
+              "uv":     [0, 0]
+            },
+            {
+              "comment": "Left rear chunk — asymmetric broken edge",
+              "origin": [-12, 1, -6],
+              "size":   [4, 3, 10],
+              "uv":     [0, 21]
+            },
+            {
+              "comment": "Right front chunk — asymmetric broken edge",
+              "origin": [8, 1, -4],
+              "size":   [4, 4, 8],
+              "uv":     [28, 21]
+            },
+            {
+              "comment": "Small top rock — slight elevation on left",
+              "origin": [-6, 5, -3],
+              "size":   [5, 2, 6],
+              "uv":     [0, 38]
+            },
+            {
+              "comment": "Small top rock — right side",
+              "origin": [3, 5, 2],
+              "size":   [4, 2, 4],
+              "uv":     [22, 38]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

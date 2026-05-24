@@ -1,0 +1,35 @@
+{
+	"format_version": "1.8.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lotm:brownbear",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/brownbear"
+			},
+			"geometry": {
+				"default": "geometry.brownbear"
+			},
+			"animations": {
+				"walk": "animation.brownbear.walk",
+				"move": "animation.brownbear.move",
+				"look_at_target": "animation.common.look_at_target",
+				"baby_transform": "animation.brownbear.baby_transform"
+			},
+			"scripts": {
+				"scale": "1.2"
+			},
+			"animation_controllers": [
+				{ "move": "controller.animation.polarbear.move" },
+				{ "baby": "controller.animation.polarbear.baby" }
+			],
+			"render_controllers": ["controller.render.polarbear"],
+			"spawn_egg": {
+				"base_color": "#4a2200",
+				"overlay_color": "#1a6b1a"
+			}
+		}
+	}
+}

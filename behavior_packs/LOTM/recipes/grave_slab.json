@@ -1,0 +1,10 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:grave_slab_craft" },
+    "tags": ["crafting_table"],
+    "pattern": ["SSS", "SSS"],
+    "key": { "S": { "item": "minecraft:cobblestone" } },
+    "result": { "item": "lotm:grave_slab", "count": 4 }
+  }
+}

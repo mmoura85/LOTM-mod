@@ -1,0 +1,105 @@
+{
+	"format_version": "1.19.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.grave_headstone",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [
+					0,
+					0.75,
+					0
+				]
+			},
+			"bones": [
+				{
+					"name": "block",
+					"pivot": [
+						0,
+						0,
+						0
+					],
+					"cubes": [
+						{
+							"origin": [
+								-5,
+								0,
+								-1
+							],
+							"size": [
+								10,
+								16,
+								3
+							],
+							"uv": {
+								"north": {
+									"uv": [
+										3,
+										0
+									],
+									"uv_size": [
+										10,
+										16
+									]
+								},
+								"south": {
+									"uv": [
+										3,
+										0
+									],
+									"uv_size": [
+										10,
+										16
+									]
+								},
+								"east": {
+									"uv": [
+										0,
+										0
+									],
+									"uv_size": [
+										3,
+										16
+									]
+								},
+								"west": {
+									"uv": [
+										0,
+										0
+									],
+									"uv_size": [
+										3,
+										16
+									]
+								},
+								"up": {
+									"uv": [
+										3,
+										0
+									],
+									"uv_size": [
+										10,
+										3
+									]
+								},
+								"down": {
+									"uv": [
+										3,
+										0
+									],
+									"uv_size": [
+										10,
+										3
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

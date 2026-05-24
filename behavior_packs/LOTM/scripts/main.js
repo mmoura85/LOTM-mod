@@ -45,6 +45,7 @@ import { MysteryPryerSequence } from './sequences/hermit/mystery_pryer.js';
 import { MeleeScholarSequence }  from './sequences/hermit/melee_scholar.js';
 import { WarlockSequence } from './sequences/hermit/warlock.js';
 import { ScrollProfessorSequence } from './sequences/hermit/scroll_professor.js';
+import { ConstellationsMasterSequence } from './sequences/hermit/constellations_master.js';
 
 // UI
 import { SunPathwayMenus } from './ui/sun_pathway_menus.js';
@@ -55,6 +56,7 @@ import { HangedManMenus }      from './ui/hanged_man_menus.js';
 import { HermitPathwayMenus }    from './ui/hermit_pathway_menus.js';
 import { WarlockMenus }    from './ui/warlock_menus.js';
 import { ScrollProfessorMenus }    from './ui/scroll_professor_menus.js';
+import { ConstellationsMasterMenus }    from './ui/constellations_master_menus.js';
 
 // Weapons
 import { RevolverSystem } from './weapons/revolverSystem.js';
@@ -64,6 +66,13 @@ import { registerPlantGrowth } from './world/plant_growth.js';
 
 //RAMPAGER
 import { RampagerSystem } from './world/rampagerSystem.js';
+
+// Beyonder mobs
+import { ClownBeyonderSystem } from './beyonderMobs/clownBeyonderSystem.js';
+
+
+//Flying Rock
+import { FlyingRockSystem } from './entity/flyingRockSystem.js';
 
 
 // ── Block component registration — MUST be in startup, before world loads ──
@@ -86,33 +95,33 @@ const selectedSecretsSorcererAbilities = new Map();
 function initialize() {
   world.sendMessage('§aLord of the Mysteries mod loaded!');
 
-  ShepherdSequence.registerSequenceClasses({
-    // Darkness
-    'MidnightPoetSequence':   MidnightPoetSequence,
-    'NightmareSequence':      NightmareSequence,
-    'SoulAssurerSequence':    SoulAssurerSequence,
-    // Twilight Giant
-    'DawnPaladinSequence':    DawnPaladinSequence,
-    'GuardianSequence':       GuardianSequence,
-    // Door
-    'ApprenticeSequence':     ApprenticeSequence,
-    'TrickmasterSequence':    TrickmasterSequence,
-    'AstrologerSequence':     AstrologerSequence,
-    'ScribeSequence':         ScribeSequence,
-    'TravelerSequence':       TravelerSequence,
-    // Death
-    'CorpseCollectorSequence': CorpseCollectorSequence,
-    // Sun
-    'BardSequence':           BardSequence,
-    'LightSuppliantSequence': LightSuppliantSequence,
-    // Seer
-    'SeerSequence':           SeerSequence,
-    'ClownSequence':          ClownSequence,
-    'MagicianSequence':       MagicianSequence,
-    // Justiciar
-    'ArbiterSequence':        ArbiterSequence,
-    'SheriffSequence':        SheriffSequence,
-  });
+  // ShepherdSequence.registerSequenceClasses({
+  //   // Darkness
+  //   'MidnightPoetSequence':   MidnightPoetSequence,
+  //   'NightmareSequence':      NightmareSequence,
+  //   'SoulAssurerSequence':    SoulAssurerSequence,
+  //   // Twilight Giant
+  //   'DawnPaladinSequence':    DawnPaladinSequence,
+  //   'GuardianSequence':       GuardianSequence,
+  //   // Door
+  //   'ApprenticeSequence':     ApprenticeSequence,
+  //   'TrickmasterSequence':    TrickmasterSequence,
+  //   'AstrologerSequence':     AstrologerSequence,
+  //   'ScribeSequence':         ScribeSequence,
+  //   'TravelerSequence':       TravelerSequence,
+  //   // Death
+  //   'CorpseCollectorSequence': CorpseCollectorSequence,
+  //   // Sun
+  //   'BardSequence':           BardSequence,
+  //   'LightSuppliantSequence': LightSuppliantSequence,
+  //   // Seer
+  //   'SeerSequence':           SeerSequence,
+  //   'ClownSequence':          ClownSequence,
+  //   'MagicianSequence':       MagicianSequence,
+  //   // Justiciar
+  //   'ArbiterSequence':        ArbiterSequence,
+  //   'SheriffSequence':        SheriffSequence,
+  // });
 
   system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
@@ -212,19 +221,85 @@ function initialize() {
         else if (sequence === 8) MeleeScholarSequence.applyPassiveAbilities(player);
         else if (sequence === 7) WarlockSequence.applyPassiveAbilities(player);
         else if (sequence === 6) ScrollProfessorSequence.applyPassiveAbilities(player);
+        else if (sequence === 5) ConstellationsMasterSequence.applyPassiveAbilities(player);
       }
     }
 
-     // Tick all rampagers
+    // Tick all rampagers`
     for (const dimName of ['overworld', 'nether', 'the_end']) {
       try {
         const dim = world.getDimension(dimName);
+ 
         const rampagers = dim.getEntities({ type: 'lotm:rampager' });
         for (const rampager of rampagers) {
           RampagerSystem.tick(rampager);
         }
+ 
+        const voidwatchers = dim.getEntities({ type: 'lotm:voidwatcher' });
+        for (const voidwatcher of voidwatchers) {
+          RampagerSystem.tickVoidwatcher(voidwatcher);
+        }
+ 
+        const clowns = dim.getEntities({ type: 'lotm:clown' });
+        for (const clown of clowns) {
+          ClownBeyonderSystem.tick(clown);
+        }
+ 
       } catch (e) {}
     }
+
+    FlyingRockSystem.tick();
+
+    ShepherdSequence.registerSequenceClasses({
+    // Darkness
+    SleeplessSequence,
+    MidnightPoetSequence,
+    NightmareSequence,
+    SoulAssurerSequence,
+    // Death
+    CorpseCollectorSequence,
+    GravediggerSequence,
+    // Door
+    ApprenticeSequence,
+    TrickmasterSequence,
+    AstrologerSequence,
+    ScribeSequence,
+    TravelerSequence,
+    SecretsSorcererSequence,
+    // Twilight Giant
+    WarriorSequence,
+    PugilistSequence,
+    WeaponMasterSequence,
+    DawnPaladinSequence,
+    GuardianSequence,
+    DemonHunterSequence,
+    // Sun
+    BardSequence,
+    LightSuppliantSequence,
+    // Hanged Man
+    SecretsSuppliantSequence,
+    ListenerSequence,
+    ShadowAsceticSequence,
+    RoseBishopSequence,
+    ShepherdSequence,
+    // Hermit
+    MysteryPryerSequence,
+    MeleeScholarSequence,
+    WarlockSequence,
+    ScrollProfessorSequence,
+    // Seer
+    SeerSequence,
+    ClownSequence,
+    MagicianSequence,
+    // Justiciar
+    ArbiterSequence,
+    SheriffSequence,
+    InterrogatorSequence,
+    JudgeSequence,
+    DisciplinaryPaladinSequence,
+    ImperativeMageSequence,
+  });
+
 
   }, 4);
 }
@@ -593,6 +668,20 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     player.sendMessage('§7The art of scroll-making flows into your mind...');
     player.sendMessage('§7Craft scrolls and right-click them to cast powerful spells.');
     player.playSound('mob.elder_guardian.curse', { pitch: 0.8, volume: 1.0 });
+  }
+
+  if (itemId === 'lotm:hermit_potion_seq5') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.HERMIT, itemId)) return;
+    if (!_requireSequence(player, sequence, 6, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    const currentMax = SpiritSystem.getMaxSpirit(player);
+    SpiritSystem.setMaxSpirit(player, currentMax + ConstellationsMasterSequence.SPIRIT_BONUS);
+    player.sendMessage('§b✦ You have become a §fConstellations Master§b!');
+    player.sendMessage('§7The stars sing your name... (+240 max spirit)');
+    player.sendMessage('§7Craft the §bConstellations Tome §7to channel stellar power.');
+    player.sendMessage('§7Warlock spells can now be cast §5without powder§7 (extra spirit cost).');
+    player.playSound('mob.elder_guardian.curse', { pitch: 0.6, volume: 1.0 });
   }
 
 
@@ -973,16 +1062,22 @@ world.afterEvents.itemUse.subscribe((event) => {
   if (itemId === 'lotm:warlocks_wand') {
     const { pathway, sequence } = _getPS(player);
     if (pathway !== PathwayManager.PATHWAYS.HERMIT || sequence > 7) {
-      player.sendMessage('§cOnly Warlocks and above can use this!');
-      return;
+      player.sendMessage('§cOnly Warlocks and above can use this!'); return;
     }
-
     if (player.isSneaking) {
-      // Sneak + right-click: open menu to select spell
-      WarlockMenus.showSpellMenu(player);
+      if (sequence === 5) {
+        // At Seq 5: Sneak+RC opens the no-powder spell selector
+        ConstellationsMasterMenus.showWarlockSpellMenu(player);
+      } else {
+        WarlockMenus.showSpellMenu(player);
+      }
     } else {
-      // Right-click: cast currently selected spell
-      WarlockSequence.castSelectedSpell(player);
+      if (sequence === 5) {
+        // RC at Seq 5: cast selected spell powder-free
+        ConstellationsMasterSequence.castWarlockSpellFree(player);
+      } else {
+        WarlockSequence.castSelectedSpell(player);
+      }
     }
     return;
   }
@@ -1000,7 +1095,7 @@ world.afterEvents.itemUse.subscribe((event) => {
   const scrollIds = [
     'lotm:scroll_burning', 'lotm:scroll_sun', 'lotm:scroll_healing',
     'lotm:scroll_freeze', 'lotm:scroll_storm', 'lotm:scroll_force_field',
-    'lotm:scroll_armour', 'lotm:scroll_raise_earth'
+    'lotm:scroll_armour', 'lotm:scroll_raise_earth','lotm:scroll_slow_fall', 'lotm:scroll_earth_spike'
   ];
   if (scrollIds.includes(itemId)) {
     const { pathway, sequence } = _getPS(player);
@@ -1008,13 +1103,33 @@ world.afterEvents.itemUse.subscribe((event) => {
       player.sendMessage('§cOnly Scroll Professors and above can use this!');
       return;
     }
-    if (player.isSneaking) {
-      ScrollProfessorMenus.showScrollMenu(player);
-    } else {
-      // Map item ID to scroll ID
-      const scrollId = itemId.replace('lotm:', '');
-      ScrollProfessorSequence.castScroll(player, scrollId);
+    // Strip namespace prefix to get scrollId e.g. 'lotm:scroll_burning' -> 'scroll_burning'
+    const scrollId = itemId.replace('lotm:', '');
+    ScrollProfessorSequence.castScroll(player, scrollId);
+    return;
+  }
+
+  if (itemId === 'lotm:constellations_tome') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.HERMIT || sequence > 5) {
+      player.sendMessage('§cOnly Constellations Masters and above can use this!');
+      return;
     }
+    if (player.isSneaking) {
+      // Sneak+RC → open ability menu (select which ability to hotkey)
+      ConstellationsMasterMenus.showAbilityMenu(player);
+    } else {
+      // RC → cast currently selected ability
+      const selected = player.getDynamicProperty('lotm:constellations_selected')
+        || ConstellationsMasterSequence.ABILITIES.STARLIGHT_CAGE;
+      ConstellationsMasterSequence.handleAbilityUse(player, selected);
+    }
+    return;
+  }
+
+  // Flying Rock Core — summon / dismiss the mount
+  if (itemId === 'lotm:flying_rock_core') {
+    FlyingRockSystem.summonRock(player);
     return;
   }
 
@@ -1030,12 +1145,21 @@ world.afterEvents.itemUse.subscribe((event) => {
 // ENTITY HURT
 // ============================================================================
 world.afterEvents.entityHurt.subscribe((event) => {
-  const player = event.hurtEntity;
+  const hurtEntity = event.hurtEntity;
+  const attacker   = event.damageSource?.damagingEntity;
+
+  // ── Clown retaliation — before the player-only guard ─────────────────────
+  if (hurtEntity?.typeId === 'lotm:clown') {
+    if (attacker) ClownBeyonderSystem.onHurt(hurtEntity, attacker);
+    return;
+  }
+
+  // ── Everything below here is player-only ─────────────────────────────────
+  const player = hurtEntity;
   if (!player || player.typeId !== 'minecraft:player') return;
 
   const pathway  = PathwayManager.getPathway(player);
   const sequence = PathwayManager.getSequence(player);
-  const attacker = event.damageSource?.damagingEntity;
 
   // Seer / Magician — Damage Transfer
   if (pathway === PathwayManager.PATHWAYS.SEER && sequence <= 7) {
@@ -1056,6 +1180,28 @@ world.afterEvents.entityHurt.subscribe((event) => {
   if (pathway === PathwayManager.PATHWAYS.JUSTICIAR && sequence <= 6 && attacker) {
     JudgeSequence.onHurt(player, attacker);
   }
+
+  // Brown Bear infection
+  if (attacker && attacker.typeId === 'lotm:brownbear') {
+    if (Math.random() < 0.30) {
+      try { player.addEffect('nausea',   200, { amplifier: 0, showParticles: true }); } catch (_) {}
+      try { player.addEffect('weakness', 160, { amplifier: 1, showParticles: true }); } catch (_) {}
+      try { player.addEffect('slowness', 120, { amplifier: 1, showParticles: true }); } catch (_) {}
+      try { player.addEffect('hunger',   100, { amplifier: 1, showParticles: true }); } catch (_) {}
+      player.sendMessage('§2§l☣ INFECTED! §r§7The bear\'s corruption spreads through you...');
+      player.sendMessage('§7§o(Weakness II, Slowness II, Nausea — ~8 seconds)');
+      player.playSound('mob.slime.attack', { pitch: 0.4, volume: 0.8 });
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2;
+        try { player.dimension.spawnParticle('minecraft:spell_emitter', {
+          x: player.location.x + Math.cos(a) * 0.4,
+          y: player.location.y + 1.0,
+          z: player.location.z + Math.sin(a) * 0.4
+        }); } catch (_) {}
+      }
+    }
+    return;
+  }
 });
 
 
@@ -1065,6 +1211,10 @@ world.afterEvents.entityHurt.subscribe((event) => {
 world.afterEvents.entityDie.subscribe((event) => {
   if (event.deadEntity?.typeId === 'lotm:rampager') {
     RampagerSystem.cleanup(event.deadEntity.id);
+  }
+
+  if (event.deadEntity?.typeId === 'lotm:voidwatcher') {
+    RampagerSystem.voidwatcherCooldowns.delete(entityId);
   }
 });
 

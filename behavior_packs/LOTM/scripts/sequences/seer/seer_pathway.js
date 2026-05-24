@@ -235,7 +235,7 @@ export class ClownSequence {
 
   // Paper Daggers — throw hardened paper as steel daggers
   static PAPER_DAGGERS_SPIRIT_COST = 6;
-  static PAPER_DAGGERS_COOLDOWN    = 20; // 1s — semi-spammable
+  static PAPER_DAGGERS_COOLDOWN    = 6; // 1s — semi-spammable
   static PAPER_DAGGERS_COUNT       = 3;   // daggers per throw
   static PAPER_DAGGERS_DAMAGE      = 10; // each dagger (x3 = 30 total burst)
   static PAPER_DAGGERS_RANGE       = 16;
@@ -613,7 +613,7 @@ export class MagicianSequence {
 
   // Air Bullet — hitscan compressed-air projectile, revolver-comparable damage
   static AIR_BULLET_SPIRIT_COST = 4;
-  static AIR_BULLET_COOLDOWN    = 8;  // 0.4s — semi-spammable, slower than revolver
+  static AIR_BULLET_COOLDOWN    = 5;  // 0.4s — semi-spammable, slower than revolver
   static AIR_BULLET_DAMAGE      = 14; // slightly more than standard bullet — spirit-powered
   static AIR_BULLET_RANGE       = 48;
 

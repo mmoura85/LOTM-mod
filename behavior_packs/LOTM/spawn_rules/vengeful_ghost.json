@@ -41,6 +41,16 @@
               "test": "has_biome_tag",
               "operator": "==",
               "value": "grove"
+            },
+            {
+              "test": "has_biome_tag",
+              "operator": "==",
+              "value": "plains"
+            },
+            {
+              "test": "has_biome_tag",
+              "operator": "==",
+              "value": "forest"
             }
           ]
         }

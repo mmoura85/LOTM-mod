@@ -1,0 +1,37 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.voidwatcher",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3.5,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "head",
+					"pivot": [0, 0, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [-6, 2, -8], "size": [12, 12, 16], "uv": [0, 0], "mirror": false},
+						{"origin": [-8, 2, -6], "size": [2, 12, 12], "uv": [0, 28], "mirror": false},
+						{"origin": [6, 2, -6], "size": [2, 12, 12], "uv": [0, 28]},
+						{"origin": [-6, 14, -6], "size": [12, 2, 12], "uv": [16, 40]},
+						{"origin": [-6, 0, -6], "size": [12, 2, 12], "uv": [16, 40]}
+					]
+				},
+				{
+					"name": "eye",
+					"parent": "head",
+					"pivot": [0, 24, 0],
+					"cubes": [
+						{"origin": [-1, 6, 0], "size": [2, 2, 1], "uv": [8, 0]}
+					]
+				}
+			]
+		}
+	]
+}

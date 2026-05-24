@@ -4,5 +4,8 @@
     "textures/entity/vengeful_ghost",
     "textures/entity/ghoul/base",
     "textures/entity/rampager/shockwave",
-    "textures/entity/rampager/fireball"
+    "textures/entity/rampager/fireball",
+    "textures/entity/voidwatcher",
+    "textures/entity/brownbear",
+    "textures/entity/clown"
 ]

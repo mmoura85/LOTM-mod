@@ -425,6 +425,17 @@
     "scroll_storm":               { "textures": "textures/items/scroll_storm" },
     "scroll_force_field":         { "textures": "textures/items/scroll_force_field" },
     "scroll_armour":              { "textures": "textures/items/scroll_armour" },
-    "scroll_raise_earth":         { "textures": "textures/items/scroll_raise_earth" }
+    "scroll_raise_earth":         { "textures": "textures/items/scroll_raise_earth" },
+    "hermit_potion_seq5":         { "textures": "textures/items/hermit_potion_seq5" },
+    "hermit_characteristic_seq5": { "textures": "textures/items/hermit_characteristic_seq5" },
+    "constellations_tome":        { "textures": "textures/items/constellations_tome" },
+    "flying_rock_core": { "textures": "textures/items/flying_rock_core" },
+    "scroll_slow_fall": {
+      "textures": "textures/items/scroll_slow_fall"
+    },
+    "scroll_earth_spike": {
+      "textures": "textures/items/scroll_earth_spike"
+    }
+
   }
 }

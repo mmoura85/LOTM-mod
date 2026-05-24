@@ -1,0 +1,10 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:grave_cross_craft" },
+    "tags": ["crafting_table"],
+    "pattern": [" S ", "SSS", " S "],
+    "key": { "S": { "item": "minecraft:stone_bricks" } },
+    "result": { "item": "lotm:grave_cross", "count": 2 }
+  }
+}
