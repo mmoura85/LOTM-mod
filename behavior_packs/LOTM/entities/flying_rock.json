@@ -1,0 +1,110 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:flying_rock",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "lotm:ridden": {
+        "minecraft:movement.basic": {},
+        "minecraft:navigation.flying": {
+          "can_pass_doors": false,
+          "is_amphibious": false
+        }
+      },
+      "lotm:idle": {
+        "minecraft:movement.basic": {},
+        "minecraft:behavior.float": {
+          "priority": 0
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": ["lotm_mount", "mob"]
+      },
+      "minecraft:collision_box": {
+        "width": 1.8,
+        "height": 0.6
+      },
+      "minecraft:health": {
+        "value": 100,
+        "max": 100
+      },
+      "minecraft:movement": {
+        "value": 0.6
+      },
+      "minecraft:flying_speed": {
+        "value": 0.8
+      },
+      "minecraft:jump.static": {
+        "jump_power": 0.0
+      },
+      "minecraft:fall_damage": {
+        "value": 0.0
+      },
+      "minecraft:fire_immune": true,
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "all",
+          "deals_damage": false
+        }
+      },
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": ["player"],
+        "interact_text": "action.interact.mount",
+        "seats": [
+          {
+            "position": [0, 0.5, 0],
+            "min_rider_count": 0,
+            "max_rider_count": 1
+          }
+        ]
+      },
+      "minecraft:input_ground_controlled": {},
+      "minecraft:can_climb": false,
+      "minecraft:physics": {
+        "has_gravity": false,
+        "has_collision": true
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:nameable": {},
+      "minecraft:despawn": {
+        "despawn_from_distance": {
+          "max_distance": 128,
+          "min_distance": 96
+        }
+      },
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:navigation.flying": {
+        "can_pass_doors": false,
+        "is_amphibious": false
+      },
+      "minecraft:breathable": {
+        "breathes_air": true,
+        "breathes_water": false,
+        "total_supply": 15,
+        "suffocate_time": 0
+      }
+    },
+    "events": {
+      "lotm:on_mounted": {
+        "add": { "component_groups": ["lotm:ridden"] },
+        "remove": { "component_groups": ["lotm:idle"] }
+      },
+      "lotm:on_dismounted": {
+        "add": { "component_groups": ["lotm:idle"] },
+        "remove": { "component_groups": ["lotm:ridden"] }
+      }
+    }
+  }
+}

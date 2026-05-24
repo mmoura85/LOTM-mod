@@ -4,6 +4,20 @@
   },
   "lotm:transfiguration_portal_block": {
     "textures": "transfiguration_portal_block"
+  },
+  "lotm:grave_headstone": {
+    "textures": "grave_headstone",
+    "sound": "stone"
+  },
+  "lotm:grave_slab": {
+    "textures": "grave_slab",
+    "sound": "stone"
+  },
+  "lotm:grave_dirt": {
+    "textures": "grave_dirt",
+    "sound": "gravel"
+  },
+  "lotm:grave_cross": {
+    "sound": "stone"
   }
 }
-

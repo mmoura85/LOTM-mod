@@ -19,7 +19,7 @@ export class MeleeScholarSequence {
   // Melee Scholar gets Speed I, Strength I, Jump I — meaningful but not dominant
   static STRENGTH_AMPLIFIER = 1; // Strength II
   static SPEED_AMPLIFIER    = 1; // Speed II
-  static JUMP_AMPLIFIER     = 1; // Jump Boost II
+  static JUMP_AMPLIFIER     = 2; // Jump Boost II
 
   // ---- Spirituality bump (inherited + new) ----
   // Mystery Pryer: 220 base spirit. Scholar adds 25 more on advancement.

@@ -13,6 +13,9 @@ export class RampagerSystem {
   static FIREBALL_DAMAGE = 12;
   static ENRAGE_THRESHOLD = 75;          // 50% of 150 HP
 
+  static voidwatcherCooldowns = new Map(); // entityId -> ticks remaining
+
+
   /**
    * Call from main.js tick loop
    */
@@ -227,5 +230,172 @@ export class RampagerSystem {
   static cleanup(entityId) {
     this.fireballCooldowns.delete(entityId);
     this.enragedEntities.delete(entityId);
+  }
+
+
+  static tickVoidwatcher(watcher) {
+    // Tick down fireball cooldown
+    const cd = (RampagerSystem.voidwatcherCooldowns.get(watcher.id) || 0) - 1;
+    RampagerSystem.voidwatcherCooldowns.set(watcher.id, Math.max(0, cd));
+
+    if (cd > 0) return; // Still on cooldown
+
+    // Find nearest player within 20 blocks
+    let target = null;
+    let nearestDist = Infinity;
+    try {
+      const players = watcher.dimension.getPlayers({
+        location: watcher.location,
+        maxDistance: 20
+      });
+      for (const p of players) {
+        const dx = p.location.x - watcher.location.x;
+        const dy = p.location.y - watcher.location.y;
+        const dz = p.location.z - watcher.location.z;
+        const d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (d < nearestDist) { nearestDist = d; target = p; }
+      }
+    } catch (_) {}
+
+    if (!target || nearestDist > 20) return;
+
+    // Fire the fireball — 60 tick cooldown (3 seconds)
+    RampagerSystem.voidwatcherCooldowns.set(watcher.id, 60);
+    RampagerSystem._fireVoidball(watcher, target);
+  }
+
+  // ============================================================================
+// rampagerSystem.js — REPLACE _fireVoidball and _voidballExplosion
+// ============================================================================
+// Uses the exact same particle logic as useBurning / _castBurning:
+//   - 5-cluster dense flame particles per step
+//   - lava_particle + mobflame_single trail
+//   - impact burst with basic_flame_particle ring + lava_particle
+// ============================================================================
+
+  static _fireVoidball(watcher, target) {
+    const wx = watcher.location.x;
+    const wy = watcher.location.y + 0.4;
+    const wz = watcher.location.z;
+    const tx = target.location.x;
+    const ty = target.location.y + 1.0;
+    const tz = target.location.z;
+
+    const dx  = tx - wx, dy = ty - wy, dz = tz - wz;
+    const len = Math.sqrt(dx*dx + dy*dy + dz*dz) || 1;
+    const view = { x: dx/len, y: dy/len, z: dz/len };
+
+    const start = {
+      x: wx + view.x * 1.5,
+      y: wy,
+      z: wz + view.z * 1.5
+    };
+
+    const speed  = 0.35;
+    const maxAge = 80;
+    let pos = { ...start };
+    let hit = false;
+    let age = 0;
+
+    const moveBall = () => {
+      if (hit || age >= maxAge) return;
+      age++;
+
+      pos.x += view.x * speed;
+      pos.y += view.y * speed;
+      pos.z += view.z * speed;
+
+      // ── Dense flame cluster — exact same as useBurning / _castBurning ──────
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', pos); } catch (_) {}
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', { x: pos.x+0.2, y: pos.y,     z: pos.z     }); } catch (_) {}
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', { x: pos.x-0.2, y: pos.y,     z: pos.z     }); } catch (_) {}
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', { x: pos.x,     y: pos.y+0.2, z: pos.z     }); } catch (_) {}
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', { x: pos.x,     y: pos.y-0.2, z: pos.z     }); } catch (_) {}
+      try { watcher.dimension.spawnParticle('minecraft:lava_particle',        pos); } catch (_) {}
+      try { watcher.dimension.spawnParticle('minecraft:mobflame_single',      pos); } catch (_) {}
+
+      // Block collision
+      try {
+        const block = watcher.dimension.getBlock(
+          { x: Math.floor(pos.x), y: Math.floor(pos.y), z: Math.floor(pos.z) }
+        );
+        if (block && !block.isAir && !block.isLiquid) {
+          hit = true;
+          RampagerSystem._voidballExplosion(watcher, pos);
+          return;
+        }
+      } catch (_) {}
+
+      // Entity collision
+      try {
+        const near = watcher.dimension.getEntities({
+          location: pos,
+          maxDistance: 1.8,
+          excludeTypes: ['minecraft:item', 'minecraft:xp_orb', 'minecraft:arrow']
+        });
+        for (const e of near) {
+          if (e.id === watcher.id) continue;
+          if (e.typeId === 'lotm:voidwatcher') continue;
+          hit = true;
+          RampagerSystem._voidballExplosion(watcher, pos, e);
+          return;
+        }
+      } catch (_) {}
+
+      system.runTimeout(moveBall, 1);
+    };
+
+    system.runTimeout(moveBall, 1);
+  }
+
+  static _voidballExplosion(watcher, pos, directHit = null) {
+    // Damage direct hit entity
+    if (directHit) {
+      try { directHit.applyDamage(10, { cause: 'projectile', damagingEntity: watcher }); } catch (_) {
+        try { directHit.applyDamage(10); } catch (_2) {}
+      }
+      try { directHit.setOnFire(4, true); } catch (_) {}
+    }
+
+    // AOE splash damage
+    try {
+      const nearby = watcher.dimension.getEntities({
+        location: pos,
+        maxDistance: 2.5,
+        excludeTypes: ['minecraft:item', 'minecraft:xp_orb']
+      });
+      for (const e of nearby) {
+        if (e.id === watcher.id) continue;
+        if (e.typeId === 'lotm:voidwatcher') continue;
+        if (directHit && e.id === directHit.id) continue;
+        try { e.applyDamage(5); } catch (_) {}
+        try { e.setOnFire(2, true); } catch (_) {}
+      }
+    } catch (_) {}
+
+    // ── Impact burst — exact same as useBurning entity hit ───────────────────
+    for (let j = 0; j < 15; j++) {
+      const a = (j / 15) * Math.PI * 2;
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', {
+        x: pos.x + Math.cos(a) * 0.5,
+        y: pos.y,
+        z: pos.z + Math.sin(a) * 0.5
+      }); } catch (_) {}
+    }
+    try { watcher.dimension.spawnParticle('minecraft:lava_particle', pos); } catch (_) {}
+
+    // Extra outer ring for the bigger explosion feel
+    for (let j = 0; j < 20; j++) {
+      const a = (j / 20) * Math.PI * 2;
+      try { watcher.dimension.spawnParticle('minecraft:basic_flame_particle', {
+        x: pos.x + Math.cos(a) * 1.2,
+        y: pos.y + 0.4,
+        z: pos.z + Math.sin(a) * 1.2
+      }); } catch (_) {}
+    }
+    try { watcher.dimension.spawnParticle('minecraft:lava_particle', { x: pos.x, y: pos.y+0.5, z: pos.z }); } catch (_) {}
+    try { watcher.dimension.spawnParticle('minecraft:mobflame_single', pos); } catch (_) {}
+
+    try { watcher.dimension.playSound('fire.ignite', { location: pos, pitch: 0.6, volume: 1.2 }); } catch (_) {}
   }
 }

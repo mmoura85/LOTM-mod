@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "lotm:star_bridge_block",
+      "menu_category": { "category": "none" }
+    },
+    "components": {
+      "minecraft:display_name": { "value": "Star Bridge" },
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 0.1 },
+      "minecraft:destructible_by_explosion": { "explosion_resistance": 0 },
+      "minecraft:light_emission": 10,
+      "minecraft:map_color": "#B0E8FF",
+      "minecraft:geometry": { "identifier": "minecraft:geometry.full_block" },
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "star_bridge_block",
+          "render_method": "blend",
+          "face_dimming": false,
+          "ambient_occlusion": false
+        }
+      },
+      "minecraft:collision_box": {
+        "origin": [-8, 0, -8],
+        "size": [16, 4, 16]
+      },
+      "minecraft:selection_box": {
+        "origin": [-8, 0, -8],
+        "size": [16, 4, 16]
+      }
+    }
+  }
+}

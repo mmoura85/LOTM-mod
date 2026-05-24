@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:constellations_tome",
+      "menu_category": { "category": "items" }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "constellations_tome",
+      "minecraft:display_name": { "value": "Constellations Tome" },
+      "minecraft:cooldown": { "category": "constellations_cast", "duration": 0.05 }
+    }
+  }
+}

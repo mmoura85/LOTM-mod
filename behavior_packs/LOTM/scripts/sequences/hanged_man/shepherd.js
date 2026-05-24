@@ -332,6 +332,101 @@ export class ShepherdSequence {
         abilityRef: { class: 'SheriffSequence', method: 'useBadge', args: [false] }
       }
     ],
+    'lotm:hermit_characteristic_seq9': [
+      {
+        id: 'graze_mystery_pryer_divination',
+        name: '§5Divination',
+        description: 'Locate nearby structures',
+        pathway: 'hermit', sequenceNumber: 9, isPassive: false,
+        abilityRef: { class: 'MysteryPryerSequence', method: 'useDivination' }
+      },
+      {
+        id: 'graze_mystery_pryer_detect',
+        name: '§5Detect Hostiles',
+        description: 'Reveal and glow hostile mobs nearby',
+        pathway: 'hermit', sequenceNumber: 9, isPassive: false,
+        abilityRef: { class: 'MysteryPryerSequence', method: 'useDetectHostiles' }
+      },
+      {
+        id: 'graze_mystery_pryer_ore_sense',
+        name: '§7Ore Sense',
+        description: 'Passive ore detection nearby',
+        pathway: 'hermit', sequenceNumber: 9, isPassive: true,
+        passiveEffects: [] // handled via mystery_pryer passive ore scan
+      },
+    ],
+
+    'lotm:hermit_characteristic_seq8': [
+      {
+        id: 'graze_melee_scholar_insight',
+        name: '§bCombat Insight',
+        description: 'Analyse weapon and apply combat buffs',
+        pathway: 'hermit', sequenceNumber: 8, isPassive: false,
+        abilityRef: { class: 'MeleeScholarSequence', method: 'useCombatInsight' }
+      },
+      {
+        id: 'graze_melee_scholar_strength',
+        name: '§cScholar Strength',
+        description: 'Strength I permanent',
+        pathway: 'hermit', sequenceNumber: 8, isPassive: true,
+        passiveEffects: [{ effect: 'strength', amplifier: 0 }]
+      },
+    ],
+
+    'lotm:hermit_characteristic_seq7': [
+      {
+        id: 'graze_warlock_flames',
+        name: '§cFlames',
+        description: 'Fire bolt that ignites targets',
+        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
+        abilityRef: { class: 'WarlockSequence', method: '_castFlames' }
+      },
+      {
+        id: 'graze_warlock_exorcism',
+        name: '§fExorcism',
+        description: 'Cause undead to flee in terror',
+        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
+        abilityRef: { class: 'WarlockSequence', method: '_castExorcism' }
+      },
+      {
+        id: 'graze_warlock_lightning',
+        name: '§eLightning',
+        description: 'Strike target with lightning bolt',
+        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
+        abilityRef: { class: 'WarlockSequence', method: '_castLightning' }
+      },
+      {
+        id: 'graze_warlock_ore_sense',
+        name: '§7Ore Sense (Active)',
+        description: 'Full ore scan with directions',
+        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
+        abilityRef: { class: 'WarlockSequence', method: '_castOreSense' }
+      },
+    ],
+
+    'lotm:hermit_characteristic_seq6': [
+      {
+        id: 'graze_scroll_professor_storm',
+        name: '§9Storm',
+        description: 'Call down a lightning storm (30s)',
+        pathway: 'hermit', sequenceNumber: 6, isPassive: false,
+        abilityRef: { class: 'ScrollProfessorSequence', method: 'castScroll', args: ['scroll_storm'] }
+      },
+      {
+        id: 'graze_scroll_professor_healing',
+        name: '§aHealing',
+        description: 'Heal yourself and nearby allies',
+        pathway: 'hermit', sequenceNumber: 6, isPassive: false,
+        abilityRef: { class: 'ScrollProfessorSequence', method: 'castScroll', args: ['scroll_healing'] }
+      },
+      {
+        id: 'graze_scroll_professor_force_field',
+        name: '§bForce Field',
+        description: 'Erect a protective force field',
+        pathway: 'hermit', sequenceNumber: 6, isPassive: false,
+        abilityRef: { class: 'ScrollProfessorSequence', method: 'castScroll', args: ['scroll_force_field'] }
+      },
+    ],
   };
 
   // ── Ability identifiers ──────────────────────────────────────────────────
@@ -796,9 +891,6 @@ export class ShepherdSequence {
    * Uses a string-based registry to avoid circular imports.
    */
   static _dispatchToSequenceClass(player, ref) {
-    // We can't dynamically import here, so we dispatch via a known map
-    // of class name → imported module. This map is populated by
-    // ShepherdSequence.registerSequenceClasses() called from main.js.
     const cls = ShepherdSequence._sequenceClassRegistry[ref.class];
     if (!cls) {
       player.sendMessage(`§cGrazed ability class §7${ref.class}§c not registered.`);
@@ -811,6 +903,13 @@ export class ShepherdSequence {
       return false;
     }
 
+    // Temporarily bypass the target class's hasSequence check.
+    // Grazed abilities are pre-validated at graze time — the Shepherd has
+    // legitimate access. Without this patch every grazed call returns false
+    // because the Shepherd isn't the sequence being called.
+    const originalHasSequence = cls.hasSequence;
+    cls.hasSequence = () => true;
+
     try {
       if (ref.args && ref.args.length > 0) {
         return method.call(cls, player, ...ref.args);
@@ -819,6 +918,9 @@ export class ShepherdSequence {
     } catch (e) {
       player.sendMessage(`§cError invoking grazed ability: §7${e.message || e}`);
       return false;
+    } finally {
+      // Always restore — even if the method throws
+      cls.hasSequence = originalHasSequence;
     }
   }
 

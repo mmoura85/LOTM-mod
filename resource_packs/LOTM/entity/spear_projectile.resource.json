@@ -1,0 +1,18 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:spear_projectile",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/items/spear_of_longinus_item"
+      },
+      "geometry": {
+        "default": "geometry.spear_projectile"
+      },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}
