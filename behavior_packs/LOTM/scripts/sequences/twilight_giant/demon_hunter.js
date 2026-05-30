@@ -5,6 +5,7 @@
 import { world, system } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
+import { DawnPaladinSequence } from './dawn_paladin.js';
 import { GuardianSequence } from './guardian.js';
 
 export class DemonHunterSequence {
@@ -132,10 +133,14 @@ export class DemonHunterSequence {
     // IMPORTANT: Process inherited Guardian abilities
     GuardianSequence.processProtection(player);
     GuardianSequence.processLightOfDawn(player);
-    
-    // Tick down cooldowns (own + inherited)
+    GuardianSequence.processHurricaneOfLight(player);   // ← ADD: runs hurricane waves
+    DawnPaladinSequence._processDawnSword(player);       // ← ADD: ticks dawn sword timer
+    DawnPaladinSequence._processDawnArmour(player);      // ← ADD: ticks dawn armour timer
+
+    // Tick down cooldowns (own + all inherited)
     this.tickCooldowns(player);
     GuardianSequence.tickCooldowns(player);
+    DawnPaladinSequence.tickCooldowns(player);     
     
     // Apply weapon enhancements
     this.applyWeaponEnhancements(player);
@@ -702,9 +707,13 @@ export class DemonHunterSequence {
       
       // Inherited Light of Dawn from Guardian
       case this.ABILITIES.LIGHT_OF_DAWN:
+      case 'dawn_sword':
+      case 'dawn_armour':
+      case 'sword_of_light':
+      case 'shield_of_light':
         return GuardianSequence.handleAbilityUse(player, abilityId);
-      
       default:
+        player.sendMessage('§cUnknown ability!');
         return false;
     }
   }

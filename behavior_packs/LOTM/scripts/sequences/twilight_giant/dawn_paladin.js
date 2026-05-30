@@ -1,12 +1,9 @@
 // ============================================
 // DAWN PALADIN - SEQUENCE 6 TWILIGHT GIANT PATHWAY
-// Fixed: abilities now work correctly
-// Fixed: consolidated all items into single dawn_item menu
-// Fixed: performance (no runTimeout cascade, batched particles)
-// Improved: better visual effects
+// v3 - Dawn Sword + Air Slash + Enhanced Hurricane + Dawn Armour
 // ============================================
 
-import { world, system, ItemStack } from '@minecraft/server';
+import { world, system } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { WeaponMasterSequence } from './weapon_master.js';
@@ -15,148 +12,149 @@ export class DawnPaladinSequence {
   static SEQUENCE_NUMBER = 6;
   static PATHWAY = 'twilight_giant';
 
-  // Effect duration
   static EFFECT_DURATION = 999999;
 
-  // Passive stat amplifiers
-  static STRENGTH_AMPLIFIER = 4;   // Strength V
-  static SPEED_AMPLIFIER    = 3;   // Speed IV (sprinting)
-  static SPEED_NORMAL       = 2;   // Speed III (walking)
-  static JUMP_AMPLIFIER     = 2;   // Jump Boost III
+  static STRENGTH_AMPLIFIER = 4;
+  static SPEED_AMPLIFIER    = 3;
+  static SPEED_NORMAL       = 2;
+  static JUMP_AMPLIFIER     = 2;
 
-  // ---- Light of Dawn ----
-  static LIGHT_OF_DAWN_RANGE         = 20;   // radius in blocks (was 45 — too huge, caused lag)
-  static LIGHT_OF_DAWN_DURATION      = 300;  // 15 seconds (ticks, at 4-tick interval = 75 calls)
-  static LIGHT_OF_DAWN_SPIRIT_COST   = 60;
-  static LIGHT_OF_DAWN_COOLDOWN      = 600;  // 30 seconds
-  static LIGHT_OF_DAWN_DAMAGE        = 5;    // initial hit damage
-  static LIGHT_OF_DAWN_DAMAGE_ONGOING= 3;    // damage per 2 seconds
+  // ── Light of Dawn ──────────────────────────────────────────────────────────
+  static LIGHT_OF_DAWN_RANGE          = 20;
+  static LIGHT_OF_DAWN_DURATION       = 300;
+  static LIGHT_OF_DAWN_SPIRIT_COST    = 60;
+  static LIGHT_OF_DAWN_COOLDOWN       = 600;
+  static LIGHT_OF_DAWN_DAMAGE         = 5;
+  static LIGHT_OF_DAWN_DAMAGE_ONGOING = 3;
 
-  // ---- Hurricane of Light ----
-  // Uses timed-wave approach with NO runTimeout cascade
-  static HURRICANE_SPIRIT_COST    = 70;
-  static HURRICANE_RANGE          = 18;   // radius
-  static HURRICANE_DURATION       = 100;  // 5 seconds (ticks)
-  static HURRICANE_COOLDOWN       = 2400; // 2 minutes
-  static HURRICANE_SWORDS_PER_WAVE= 8;    // swords per wave (reduced for perf)
-  static HURRICANE_SWORD_DAMAGE   = 8;
-  static HURRICANE_SWORD_DAMAGE_UNDEAD = 15;
-  static HURRICANE_WAVE_INTERVAL  = 25;   // ticks between waves (was 5 — too frequent)
+  // ── Hurricane of Light ─────────────────────────────────────────────────────
+  static HURRICANE_SPIRIT_COST     = 70;
+  static HURRICANE_RANGE           = 20;
+  static HURRICANE_DURATION        = 120;
+  static HURRICANE_COOLDOWN        = 2400;
+  static HURRICANE_SWORDS_PER_WAVE = 12;
+  static HURRICANE_SWORD_DAMAGE    = 14;
+  static HURRICANE_UNDEAD_DAMAGE   = 22;
+  static HURRICANE_WAVE_INTERVAL   = 20;
 
-  // ---- Sword of Light (active buff) ----
-  static SWORD_OF_LIGHT_SPIRIT_COST = 30;
-  static SWORD_OF_LIGHT_DURATION    = 600;  // 30 seconds
-  static SWORD_OF_LIGHT_COOLDOWN    = 300;  // 15 seconds
+  // ── Dawn Sword ─────────────────────────────────────────────────────────────
+  static DAWN_SWORD_SPIRIT_COST = 50;
+  static DAWN_SWORD_DURATION    = 1200; // 60 seconds
+  static DAWN_SWORD_COOLDOWN    = 600;  // 30s
 
-  // ---- Shield of Light ----
-  static SHIELD_OF_LIGHT_SPIRIT_COST = 40;
-  static SHIELD_OF_LIGHT_DURATION    = 200;  // 10 seconds
-  static SHIELD_OF_LIGHT_COOLDOWN    = 400;  // 20 seconds
+  // ── Air Slash ──────────────────────────────────────────────────────────────
+  static AIR_SLASH_SPIRIT_COST = 15;
+  static AIR_SLASH_DAMAGE      = 12;
+  static AIR_SLASH_COOLDOWN    = 40;
 
-  // ---- Selected Ability (persisted) ----
-  static selectedAbilities = new Map(); // playerName -> abilityId
-  static SELECTED_ABILITY_PROPERTY = 'lotm:dawn_selected_ability';
+  // ── Dawn Armour ────────────────────────────────────────────────────────────
+  static DAWN_ARMOUR_SPIRIT_COST = 80;
+  static DAWN_ARMOUR_DURATION    = 1200; // 60 seconds
+  static DAWN_ARMOUR_COOLDOWN    = 1200; // 60s
 
-  static getSelectedAbility(player) {
-    if (!this.selectedAbilities.has(player.name)) {
-      // Try loading from dynamic property
-      try {
-        const saved = player.getDynamicProperty(this.SELECTED_ABILITY_PROPERTY);
-        if (saved) this.selectedAbilities.set(player.name, saved);
-      } catch (e) {}
-    }
-    return this.selectedAbilities.get(player.name) || this.ABILITIES.LIGHT_OF_DAWN;
-  }
+  // State maps
+  static activeLightZones    = new Map();
+  static lightCooldowns      = new Map();
+  static hurricaneCooldowns  = new Map();
+  static activeHurricanes    = new Map();
+  static dawnSwordTicks      = new Map();
+  static dawnSwordCooldowns  = new Map();
+  static airSlashCooldowns   = new Map();
+  static dawnArmourTicks     = new Map();
+  static dawnArmourCooldowns = new Map();
+  static storedArmour        = new Map();
 
-  static setSelectedAbility(player, abilityId) {
-    this.selectedAbilities.set(player.name, abilityId);
-    try { player.setDynamicProperty(this.SELECTED_ABILITY_PROPERTY, abilityId); } catch (e) {}
-  }
-
-  static useSelectedAbility(player) {
-    return this.handleAbilityUse(player, this.getSelectedAbility(player));
-  }
-
-  // ---- State Maps ----
-  static activeLightZones   = new Map(); // playerName -> {location, dimensionId, ticksRemaining, blocks[]}
-  static lightCooldowns     = new Map();
-  static hurricaneCooldowns = new Map();
-  static activeHurricanes   = new Map(); // playerName -> {location, dimensionId, ticksRemaining, waveCount}
-  static swordOfLightActive = new Map(); // playerName -> ticksRemaining
-  static swordCooldowns     = new Map();
-  static shieldOfLightActive= new Map(); // playerName -> ticksRemaining
-  static shieldCooldowns    = new Map();
-
-  // Ability identifiers (used by menu)
   static ABILITIES = {
-    LIGHT_OF_DAWN:    'light_of_dawn',
+    LIGHT_OF_DAWN:      'light_of_dawn',
     HURRICANE_OF_LIGHT: 'hurricane_of_light',
-    SWORD_OF_LIGHT:   'sword_of_light',
-    SHIELD_OF_LIGHT:  'shield_of_light'
+    DAWN_SWORD:         'dawn_sword',
+    DAWN_ARMOUR:        'dawn_armour',
   };
 
-  // =============================================
-  // SEQUENCE CHECK
-  // =============================================
+  static dawnSwordAbilityIndex = new Map(); // playerName -> 0 (Hurricane) or 1 (Air Slash)
+
+  static selectedAbilities    = new Map();
+  static SELECTED_ABILITY_PROP = 'lotm:dawn_selected_ability';
+
+
   static hasSequence(player) {
     return PathwayManager.getPathway(player) === this.PATHWAY &&
            PathwayManager.getSequence(player) <= this.SEQUENCE_NUMBER;
   }
 
   // =============================================
-  // PASSIVE ABILITIES (called each main loop tick)
+  // PASSIVE ABILITIES
   // =============================================
   static applyPassiveAbilities(player) {
     this.applyPhysicalEnhancements(player);
-    this.applyHealthBonus(player, 8);      // +4 hearts
+    this.applyHealthBonus(player, 8);
     this.applyGiantSize(player);
-
-    // Process active abilities
     this.processLightOfDawn(player);
     this.processHurricaneOfLight(player);
-    this.processSwordOfLight(player);
-    this.processShieldOfLight(player);
-
-    // Tick cooldowns
+    this._processDawnSword(player);
+    this._processDawnArmour(player);
     this.tickCooldowns(player);
-
-    // Weapon / armor enchantments
     this.applyWeaponEnchantments(player);
-    this.applyArmorEnchantments(player);
+
+    const spirit    = Math.floor(SpiritSystem.getSpirit(player));
+    const maxSpirit = SpiritSystem.getMaxSpirit(player);
+    const swordTag  = this.dawnSwordTicks.has(player.name)
+      ? `§6⚔§7(${Math.ceil(this.dawnSwordTicks.get(player.name)/20)}s) ` : '';
+    const armourTag = this.dawnArmourTicks.has(player.name)
+      ? `§6🛡§7(${Math.ceil(this.dawnArmourTicks.get(player.name)/20)}s) ` : '';
+    player.onScreenDisplay.setActionBar(
+      `§bSpirit: §f${spirit}§7/§f${maxSpirit}  ${swordTag}${armourTag}`
+    );
   }
 
-  // =============================================
-  // MENU HANDLER  (called from main.js on dawn_item use)
-  // =============================================
-  /**
-   * Open the Dawn Paladin ability menu.
-   * Import ActionFormData from '@minecraft/server-ui' in main.js and pass it here,
-   * OR call showMenu from door_pathway_menus pattern.
-   * This method handles a pre-chosen abilityId to avoid needing UI import here.
-   */
-  static handleAbilityUse(player, abilityId) {
-    switch (abilityId) {
-      case this.ABILITIES.LIGHT_OF_DAWN:      return this.useLightOfDawn(player);
-      case this.ABILITIES.HURRICANE_OF_LIGHT: return this.useHurricaneOfLight(player);
-      case this.ABILITIES.SWORD_OF_LIGHT:     return this.useSwordOfLight(player);
-      case this.ABILITIES.SHIELD_OF_LIGHT:    return this.useShieldOfLight(player);
-      default:
-        player.sendMessage('§cUnknown ability!');
-        return false;
-    }
+  static applyPhysicalEnhancements(player) {
+    const spd = player.isSprinting ? this.SPEED_AMPLIFIER : this.SPEED_NORMAL;
+    const s   = player.getEffect('strength');
+    if (!s || s.amplifier !== this.STRENGTH_AMPLIFIER || s.duration < 200)
+      player.addEffect('strength',    this.EFFECT_DURATION, { amplifier: this.STRENGTH_AMPLIFIER, showParticles: false });
+    const sp  = player.getEffect('speed');
+    if (!sp || sp.amplifier !== spd || sp.duration < 200)
+      player.addEffect('speed',       this.EFFECT_DURATION, { amplifier: spd, showParticles: false });
+    const j   = player.getEffect('jump_boost');
+    if (!j || j.amplifier !== this.JUMP_AMPLIFIER || j.duration < 200)
+      player.addEffect('jump_boost',  this.EFFECT_DURATION, { amplifier: this.JUMP_AMPLIFIER, showParticles: false });
+  }
+
+  static applyHealthBonus(player, hp) {
+    const amp = Math.floor(hp / 4) - 1;
+    const hb  = player.getEffect('health_boost');
+    if (!hb || hb.amplifier !== amp || hb.duration < 200)
+      player.addEffect('health_boost', this.EFFECT_DURATION, { amplifier: amp, showParticles: false });
+  }
+
+  static applyGiantSize(player) {
+    try { player.addEffect('slow_falling', 40, { amplifier: 0, showParticles: false }); } catch (_) {}
+  }
+
+  static applyWeaponEnchantments(player) {
+    try {
+      const inv = player.getComponent('minecraft:inventory');
+      if (!inv?.container) return;
+      const held = inv.container.getItem(player.selectedSlotIndex);
+      if (!held || (!held.typeId.includes('sword') && !held.typeId.includes('axe') && held.typeId !== 'lotm:dawn_sword')) return;
+      const enc = held.getComponent('minecraft:enchantable');
+      if (!enc) return;
+      if (!enc.hasEnchantment('sharpness'))  enc.addEnchantment({ type: 'sharpness',  level: 5 });
+      if (!enc.hasEnchantment('fire_aspect')) enc.addEnchantment({ type: 'fire_aspect', level: 2 });
+      if (!enc.hasEnchantment('unbreaking')) enc.addEnchantment({ type: 'unbreaking', level: 3 });
+      inv.container.setItem(player.selectedSlotIndex, held);
+    } catch (_) {}
   }
 
   // =============================================
   // COOLDOWN HELPERS
   // =============================================
   static tickCooldowns(player) {
-    const n = player.name;
-    const tick = v => (v > 0 ? v - 1 : 0);
-
-    const lc = this.lightCooldowns.get(n);     if (lc)  this.lightCooldowns.set(n, tick(lc));
-    const hc = this.hurricaneCooldowns.get(n); if (hc)  this.hurricaneCooldowns.set(n, tick(hc));
-    const sc = this.swordCooldowns.get(n);     if (sc)  this.swordCooldowns.set(n, tick(sc));
-    const shc= this.shieldCooldowns.get(n);    if (shc) this.shieldCooldowns.set(n, tick(shc));
+    const n    = player.name;
+    const tick = v => Math.max(0, v - 1);
+    const maps = [this.lightCooldowns, this.hurricaneCooldowns, this.dawnSwordCooldowns,
+                  this.airSlashCooldowns, this.dawnArmourCooldowns];
+    for (const m of maps) { const v = m.get(n); if (v) m.set(n, tick(v)); }
   }
 
   static _cdRemaining(map, player) {
@@ -164,711 +162,433 @@ export class DawnPaladinSequence {
     return v > 0 ? Math.ceil(v / 20) : 0;
   }
 
-  // =============================================
-  // PASSIVE STAT METHODS
-  // =============================================
-  static applyPhysicalEnhancements(player) {
-    const isSprinting = player.isSprinting;
-    const speedLevel  = isSprinting ? this.SPEED_AMPLIFIER : this.SPEED_NORMAL;
 
-    const strength = player.getEffect('strength');
-    if (!strength || strength.amplifier !== this.STRENGTH_AMPLIFIER || strength.duration < 200) {
-      player.addEffect('strength', this.EFFECT_DURATION, { amplifier: this.STRENGTH_AMPLIFIER, showParticles: false });
+  static getSelectedAbility(player) {
+    if (!this.selectedAbilities.has(player.name)) {
+      try {
+        const saved = player.getDynamicProperty(this.SELECTED_ABILITY_PROP);
+        if (saved) this.selectedAbilities.set(player.name, saved);
+      } catch (_) {}
     }
-
-    const speed = player.getEffect('speed');
-    if (!speed || speed.amplifier !== speedLevel || speed.duration < 200) {
-      player.addEffect('speed', this.EFFECT_DURATION, { amplifier: speedLevel, showParticles: false });
-    }
-
-    const jump = player.getEffect('jump_boost');
-    if (!jump || jump.amplifier !== this.JUMP_AMPLIFIER || jump.duration < 200) {
-      player.addEffect('jump_boost', this.EFFECT_DURATION, { amplifier: this.JUMP_AMPLIFIER, showParticles: false });
-    }
-
-    const nv = player.getEffect('night_vision');
-    if (!nv || nv.duration < 200) {
-      player.addEffect('night_vision', this.EFFECT_DURATION, { amplifier: 0, showParticles: false });
-    }
-
-    const abs = player.getEffect('absorption');
-    if (!abs || abs.amplifier !== 3 || abs.duration < 200) {
-      player.addEffect('absorption', this.EFFECT_DURATION, { amplifier: 3, showParticles: false });
-    }
-
-    const res = player.getEffect('resistance');
-    if (!res || res.amplifier !== 3 || res.duration < 200) {
-      player.addEffect('resistance', this.EFFECT_DURATION, { amplifier: 3, showParticles: false });
-    }
-
-    const haste = player.getEffect('haste');
-    if (!haste || haste.amplifier !== 2 || haste.duration < 200) {
-      player.addEffect('haste', this.EFFECT_DURATION, { amplifier: 2, showParticles: false });
-    }
-
-    const fire = player.getEffect('fire_resistance');
-    if (!fire || fire.duration < 200) {
-      player.addEffect('fire_resistance', this.EFFECT_DURATION, { amplifier: 0, showParticles: false });
-    }
+    return this.selectedAbilities.get(player.name) || this.ABILITIES.LIGHT_OF_DAWN;
   }
 
-  static applyHealthBonus(player, bonusHearts) {
-    const amplifier = bonusHearts - 1;
-    const hb = player.getEffect('health_boost');
-    if (!hb || hb.amplifier !== amplifier || hb.duration < 200) {
-      player.addEffect('health_boost', this.EFFECT_DURATION, { amplifier, showParticles: false });
-    }
+  static setSelectedAbility(player, abilityId) {
+    this.selectedAbilities.set(player.name, abilityId);
+    try { player.setDynamicProperty(this.SELECTED_ABILITY_PROP, abilityId); } catch (_) {}
   }
 
-  static applyGiantSize(player) {
-    try { player.runCommand('attribute @s minecraft:generic.scale base set 1.5'); } catch (e) {}
+  static useSelectedAbility(player) {
+    return this.handleAbilityUse(player, this.getSelectedAbility(player));
   }
 
   // =============================================
   // ABILITY: LIGHT OF DAWN
   // =============================================
   static useLightOfDawn(player) {
-    if (!this.hasSequence(player)) {
-      player.sendMessage('§cYou do not have access to Light of Dawn!');
-      return false;
-    }
-
+    if (!this.hasSequence(player)) { player.sendMessage('§cNo access!'); return false; }
     const cd = this._cdRemaining(this.lightCooldowns, player);
-    if (cd > 0) {
-      player.sendMessage(`§cLight of Dawn on cooldown: §e${cd}s`);
-      return false;
-    }
-
-    if (this.activeLightZones.has(player.name)) {
-      player.sendMessage('§cLight of Dawn is already active!');
-      return false;
-    }
-
+    if (cd > 0) { player.sendMessage(`§cLight of Dawn on cooldown: §e${cd}s`); return false; }
+    if (this.activeLightZones.has(player.name)) { player.sendMessage('§cZone already active!'); return false; }
     if (!SpiritSystem.consumeSpirit(player, this.LIGHT_OF_DAWN_SPIRIT_COST)) {
-      player.sendMessage(`§cNot enough spirit! Need §e${this.LIGHT_OF_DAWN_SPIRIT_COST}`);
-      return false;
+      player.sendMessage(`§cNot enough spirit! Need §e${this.LIGHT_OF_DAWN_SPIRIT_COST}`); return false;
     }
-
-    const location = {
-      x: Math.floor(player.location.x),
-      y: Math.floor(player.location.y),
-      z: Math.floor(player.location.z)
-    };
-
-    // Build a small holy ground ring — only replace surface blocks, max 40 blocks
-    const replacedBlocks = [];
-    const radius = 6; // small radius, visually impactful, not laggy
-    for (let x = -radius; x <= radius; x++) {
-      for (let z = -radius; z <= radius; z++) {
-        if (Math.sqrt(x*x + z*z) > radius) continue;
-        const blockLoc = { x: location.x + x, y: location.y - 1, z: location.z + z };
-        try {
-          const block = player.dimension.getBlock(blockLoc);
-          if (block && !block.isAir && !block.isLiquid) {
-            replacedBlocks.push({ location: blockLoc, originalType: block.typeId });
-            player.dimension.runCommand(`setblock ${blockLoc.x} ${blockLoc.y} ${blockLoc.z} sea_lantern`);
-          }
-        } catch (e) {}
-      }
-    }
-
-    // Store zone — use dimensionId string, NOT dimension object (avoids stale refs)
+    const location = { ...player.location };
     this.activeLightZones.set(player.name, {
-      location,
-      dimensionId: player.dimension.id,
-      ticksRemaining: this.LIGHT_OF_DAWN_DURATION,
-      blocks: replacedBlocks
+      location, dimensionId: player.dimension.id,
+      ticksRemaining: this.LIGHT_OF_DAWN_DURATION, blocks: []
     });
-
     this.lightCooldowns.set(player.name, this.LIGHT_OF_DAWN_COOLDOWN);
-
-    player.playSound('beacon.activate', { pitch: 0.9, volume: 1.5 });
-    try {
-      player.dimension.playSound('ambient.weather.lightning.impact', {
-        location: location,
-        pitch: 1.8,
-        volume: 0.6
-      });
-    } catch (e) {}
     player.sendMessage('§6§l✦ LIGHT OF DAWN ✦');
-    player.sendMessage('§eHoly ground consecrated — undead beware!');
-
-    // Descending ray of light from sky
+    player.playSound('beacon.activate', { pitch: 0.9, volume: 1.0 });
     this._spawnLightRay(player.dimension, location, 30);
-
-    // Apply initial hit to all undead in range
     this._applyLightDamage(player.dimension, location, this.LIGHT_OF_DAWN_RANGE, this.LIGHT_OF_DAWN_DAMAGE);
-
     return true;
   }
 
   static processLightOfDawn(player) {
     const zone = this.activeLightZones.get(player.name);
     if (!zone) return;
-
     zone.ticksRemaining--;
-
-    // Resolve dimension safely each tick
     let dim;
-    try { dim = world.getDimension(zone.dimensionId); } catch (e) { return; }
-
-    // Refresh ray of light every 40 ticks (2s)
-    if (zone.ticksRemaining % 40 === 0) {
-      this._spawnLightRay(dim, zone.location, 20);
-    }
-
-    // Ground sparkle particles every 10 ticks
-    if (zone.ticksRemaining % 10 === 0) {
-      this._spawnLightZoneParticles(dim, zone.location, 6);
-    }
-
-    // Damage undead every 2 seconds (40 ticks)
-    if (zone.ticksRemaining % 40 === 0) {
-      this._applyLightDamage(dim, zone.location, this.LIGHT_OF_DAWN_RANGE, this.LIGHT_OF_DAWN_DAMAGE_ONGOING);
-    }
-
-    // Zone expired — restore ground
+    try { dim = world.getDimension(zone.dimensionId); } catch (_) { return; }
+    if (zone.ticksRemaining % 40 === 0) this._spawnLightRay(dim, zone.location, 20);
+    if (zone.ticksRemaining % 10 === 0) this._spawnLightZoneParticles(dim, zone.location, 6);
+    if (zone.ticksRemaining % 40 === 0) this._applyLightDamage(dim, zone.location, this.LIGHT_OF_DAWN_RANGE, this.LIGHT_OF_DAWN_DAMAGE_ONGOING);
     if (zone.ticksRemaining <= 0) {
-      this._restoreBlocks(dim, zone.blocks);
       this.activeLightZones.delete(player.name);
       player.sendMessage('§7Light of Dawn fades...');
-      player.playSound('beacon.deactivate', { pitch: 0.9, volume: 0.8 });
     }
   }
 
+  static _spawnLightRay(dim, loc, height) {
+    for (let h = 0; h < height; h++) {
+      try { dim.spawnParticle('minecraft:totem_particle', { x: loc.x, y: loc.y + h, z: loc.z }); } catch (_) {}
+    }
+  }
+
+  static _spawnLightZoneParticles(dim, loc, count) {
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * Math.PI * 2;
+      try { dim.spawnParticle('minecraft:endrod', {
+        x: loc.x + Math.cos(a) * 8, y: loc.y + 0.5, z: loc.z + Math.sin(a) * 8
+      }); } catch (_) {}
+    }
+  }
+
+  static _applyLightDamage(dim, loc, range, damage) {
+    try {
+      const entities = dim.getEntities({ location: loc, maxDistance: range,
+        excludeTypes: ['minecraft:item', 'minecraft:player', 'minecraft:xp_orb'] });
+      for (const e of entities) {
+        const isUndead = ['zombie','skeleton','phantom','wither','drowned','husk','stray',
+          'lotm:ghoul','lotm:vengeful_ghost'].some(t => e.typeId.includes(t));
+        try { e.applyDamage(isUndead ? damage * 2 : damage); } catch (_) {}
+        if (isUndead) { try { e.addEffect('weakness', 100, { amplifier: 2, showParticles: true }); } catch (_) {} }
+      }
+    } catch (_) {}
+  }
+
   // =============================================
-  // ABILITY: HURRICANE OF LIGHT
+  // ABILITY: HURRICANE OF LIGHT (enhanced)
   // =============================================
   static useHurricaneOfLight(player) {
-    if (!this.hasSequence(player)) {
-      player.sendMessage('§cYou do not have access to Hurricane of Light!');
-      return false;
-    }
-
+    if (!this.hasSequence(player)) { player.sendMessage('§cNo access!'); return false; }
     const cd = this._cdRemaining(this.hurricaneCooldowns, player);
-    if (cd > 0) {
-      player.sendMessage(`§cHurricane of Light on cooldown: §e${cd}s`);
-      return false;
-    }
-
-    if (this.activeHurricanes.has(player.name)) {
-      player.sendMessage('§cHurricane already active!');
-      return false;
-    }
-
+    if (cd > 0) { player.sendMessage(`§cHurricane of Light on cooldown: §e${cd}s`); return false; }
+    if (this.activeHurricanes.has(player.name)) { player.sendMessage('§cHurricane already active!'); return false; }
     if (!SpiritSystem.consumeSpirit(player, this.HURRICANE_SPIRIT_COST)) {
-      player.sendMessage(`§cNot enough spirit! Need §e${this.HURRICANE_SPIRIT_COST}`);
-      return false;
+      player.sendMessage(`§cNot enough spirit! Need §e${this.HURRICANE_SPIRIT_COST}`); return false;
     }
-
     const location = { ...player.location };
-
     this.activeHurricanes.set(player.name, {
-      location,
-      dimensionId: player.dimension.id,  // Store ID not object
-      ticksRemaining: this.HURRICANE_DURATION,
-      waveCount: 0
+      location, dimensionId: player.dimension.id,
+      ticksRemaining: this.HURRICANE_DURATION, waveCount: 0
     });
-
     this.hurricaneCooldowns.set(player.name, this.HURRICANE_COOLDOWN);
-
-    player.playSound('item.trident.thunder', { pitch: 0.8, volume: 1.5 });
     player.sendMessage('§6§l☀ HURRICANE OF LIGHT ☀');
-    player.sendMessage('§eSwords of dawn rain from above!');
-
-    // Opening sky flash — single burst ring up high
-    this._spawnBurstRing(player.dimension, { x: location.x, y: location.y + 12, z: location.z }, this.HURRICANE_RANGE * 0.5, 1);
-
+    player.sendMessage('§eSwords of dawn rain from the heavens!');
+    player.playSound('item.trident.thunder', { pitch: 0.8, volume: 1.5 });
+    for (let i = 0; i < 40; i++) {
+      const a = (i/40)*Math.PI*2;
+      try { player.dimension.spawnParticle('minecraft:totem_particle', {
+        x: location.x+Math.cos(a)*this.HURRICANE_RANGE*0.5,
+        y: location.y+12,
+        z: location.z+Math.sin(a)*this.HURRICANE_RANGE*0.5
+      }); } catch (_) {}
+    }
     return true;
   }
 
   static processHurricaneOfLight(player) {
-    const hurricane = this.activeHurricanes.get(player.name);
-    if (!hurricane) return;
-
-    hurricane.ticksRemaining--;
-
+    const h = this.activeHurricanes.get(player.name);
+    if (!h) return;
+    h.ticksRemaining--;
     let dim;
-    try { dim = world.getDimension(hurricane.dimensionId); } catch (e) { return; }
-
-    // Spawn ONE wave at interval — not every tick
-    if (hurricane.ticksRemaining % this.HURRICANE_WAVE_INTERVAL === 0) {
-      hurricane.waveCount++;
-      this._spawnSwordWave(player, dim, hurricane.location);
+    try { dim = world.getDimension(h.dimensionId); } catch (_) { return; }
+    if (h.ticksRemaining % this.HURRICANE_WAVE_INTERVAL === 0) {
+      this._spawnSwordWave(dim, player, h);
+      h.waveCount++;
     }
-
-    // Ambient swirl particles (cheap — just 4 per tick at low frequency)
-    if (hurricane.ticksRemaining % 8 === 0) {
-      const angle = (hurricane.ticksRemaining / this.HURRICANE_DURATION) * Math.PI * 8;
-      const r = this.HURRICANE_RANGE * 0.4;
-      for (let i = 0; i < 4; i++) {
-        const a = angle + (i / 4) * Math.PI * 2;
-        try {
-          dim.spawnParticle('minecraft:totem_particle', {
-            x: hurricane.location.x + Math.cos(a) * r,
-            y: hurricane.location.y + 8,
-            z: hurricane.location.z + Math.sin(a) * r
-          });
-        } catch (e) {}
-      }
-    }
-
-    if (hurricane.ticksRemaining <= 0) {
+    if (h.ticksRemaining % 10 === 0) this._applyHurricaneDamage(dim, h);
+    if (h.ticksRemaining <= 0) {
       this.activeHurricanes.delete(player.name);
-      player.sendMessage('§7The hurricane of light subsides...');
+      player.sendMessage('§7The hurricane subsides...');
       player.playSound('item.trident.return', { pitch: 1.0, volume: 1.0 });
     }
   }
 
-  /**
-   * Spawn one wave of "falling swords" — pure particle approach, NO falling_block entities
-   * (falling_block entities accumulate and cause lag; particle trails look better anyway)
-   */
-  static _spawnSwordWave(player, dimension, centerLocation) {
+  static _spawnSwordWave(dim, player, h) {
+    const loc = h.location;
     for (let i = 0; i < this.HURRICANE_SWORDS_PER_WAVE; i++) {
-      const angle    = Math.random() * Math.PI * 2;
-      const distance = Math.random() * this.HURRICANE_RANGE;
-      const sx       = centerLocation.x + Math.cos(angle) * distance;
-      const sz       = centerLocation.z + Math.sin(angle) * distance;
-      const spawnY   = centerLocation.y + 20;
-      const groundY  = centerLocation.y + 0.5;
-      const delay    = i * 4;
+      const angle  = (i / this.HURRICANE_SWORDS_PER_WAVE) * Math.PI * 2 + h.waveCount * 0.4;
+      const radius = 2 + Math.random() * this.HURRICANE_RANGE;
+      const sx = loc.x + Math.cos(angle) * radius;
+      const sz = loc.z + Math.sin(angle) * radius;
+      const sy = loc.y + 14 + Math.random() * 6;
 
-      system.runTimeout(() => {
-        // ── Falling sword particle — custom sprite, moves downward ────
-        // Spawned at top, parametric motion carries it to ground over ~1.2s
-        try {
-          dimension.spawnParticle('lotm:dawn_sword', { x: sx, y: spawnY, z: sz });
-        } catch (e) {
-          // Fallback: vanilla particle column if custom particle not loaded
-          const steps = 14;
-          for (let t = 0; t < steps; t++) {
-            const trailY = spawnY - t * 1.5;
-            const tDelay = t;
-            system.runTimeout(() => {
-              try { dimension.spawnParticle('minecraft:totem_particle', { x: sx, y: trailY,       z: sz }); } catch (e2) {}
-              try { dimension.spawnParticle('minecraft:end_rod',        { x: sx, y: trailY + 0.5, z: sz }); } catch (e2) {}
-            }, tDelay);
-          }
+      // Gold/white falling sword particles
+      for (let drop = 0; drop < 8; drop++) {
+        try { dim.spawnParticle('minecraft:totem_particle', {
+          x: sx+(Math.random()-0.5)*0.3, y: sy-drop*1.2, z: sz+(Math.random()-0.5)*0.3
+        }); } catch (_) {}
+        try { dim.spawnParticle('minecraft:endrod', { x: sx, y: sy-drop*1.4, z: sz }); } catch (_) {}
+      }
+      // Impact flash
+      try { dim.spawnParticle('minecraft:totem_particle', { x: sx, y: loc.y+0.5, z: sz }); } catch (_) {}
+      try { dim.spawnParticle('minecraft:large_explosion',{ x: sx, y: loc.y+0.5, z: sz }); } catch (_) {}
+
+      // Damage at impact
+      try {
+        const near = dim.getEntities({ location: { x: sx, y: loc.y, z: sz }, maxDistance: 2,
+          excludeTypes: ['minecraft:item','minecraft:xp_orb','minecraft:player'] });
+        for (const e of near) {
+          const isUndead = ['zombie','skeleton','phantom','wither','drowned','husk','stray',
+            'lotm:ghoul','lotm:vengeful_ghost'].some(t => e.typeId.includes(t));
+          try { e.applyDamage(isUndead ? this.HURRICANE_UNDEAD_DAMAGE : this.HURRICANE_SWORD_DAMAGE); } catch (_) {}
+          try { e.setOnFire(2, true); } catch (_) {}
         }
-
-        // ── Golden trail behind the falling sword ─────────────────────
-        const steps = 14;
-        for (let t = 2; t < steps; t++) {
-          const trailY = spawnY - t * 1.5;
-          const tDelay = t;
-          system.runTimeout(() => {
-            try { dimension.spawnParticle('minecraft:totem_particle', { x: sx, y: trailY, z: sz }); } catch (e) {}
-          }, tDelay);
-        }
-
-        // ── Impact burst ──────────────────────────────────────────────
-        system.runTimeout(() => {
-          const impactLoc = { x: sx, y: groundY, z: sz };
-          for (let k = 0; k < 12; k++) {
-            const ka = (k / 12) * Math.PI * 2;
-            try { dimension.spawnParticle('minecraft:critical_hit_emitter', { x: impactLoc.x + Math.cos(ka) * 0.8, y: impactLoc.y,       z: impactLoc.z + Math.sin(ka) * 0.8 }); } catch (e) {}
-            try { dimension.spawnParticle('minecraft:totem_particle',       { x: impactLoc.x + Math.cos(ka) * 0.5, y: impactLoc.y + 0.4, z: impactLoc.z + Math.sin(ka) * 0.5 }); } catch (e) {}
-          }
-          try { dimension.playSound('item.trident.hit', { location: impactLoc, pitch: 1.4, volume: 0.8 }); } catch (e) {}
-
-          // Damage at impact
-          try {
-            const hits = dimension.getEntities({
-              location: impactLoc,
-              maxDistance: 2.5,
-              excludeTypes: ['minecraft:item', 'minecraft:player']
-            });
-            for (const entity of hits) {
-              const dmg = this.isUndeadOrEvil(entity) ? this.HURRICANE_SWORD_DAMAGE_UNDEAD : this.HURRICANE_SWORD_DAMAGE;
-              try { entity.applyDamage(dmg); } catch (e) {}
-            }
-          } catch (e) {}
-        }, steps + 4);
-
-      }, delay);
+      } catch (_) {}
     }
   }
 
+  static _applyHurricaneDamage(dim, h) {
+    try {
+      const entities = dim.getEntities({ location: h.location, maxDistance: this.HURRICANE_RANGE,
+        excludeTypes: ['minecraft:item','minecraft:xp_orb','minecraft:player'] });
+      for (const e of entities) {
+        try { e.addEffect('slowness', 40, { amplifier: 1, showParticles: false }); } catch (_) {}
+      }
+    } catch (_) {}
+  }
+
   // =============================================
-  // ABILITY: SWORD OF LIGHT (active buff)
+  // ABILITY: DAWN SWORD
   // =============================================
-  static useSwordOfLight(player) {
-    if (!this.hasSequence(player)) {
-      player.sendMessage('§cYou do not have access to Sword of Light!');
-      return false;
+  static useDawnSword(player) {
+    if (!this.hasSequence(player)) { player.sendMessage('§cNo access!'); return false; }
+    if (this.dawnSwordTicks.has(player.name)) { player.sendMessage('§cDawn Sword already active!'); return false; }
+    const cd = this._cdRemaining(this.dawnSwordCooldowns, player);
+    if (cd > 0) { player.sendMessage(`§cDawn Sword on cooldown: §e${cd}s`); return false; }
+    if (!SpiritSystem.consumeSpirit(player, this.DAWN_SWORD_SPIRIT_COST)) {
+      player.sendMessage(`§cNot enough spirit! Need §e${this.DAWN_SWORD_SPIRIT_COST}`); return false;
     }
-
-    const cd = this._cdRemaining(this.swordCooldowns, player);
-    if (cd > 0) {
-      player.sendMessage(`§cSword of Light on cooldown: §e${cd}s`);
-      return false;
+    try { player.runCommand('give @s lotm:dawn_sword 1'); } catch (_) {}
+    this.dawnSwordTicks.set(player.name, this.DAWN_SWORD_DURATION);
+    player.sendMessage('§6§l⚔ DAWN SWORD ⚔');
+    player.sendMessage('§7A blade of pure dawn light! (60s)');
+    player.sendMessage('§e Sneak+use: Air Slash  |  Use: Hurricane of Light');
+    player.playSound('item.trident.throw', { pitch: 0.7, volume: 1.0 });
+    const loc = player.location;
+    for (let i = 0; i < 20; i++) {
+      const a = (i/20)*Math.PI*2;
+      try { player.dimension.spawnParticle('minecraft:totem_particle', {
+        x: loc.x+Math.cos(a)*0.8, y: loc.y+1.2, z: loc.z+Math.sin(a)*0.8
+      }); } catch (_) {}
     }
-
-    if (!SpiritSystem.consumeSpirit(player, this.SWORD_OF_LIGHT_SPIRIT_COST)) {
-      player.sendMessage(`§cNot enough spirit! Need §e${this.SWORD_OF_LIGHT_SPIRIT_COST}`);
-      return false;
-    }
-
-    this.swordOfLightActive.set(player.name, this.SWORD_OF_LIGHT_DURATION);
-    this.swordCooldowns.set(player.name, this.SWORD_OF_LIGHT_COOLDOWN);
-
-    // Apply combat buffs
-    player.addEffect('strength', this.SWORD_OF_LIGHT_DURATION, { amplifier: this.STRENGTH_AMPLIFIER + 2, showParticles: true });
-
-    player.playSound('random.orb', { pitch: 1.5, volume: 1.0 });
-    player.sendMessage('§e§l⚔ SWORD OF LIGHT activated!');
-    player.sendMessage('§eStrength surges through your weapon!');
-
-    // Halo particle effect
-    this._spawnHaloEffect(player.dimension, player.location);
-
     return true;
   }
 
-  static processSwordOfLight(player) {
-    const ticks = this.swordOfLightActive.get(player.name);
-    if (!ticks || ticks <= 0) { this.swordOfLightActive.delete(player.name); return; }
-
-    this.swordOfLightActive.set(player.name, ticks - 1);
-
-    // Small persistent glow around player every 10 ticks
-    if (ticks % 10 === 0) {
-      try {
-        player.dimension.spawnParticle('minecraft:totem_particle', {
-          x: player.location.x,
-          y: player.location.y + 1,
-          z: player.location.z
-        });
-      } catch (e) {}
-    }
-
+  static _processDawnSword(player) {
+    const ticks = this.dawnSwordTicks.get(player.name);
+    if (!ticks) return;
+    this.dawnSwordTicks.set(player.name, ticks - 1);
+    if (ticks === 100) player.sendMessage('§6Dawn Sword fading in 5 seconds...');
     if (ticks <= 1) {
-      player.sendMessage('§7Sword of Light fades...');
+      this.dawnSwordTicks.delete(player.name);
+      this.dawnSwordCooldowns.set(player.name, this.DAWN_SWORD_COOLDOWN);
+      this.dawnSwordAbilityIndex.delete(player.name);
+      
+      player.sendMessage('§7The dawn blade dissolves into light.');
+      try { player.runCommand('clear @s lotm:dawn_sword 0 1'); } catch (_) {}
     }
   }
 
+  // Called from main.js itemUse when player right-clicks with dawn_sword
+  static handleDawnSwordUse(player) {
+    if (!this.dawnSwordTicks.has(player.name)) return false;
+
+    if (player.isSneaking) {
+      // Sneak + right-click = cycle between Hurricane and Air Slash
+      const current = this.dawnSwordAbilityIndex.get(player.name) || 0;
+      const next    = current === 0 ? 1 : 0;
+      this.dawnSwordAbilityIndex.set(player.name, next);
+      const names = ['§6☀ Hurricane of Light', '§6🌬 Air Slash'];
+      player.sendMessage(`§6Dawn Sword: §e${names[next]}`);
+      player.playSound('random.orb', { pitch: 1.3, volume: 0.5 });
+      return true;
+    }
+
+    // Right-click = fire current selected sword ability
+    const idx = this.dawnSwordAbilityIndex.get(player.name) || 0;
+    if (idx === 0) return this.useHurricaneOfLight(player);
+    return this.useAirSlash(player);
+  }
+
   // =============================================
-  // ABILITY: SHIELD OF LIGHT
+  // ABILITY: AIR SLASH
   // =============================================
-  static useShieldOfLight(player) {
-    if (!this.hasSequence(player)) {
-      player.sendMessage('§cYou do not have access to Shield of Light!');
-      return false;
+  static useAirSlash(player) {
+    const cd = this._cdRemaining(this.airSlashCooldowns, player);
+    if (cd > 0) { player.sendMessage(`§cAir Slash on cooldown: §e${cd}s`); return false; }
+    if (!SpiritSystem.consumeSpirit(player, this.AIR_SLASH_SPIRIT_COST)) {
+      player.sendMessage(`§cNot enough spirit! Need §e${this.AIR_SLASH_SPIRIT_COST}`); return false;
     }
+    this.airSlashCooldowns.set(player.name, this.AIR_SLASH_COOLDOWN);
+    player.sendMessage('§6§o Air Slash!');
+    player.playSound('item.trident.throw', { pitch: 1.5, volume: 0.8 });
 
-    const cd = this._cdRemaining(this.shieldCooldowns, player);
-    if (cd > 0) {
-      player.sendMessage(`§cShield of Light on cooldown: §e${cd}s`);
-      return false;
-    }
+    const eye  = player.getHeadLocation();
+    const view = player.getViewDirection();
+    const dim  = player.dimension;
+    const start = { x: eye.x+view.x*1.5, y: eye.y, z: eye.z+view.z*1.5 };
+    const SPEED = 0.6, STEPS = 28, DAMAGE = this.AIR_SLASH_DAMAGE;
+    let pos = { ...start }, hit = false, age = 0;
 
-    if (!SpiritSystem.consumeSpirit(player, this.SHIELD_OF_LIGHT_SPIRIT_COST)) {
-      player.sendMessage(`§cNot enough spirit! Need §e${this.SHIELD_OF_LIGHT_SPIRIT_COST}`);
-      return false;
-    }
+    const step = () => {
+      if (hit || age >= STEPS) return;
+      age++;
+      pos.x += view.x*SPEED; pos.y += view.y*SPEED; pos.z += view.z*SPEED;
 
-    this.shieldOfLightActive.set(player.name, this.SHIELD_OF_LIGHT_DURATION);
-    this.shieldCooldowns.set(player.name, this.SHIELD_OF_LIGHT_COOLDOWN);
+      // Sweep attack particle — horizontal slash visual
+      try { dim.spawnParticle('minecraft:endrod',              pos); } catch (_) {}
+      try { dim.spawnParticle('minecraft:critical_hit_emitter', pos); } catch (_) {}
 
-    // Strong defensive buffs
-    player.addEffect('resistance', this.SHIELD_OF_LIGHT_DURATION, { amplifier: 4, showParticles: true });
-    player.addEffect('absorption', this.SHIELD_OF_LIGHT_DURATION, { amplifier: 9, showParticles: false }); // +5 absorb hearts
-    player.addEffect('regeneration', this.SHIELD_OF_LIGHT_DURATION, { amplifier: 1, showParticles: false });
 
-    player.playSound('mob.guardian.elder.curse', { pitch: 1.5, volume: 1.0 });
-    player.sendMessage('§f§l🛡 SHIELD OF LIGHT raised!');
-    player.sendMessage('§fDivine light shields your body!');
+      try {
+        const block = dim.getBlock({ x:Math.floor(pos.x), y:Math.floor(pos.y), z:Math.floor(pos.z) });
+        if (block && !block.isAir && !block.isLiquid) {
+          hit = true;
+           for (let i = 0; i < 5; i++) {
+            const a = (i/5)*Math.PI*2;
+            try { dim.spawnParticle('minecraft:endrod', {
+              x:pos.x+Math.cos(a)*0.4, y:pos.y, z:pos.z+Math.sin(a)*0.4
+            }); } catch(_){}
+            try { dim.spawnParticle('minecraft:critical_hit_emitter', {
+              x:pos.x+Math.cos(a)*0.4, y:pos.y, z:pos.z+Math.sin(a)*0.4
+            }); } catch(_){}
+          }
+          try { dim.spawnParticle('minecraft:large_explosion', pos); } catch (_) {}
+          return;
+        }
+      } catch (_) {}
 
-    // Shield pulse visual
-    this._spawnShieldPulse(player.dimension, player.location);
+      try {
+        const near = dim.getEntities({ location:pos, maxDistance:2.0,
+          excludeTypes:['minecraft:item','minecraft:xp_orb','minecraft:arrow'] });
+        for (const e of near) {
+          if (e.id === player.id) continue;
+          hit = true;
+          try { e.applyDamage(DAMAGE, { cause:'projectile', damagingEntity:player }); } catch(_){
+            try { e.applyDamage(DAMAGE); } catch(_2){}
+          }
+          // Big sweep burst on entity hit
+          for (let i = 0; i < 8; i++) {
+            const a = (i/8)*Math.PI*2;
+            try { dim.spawnParticle('minecraft:endrod', {
+              x:e.location.x+Math.cos(a)*0.6, y:e.location.y+1, z:e.location.z+Math.sin(a)*0.6
+            }); } catch(_){}
+            try { dim.spawnParticle('minecraft:critical_hit_emitter', {
+              x:e.location.x+Math.cos(a)*0.6, y:e.location.y+1, z:e.location.z+Math.sin(a)*0.6
+            }); } catch(_){}
+          }
+          try { dim.spawnParticle('minecraft:large_explosion', { x:pos.x, y:pos.y, z:pos.z }); } catch(_){}
+          return;
+        }
+      } catch (_) {}
 
+      system.runTimeout(step, 1);
+    };
+    system.runTimeout(step, 1);
     return true;
   }
 
-  static processShieldOfLight(player) {
-    const ticks = this.shieldOfLightActive.get(player.name);
-    if (!ticks || ticks <= 0) { this.shieldOfLightActive.delete(player.name); return; }
-
-    this.shieldOfLightActive.set(player.name, ticks - 1);
-
-    // Pulsing shield ring every 15 ticks
-    if (ticks % 15 === 0) {
-      try {
-        for (let i = 0; i < 8; i++) {
-          const a = (i / 8) * Math.PI * 2;
-          player.dimension.spawnParticle('minecraft:end_rod', {
-            x: player.location.x + Math.cos(a) * 0.8,
-            y: player.location.y + 1,
-            z: player.location.z + Math.sin(a) * 0.8
-          });
-        }
-      } catch (e) {}
+  // =============================================
+  // ABILITY: DAWN ARMOUR
+  // =============================================
+  static useDawnArmour(player) {
+    if (!this.hasSequence(player)) { player.sendMessage('§cNo access!'); return false; }
+    if (this.dawnArmourTicks.has(player.name)) { player.sendMessage('§cDawn Armour already active!'); return false; }
+    const cd = this._cdRemaining(this.dawnArmourCooldowns, player);
+    if (cd > 0) { player.sendMessage(`§cDawn Armour on cooldown: §e${cd}s`); return false; }
+    if (!SpiritSystem.consumeSpirit(player, this.DAWN_ARMOUR_SPIRIT_COST)) {
+      player.sendMessage(`§cNot enough spirit! Need §e${this.DAWN_ARMOUR_SPIRIT_COST}`); return false;
     }
 
+    const inv = player.getComponent('minecraft:inventory');
+    if (!inv?.container) return false;
+
+    // Equip dawn armour — named enchanted diamond set
+    const cmds = [
+      `replaceitem entity @s slot.armor.head  0 minecraft:diamond_helmet{"display":{"Name":"§6Dawn Helm"},"ench":[{"id":"protection","lvl":4},{"id":"unbreaking","lvl":3}]}`,
+      `replaceitem entity @s slot.armor.chest 0 minecraft:diamond_chestplate{"display":{"Name":"§6Dawn Plate"},"ench":[{"id":"protection","lvl":4},{"id":"unbreaking","lvl":3}]}`,
+      `replaceitem entity @s slot.armor.legs  0 minecraft:diamond_leggings{"display":{"Name":"§6Dawn Greaves"},"ench":[{"id":"protection","lvl":4},{"id":"unbreaking","lvl":3}]}`,
+      `replaceitem entity @s slot.armor.feet  0 minecraft:diamond_boots{"display":{"Name":"§6Dawn Boots"},"ench":[{"id":"protection","lvl":4},{"id":"feather_falling","lvl":4},{"id":"unbreaking","lvl":3}]}`,
+    ];
+    for (const cmd of cmds) { try { player.runCommand(cmd); } catch (_) {} }
+
+    this.dawnArmourTicks.set(player.name, this.DAWN_ARMOUR_DURATION);
+    player.sendMessage('§6§l🛡 DAWN ARMOUR 🛡');
+    player.sendMessage('§7Armour of pure dawn light forms around you! (60s)');
+    player.playSound('armor.equip_diamond', { pitch: 0.8, volume: 1.2 });
+    const loc = player.location;
+    for (let i = 0; i < 24; i++) {
+      const a = (i/24)*Math.PI*2;
+      try { player.dimension.spawnParticle('minecraft:totem_particle', {
+        x:loc.x+Math.cos(a)*0.6, y:loc.y+1, z:loc.z+Math.sin(a)*0.6
+      }); } catch (_) {}
+    }
+    return true;
+  }
+
+  static _processDawnArmour(player) {
+    const ticks = this.dawnArmourTicks.get(player.name);
+    if (!ticks) return;
+    this.dawnArmourTicks.set(player.name, ticks - 1);
+    if (ticks === 100) player.sendMessage('§6Dawn Armour fading in 5 seconds...');
     if (ticks <= 1) {
-      player.sendMessage('§7Shield of Light fades...');
+      this.dawnArmourTicks.delete(player.name);
+      this.dawnArmourCooldowns.set(player.name, this.DAWN_ARMOUR_COOLDOWN);
+      // Remove dawn armour pieces by name — clear only named items
+      for (const cmd of [
+        'clear @s minecraft:diamond_helmet    0 1',
+        'clear @s minecraft:diamond_chestplate 0 1',
+        'clear @s minecraft:diamond_leggings  0 1',
+        'clear @s minecraft:diamond_boots     0 1',
+      ]) { try { player.runCommand(cmd); } catch (_) {} }
+      player.sendMessage('§7The dawn armour dissolves.');
     }
   }
 
   // =============================================
-  // VISUAL HELPERS (performance-conscious)
+  // ABILITY HANDLER
   // =============================================
-
-  /**
-   * Descending ray of light from the sky down to the target location.
-   * Uses staggered timeouts to give a genuine top-to-bottom "falling beam" feel.
-   * Also emits custom particles if the resource pack files are present.
-   */
-  static _spawnLightRay(dimension, location, height = 24) {
-    const { x, y, z } = location;
-
-    // Custom particle emitters (resource pack)
-    try { dimension.spawnParticle('lotm:dawn_light_ray', { x, y: y + height, z }); } catch (e) {}
-    try { dimension.spawnParticle('lotm:dawn_ground_glow', { x, y: y + 0.1, z }); } catch (e) {}
-
-    // Vanilla fallback — stacked column, top to bottom
-    // Note: delay values are pre-calculated to avoid closure-over-loop-variable bug
-    const steps    = Math.min(40, Math.floor(height / 0.6));
-    const stepSize = height / steps;
-    for (let i = 0; i < steps; i++) {
-      const py    = y + height - i * stepSize; // capture value now, not reference
-      const delay = Math.floor(i * 1.2);
-      system.runTimeout(() => {
-        try { dimension.spawnParticle('minecraft:totem_particle', { x, y: py, z }); } catch (e) {}
-        try {
-          dimension.spawnParticle('minecraft:end_rod', { x: x + 0.15, y: py, z: z + 0.15 });
-          dimension.spawnParticle('minecraft:end_rod', { x: x - 0.15, y: py, z: z - 0.15 });
-        } catch (e) {}
-      }, delay);
-    }
-
-    // Impact burst when beam hits ground
-    const impactDelay = Math.floor(steps * 1.2) + 2;
-    system.runTimeout(() => {
-      for (let j = 0; j < 16; j++) {
-        const angle  = (j / 16) * Math.PI * 2;
-        const spread = 0.8 + Math.random() * 1.2;
-        try { dimension.spawnParticle('minecraft:totem_particle', { x: x + Math.cos(angle) * spread, y: y + 0.2, z: z + Math.sin(angle) * spread }); } catch (e) {}
-        try { dimension.spawnParticle('minecraft:villager_happy', { x: x + Math.cos(angle) * spread * 0.6, y: y + 0.3, z: z + Math.sin(angle) * spread * 0.6 }); } catch (e) {}
-      }
-    }, impactDelay);
-  }
-
-  /**
-   * Ring of particles radiating outward — single frame snapshot, no loops or timeouts
-   */
-  static _spawnBurstRing(dimension, location, radius, y_offset = 1) {
-    const count = Math.min(24, Math.floor(radius * 4));
-    for (let i = 0; i < count; i++) {
-      const a = (i / count) * Math.PI * 2;
-      try {
-        dimension.spawnParticle('minecraft:totem_particle', {
-          x: location.x + Math.cos(a) * radius,
-          y: location.y + y_offset,
-          z: location.z + Math.sin(a) * radius
-        });
-        dimension.spawnParticle('minecraft:end_rod', {
-          x: location.x + Math.cos(a) * radius * 0.6,
-          y: location.y + y_offset + 0.5,
-          z: location.z + Math.sin(a) * radius * 0.6
-        });
-      } catch (e) {}
+  static handleAbilityUse(player, abilityId) {
+    switch (abilityId) {
+      case this.ABILITIES.LIGHT_OF_DAWN:      return this.useLightOfDawn(player);
+      case this.ABILITIES.HURRICANE_OF_LIGHT: return this.useHurricaneOfLight(player);
+      case this.ABILITIES.DAWN_SWORD:         return this.useDawnSword(player);
+      case this.ABILITIES.DAWN_ARMOUR:        return this.useDawnArmour(player);
+      default: player.sendMessage('§cUnknown ability!'); return false;
     }
   }
 
-  /**
-   * Ongoing light zone ring — cheap 8-point ring
-   */
-  static _spawnLightZoneParticles(dimension, location, radius) {
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
-      try {
-        dimension.spawnParticle('minecraft:villager_happy', {
-          x: location.x + Math.cos(a) * radius,
-          y: location.y + 1,
-          z: location.z + Math.sin(a) * radius
-        });
-        dimension.spawnParticle('minecraft:totem_particle', {
-          x: location.x + Math.cos(a) * radius * 0.5,
-          y: location.y + 1.5,
-          z: location.z + Math.sin(a) * radius * 0.5
-        });
-      } catch (e) {}
-    }
-    // Rising center pillar (2 particles)
-    try {
-      dimension.spawnParticle('minecraft:end_rod', { x: location.x, y: location.y + 2, z: location.z });
-      dimension.spawnParticle('minecraft:totem_particle', { x: location.x, y: location.y + 3, z: location.z });
-    } catch (e) {}
-  }
-
-  /**
-   * Halo ring above player head for Sword of Light activation
-   */
-  static _spawnHaloEffect(dimension, location) {
-    for (let i = 0; i < 16; i++) {
-      const a = (i / 16) * Math.PI * 2;
-      try {
-        dimension.spawnParticle('minecraft:totem_particle', {
-          x: location.x + Math.cos(a) * 0.6,
-          y: location.y + 2.2,
-          z: location.z + Math.sin(a) * 0.6
-        });
-        dimension.spawnParticle('minecraft:end_rod', {
-          x: location.x + Math.cos(a) * 1.0,
-          y: location.y + 1.0,
-          z: location.z + Math.sin(a) * 1.0
-        });
-      } catch (e) {}
-    }
-  }
-
-  /**
-   * Shield pulse — expanding ring
-   */
-  static _spawnShieldPulse(dimension, location) {
-    for (let r = 1; r <= 3; r++) {
-      system.runTimeout(() => {
-        for (let i = 0; i < 12; i++) {
-          const a = (i / 12) * Math.PI * 2;
-          try {
-            dimension.spawnParticle('minecraft:end_rod', {
-              x: location.x + Math.cos(a) * r,
-              y: location.y + 1,
-              z: location.z + Math.sin(a) * r
-            });
-          } catch (e) {}
-        }
-      }, r * 4);
-    }
-  }
-
-  // =============================================
-  // DAMAGE HELPERS
-  // =============================================
-  static _applyLightDamage(dimension, location, range, damage) {
-    try {
-      const entities = dimension.getEntities({
-        location,
-        maxDistance: range,
-        excludeTypes: ['minecraft:item', 'minecraft:player']
-      });
-      for (const entity of entities) {
-        if (this.isUndeadOrEvil(entity)) {
-          try { entity.applyDamage(damage); } catch (e) {}
-          try {
-            entity.addEffect('weakness', 100, { amplifier: 2, showParticles: false });
-            entity.addEffect('slowness', 100, { amplifier: 2, showParticles: false });
-          } catch (e) {}
-        }
-      }
-    } catch (e) {}
-  }
-
-  static _restoreBlocks(dimension, blocks) {
-    for (const bd of blocks) {
-      try {
-        dimension.runCommand(`setblock ${bd.location.x} ${bd.location.y} ${bd.location.z} ${bd.originalType}`);
-      } catch (e) {}
-    }
-  }
-
-  // =============================================
-  // UNDEAD / EVIL CHECK
-  // =============================================
-  static isUndeadOrEvil(entity) {
-    const undeadTypes = [
-      'minecraft:zombie', 'minecraft:zombie_villager', 'minecraft:husk',
-      'minecraft:drowned', 'minecraft:skeleton', 'minecraft:stray',
-      'minecraft:wither_skeleton', 'minecraft:zombie_pigman',
-      'minecraft:zombified_piglin', 'minecraft:phantom', 'minecraft:wither',
-      'minecraft:zoglin', 'minecraft:skeleton_horse', 'minecraft:zombie_horse',
-      'minecraft:witch', 'minecraft:vex', 'minecraft:evoker',
-      'minecraft:vindicator', 'minecraft:pillager', 'minecraft:ravager',
-      'minecraft:enderman', 'minecraft:endermite', 'minecraft:shulker'
+  static getAllAbilities(player) {
+    return [
+      { id: this.ABILITIES.LIGHT_OF_DAWN, name: '§6✦ Light of Dawn',  cost: this.LIGHT_OF_DAWN_SPIRIT_COST },
+      { id: this.ABILITIES.DAWN_SWORD,    name: '§6⚔ Dawn Sword',      cost: this.DAWN_SWORD_SPIRIT_COST },
+      { id: this.ABILITIES.DAWN_ARMOUR,   name: '§6🛡 Dawn Armour',     cost: this.DAWN_ARMOUR_SPIRIT_COST },
     ];
-    return undeadTypes.includes(entity.typeId);
   }
 
-  // =============================================
-  // WEAPON / ARMOR ENCHANTMENTS
-  // =============================================
-  static applyWeaponEnchantments(player) {
-    const inventory = player.getComponent('minecraft:inventory');
-    if (!inventory?.container) return;
-    const heldItem = inventory.container.getItem(player.selectedSlotIndex);
-    if (!heldItem) return;
-
-    const weaponTypes = [
-      'minecraft:wooden_sword', 'minecraft:stone_sword', 'minecraft:iron_sword',
-      'minecraft:golden_sword', 'minecraft:diamond_sword', 'minecraft:netherite_sword',
-      'lotm:dawnsword'
-    ];
-    if (!weaponTypes.includes(heldItem.typeId)) return;
-
-    try {
-      const enchants = heldItem.getComponent('minecraft:enchantable');
-      if (!enchants) return;
-      if (!enchants.hasEnchantment('sharpness'))    enchants.addEnchantment({ type: 'sharpness',   level: 5 });
-      if (!enchants.hasEnchantment('smite'))         enchants.addEnchantment({ type: 'smite',       level: 5 });
-      if (!enchants.hasEnchantment('fire_aspect'))   enchants.addEnchantment({ type: 'fire_aspect', level: 2 });
-      if (!enchants.hasEnchantment('knockback'))     enchants.addEnchantment({ type: 'knockback',   level: 2 });
-      inventory.container.setItem(player.selectedSlotIndex, heldItem);
-    } catch (e) {}
-  }
-
-  static applyArmorEnchantments(player) {
-    const inventory = player.getComponent('minecraft:inventory');
-    if (!inventory?.container) return;
-    const armorSlots = [36, 37, 38, 39];
-    for (const slot of armorSlots) {
-      const item = inventory.container.getItem(slot);
-      if (!item) continue;
-      if (!item.typeId.includes('_chestplate') && !item.typeId.includes('_leggings') &&
-          !item.typeId.includes('_helmet') && !item.typeId.includes('_boots')) continue;
-      try {
-        const enchants = item.getComponent('minecraft:enchantable');
-        if (!enchants) continue;
-        if (!enchants.hasEnchantment('protection'))      enchants.addEnchantment({ type: 'protection',      level: 4 });
-        if (!enchants.hasEnchantment('blast_protection'))enchants.addEnchantment({ type: 'blast_protection',level: 4 });
-        if (!enchants.hasEnchantment('unbreaking'))      enchants.addEnchantment({ type: 'unbreaking',      level: 3 });
-        inventory.container.setItem(slot, item);
-      } catch (e) {}
-    }
-  }
-
-  // =============================================
-  // ABILITY DESCRIPTIONS (for menu display)
-  // =============================================
   static getAbilityDescription(abilityId) {
     const descs = {
       [this.ABILITIES.LIGHT_OF_DAWN]:
         `§eCost: ${this.LIGHT_OF_DAWN_SPIRIT_COST} Spirit | CD: 30s\n§7Consecrate holy ground, damage & weaken undead`,
       [this.ABILITIES.HURRICANE_OF_LIGHT]:
-        `§eCost: ${this.HURRICANE_SPIRIT_COST} Spirit | CD: 2min\n§7Rain down swords of dawn on all enemies`,
-      [this.ABILITIES.SWORD_OF_LIGHT]:
-        `§eCost: ${this.SWORD_OF_LIGHT_SPIRIT_COST} Spirit | CD: 15s\n§7Channel divine power through your weapon`,
-      [this.ABILITIES.SHIELD_OF_LIGHT]:
-        `§eCost: ${this.SHIELD_OF_LIGHT_SPIRIT_COST} Spirit | CD: 20s\n§7Raise a divine barrier, massive defense boost`
+        `§eCost: ${this.HURRICANE_SPIRIT_COST} Spirit | CD: 2min\n§7Rain swords of dawn on all enemies (enhanced)`,
+      [this.ABILITIES.DAWN_SWORD]:
+        `§eCost: ${this.DAWN_SWORD_SPIRIT_COST} Spirit | CD: 30s\n§7Summon dawn blade (60s)\n§7Sneak+use: Air Slash | Use: Hurricane of Light`,
+      [this.ABILITIES.DAWN_ARMOUR]:
+        `§eCost: ${this.DAWN_ARMOUR_SPIRIT_COST} Spirit | CD: 60s\n§7Summon full dawn armour set (60s)`,
     };
     return descs[abilityId] || '§7Unknown ability';
   }
 
-  static getAllAbilities(player) {
-    // Sequence 6 (Dawn Paladin) gets: Light of Dawn + Hurricane of Light
-    // Sequence 5 and below (Guardian+) also get: Sword of Light + Shield of Light
-    const sequence = player ? PathwayManager.getSequence(player) : 6;
-    const abilities = [
-      { id: this.ABILITIES.LIGHT_OF_DAWN,      name: '§6✦ Light of Dawn',      cost: this.LIGHT_OF_DAWN_SPIRIT_COST },
-      { id: this.ABILITIES.HURRICANE_OF_LIGHT, name: '§6☀ Hurricane of Light', cost: this.HURRICANE_SPIRIT_COST },
-    ];
-    if (sequence <= 5) {
-      abilities.push(
-        { id: this.ABILITIES.SWORD_OF_LIGHT,  name: '§e⚔ Sword of Light',  cost: this.SWORD_OF_LIGHT_SPIRIT_COST },
-        { id: this.ABILITIES.SHIELD_OF_LIGHT, name: '§f🛡 Shield of Light', cost: this.SHIELD_OF_LIGHT_SPIRIT_COST }
-      );
-    }
-    return abilities;
+  static removeEffects(player) {
+    this.activeLightZones.delete(player.name);
+    this.lightCooldowns.delete(player.name);
+    this.hurricaneCooldowns.delete(player.name);
+    this.activeHurricanes.delete(player.name);
+    this.dawnSwordTicks.delete(player.name);
+    this.dawnSwordCooldowns.delete(player.name);
+    this.airSlashCooldowns.delete(player.name);
+    this.dawnArmourTicks.delete(player.name);
+    this.dawnArmourCooldowns.delete(player.name);
+    this.storedArmour.delete(player.name);
+    this.selectedAbilities.delete(player.name);
+    this.dawnSwordAbilityIndex.delete(player.name);
+
+    try { player.runCommand('clear @s lotm:dawn_sword 0 1'); } catch (_) {}
   }
 }

@@ -1,0 +1,22 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:death_potion_seq7_recipe"
+    },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:potion", "data": 0 },
+      { "item": "minecraft:emerald" },
+      { "item": "minecraft:soul_sand" },
+      { "item": "lotm:death_characteristic_seq7" }
+    ],
+    "result": {
+      "item": "lotm:death_potion_seq7",
+      "count": 1
+    },
+    "unlock": [
+      { "item": "lotm:death_characteristic_seq7" }
+    ]
+  }
+}

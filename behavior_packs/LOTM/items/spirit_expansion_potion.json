@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:spirit_expansion_potion",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 16,
+      "minecraft:icon": "spirit_expansion_potion",
+      "minecraft:display_name": {
+        "value": "\u00a7dSpirit Expansion Potion"
+      },
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.8
+      },
+      "minecraft:food": {
+        "nutrition": 0,
+        "can_always_eat": true
+      },
+      "minecraft:use_animation": "drink"
+    }
+  }
+}

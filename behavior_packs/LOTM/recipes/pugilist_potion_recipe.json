@@ -12,13 +12,14 @@
     ],
     "key": {
       "D": {
-        "item": "minecraft:emerald"
+        "item": "lotm:twilight_giant_characteristic_seq8"
       },
       "G": {
         "item": "minecraft:iron_ingot"
       },
       "P": {
-        "item": "lotm:twilight_potion_seq9"
+        "item": "minecraft:potion",
+        "data": 0
       }
     },
     "result": {

@@ -98,11 +98,17 @@ item.lotm:spirit_restoration_potion.name=Spirit Restoration Potion
 item.lotm:flying_rock_core.name=Flying Rock Core
 entity.lotm:flying_rock.name=Flying Rock
 
+item.lotm:death_characteristic_seq8.name=Gravedigger Characteristic
+
+item.lotm:spirit_vial.name=Spirit Vial
+item.lotm:spirit_expansion_potion.name=Spirit Expansion Potion
 
 tile.lotm:grave_headstone.name=Grave Headstone
 tile.lotm:grave_slab.name=Grave Slab
 tile.lotm:grave_dirt.name=Disturbed Grave Dirt
 tile.lotm:grave_cross.name=Grave Cross
+tile.lotm:wooden_chair.name=Wooden Chair
+action.interact.sit=Sit
 
 ## Pathways
 lotm.pathway.darkness=Darkness

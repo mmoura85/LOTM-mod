@@ -435,7 +435,18 @@
     },
     "scroll_earth_spike": {
       "textures": "textures/items/scroll_earth_spike"
+    },
+    "dawn_sword": { "textures": "textures/items/dawn_sword" },
+    "death_characteristic_seq8": {
+      "textures": "textures/items/death_characteristic_seq8"
+    },
+    "spirit_vial":              { "textures": "textures/items/spirit_vial" },
+    "spirit_expansion_potion":  { "textures": "textures/items/spirit_expansion_potion" },
+    "death_potion_seq7": {
+      "textures": "textures/items/death_potion_seq7"
+    },
+    "death_characteristic_seq7": {
+      "textures": "textures/items/death_characteristic_seq7"
     }
-
   }
 }

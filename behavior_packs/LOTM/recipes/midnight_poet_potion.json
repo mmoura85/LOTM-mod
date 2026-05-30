@@ -12,16 +12,17 @@
     ],
     "key": {
       "M": {
-        "item": "minecraft:music_disc_13"
+        "item": "lotm:darkness_characteristic_seq8"
       },
       "D": {
-        "item": "minecraft:echo_shard"
+        "item": "minecraft:ink_sac"
       },
-      "P": {
-        "item": "lotm:darkness_potion_seq9"
+      "P":  {
+        "item": "minecraft:potion",
+        "data": 0
       },
       "N": {
-        "item": "minecraft:nether_star"
+        "item": "minecraft:phantom_membrane"
       }
     },
     "result": {

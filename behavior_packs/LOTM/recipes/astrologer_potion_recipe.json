@@ -15,13 +15,14 @@
         "item": "minecraft:spyglass"
       },
       "E": {
-        "item": "minecraft:ender_eye"
+        "item": "lotm:door_characteristic_seq7"
       },
       "P": {
-        "item": "lotm:door_potion_seq8"
+        "item": "minecraft:potion",
+        "data": 0
       },
       "C": {
-        "item": "minecraft:clock"
+        "item": "minecraft:compass"
       }
     },
     "result": {

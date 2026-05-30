@@ -17,11 +17,12 @@
       "G": {
         "item": "minecraft:glowstone_dust"
       },
-      "P": {
-        "item": "lotm:sun_potion_seq9"
-      },
       "B": {
-        "item": "minecraft:blaze_powder"
+        "item": "lotm:sun_characteristic_seq8"
+      },
+      "P":{
+        "item": "minecraft:potion",
+        "data": 0
       }
     },
     "result": {
