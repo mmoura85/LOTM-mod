@@ -6,22 +6,23 @@
     },
     "tags": ["crafting_table"],
     "pattern": [
-      " P ",
+      " W ",
       "EPE",
       " S "
     ],
     "key": {
-      "P": {
+      "W": {
         "item": "minecraft:phantom_membrane"
       },
       "E": {
         "item": "minecraft:ender_pearl"
       },
       "P": {
-        "item": "lotm:darkness_potion_seq8"
+        "item": "minecraft:potion",
+        "data": 0
       },
       "S": {
-        "item": "minecraft:soul_sand"
+        "item": "lotm:darkness_characteristic_seq7"
       }
     },
     "result": {

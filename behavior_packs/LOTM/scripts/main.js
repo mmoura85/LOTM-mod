@@ -7,6 +7,7 @@ import { NightmareSequence } from './sequences/darkness/nightmare.js';
 import { SoulAssurerSequence } from './sequences/darkness/soul_assurer.js';
 import { CorpseCollectorSequence } from './sequences/death/corpse_collector.js';
 import { GravediggerSequence } from './sequences/death/gravedigger.js';
+import { SpiritMediumSequence } from './sequences/death/spirit_medium.js';
 import { ApprenticeSequence } from './sequences/door/apprentice.js';
 import { TrickmasterSequence } from './sequences/door/trickmaster.js';
 import { AstrologerSequence } from './sequences/door/astrologer.js';
@@ -70,9 +71,14 @@ import { RampagerSystem } from './world/rampagerSystem.js';
 // Beyonder mobs
 import { ClownBeyonderSystem } from './beyonderMobs/clownBeyonderSystem.js';
 
+// Chair
+import { ChairSystem } from './world/chairSystem.js';
 
 //Flying Rock
 import { FlyingRockSystem } from './entity/flyingRockSystem.js';
+
+// spirit enchancemnt potion
+import { SpiritVialSystem } from './world/spiritVialSystem.js';
 
 
 // ── Block component registration — MUST be in startup, before world loads ──
@@ -95,49 +101,28 @@ const selectedSecretsSorcererAbilities = new Map();
 function initialize() {
   world.sendMessage('§aLord of the Mysteries mod loaded!');
 
-  // ShepherdSequence.registerSequenceClasses({
-  //   // Darkness
-  //   'MidnightPoetSequence':   MidnightPoetSequence,
-  //   'NightmareSequence':      NightmareSequence,
-  //   'SoulAssurerSequence':    SoulAssurerSequence,
-  //   // Twilight Giant
-  //   'DawnPaladinSequence':    DawnPaladinSequence,
-  //   'GuardianSequence':       GuardianSequence,
-  //   // Door
-  //   'ApprenticeSequence':     ApprenticeSequence,
-  //   'TrickmasterSequence':    TrickmasterSequence,
-  //   'AstrologerSequence':     AstrologerSequence,
-  //   'ScribeSequence':         ScribeSequence,
-  //   'TravelerSequence':       TravelerSequence,
-  //   // Death
-  //   'CorpseCollectorSequence': CorpseCollectorSequence,
-  //   // Sun
-  //   'BardSequence':           BardSequence,
-  //   'LightSuppliantSequence': LightSuppliantSequence,
-  //   // Seer
-  //   'SeerSequence':           SeerSequence,
-  //   'ClownSequence':          ClownSequence,
-  //   'MagicianSequence':       MagicianSequence,
-  //   // Justiciar
-  //   'ArbiterSequence':        ArbiterSequence,
-  //   'SheriffSequence':        SheriffSequence,
-  // });
-
   system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
-      const pathway  = PathwayManager.getPathway(player);
-      const sequence = PathwayManager.getSequence(player);
-      if (!pathway || sequence === undefined) continue;
-
-      SpiritSystem.tickRegeneration(player, sequence);
-      SpiritSystem.displaySpirit(player);
-
-      // ── Held-item actionbar overrides ─────────────────────────────────────
+ 
+      // Get pathway/sequence — skip if not a beyonder
+      let pathway, sequence;
+      try {
+        pathway  = PathwayManager.getPathway(player);
+        sequence = PathwayManager.getSequence(player);
+        if (!pathway || sequence === undefined || sequence === -1) continue;
+      } catch (_) { continue; }
+ 
+      // Spirit regen — isolated
+      try { SpiritSystem.tickRegeneration(player, sequence); } catch (_) {}
+ 
+      // Spirit display — runs regardless of what happens below
+      try { SpiritSystem.displaySpirit(player); } catch (_) {}
+ 
+      // Held-item actionbar overrides — runs after displaySpirit so it wins
       try {
         const inventory = player.getComponent('minecraft:inventory');
-        if (inventory && inventory.container) {
+        if (inventory?.container) {
           const heldItem = inventory.container.getItem(player.selectedSlotIndex);
-
           if (heldItem) {
             const hid = heldItem.typeId;
             if (hid === 'lotm:revolver') {
@@ -153,7 +138,7 @@ function initialize() {
             } else if (hid === 'lotm:mages_codex') {
               player.onScreenDisplay.setActionBar(ImperativeMageSequence.getStatusText(player));
             } else if (hid === 'lotm:paper_figurine_item') {
-              const cd       = MagicianSequence.figurineCooldowns.get(player.name) || 0;
+              const cd        = MagicianSequence.figurineCooldowns.get(player.name) || 0;
               const hasSpirit = SpiritSystem.getSpirit(player) >= MagicianSequence.FIGURINE_SPIRIT_COST;
               player.onScreenDisplay.setActionBar(
                 cd > 0 ? `§f📄 Figurine cooldown: §c${Math.ceil(cd/20)}s`
@@ -161,94 +146,118 @@ function initialize() {
                                    : '§f📄 Paper Figurine §c✘ Low spirit'
               );
             }
-
+ 
             if (RangedWeaponBuffs.isRangedWeapon(hid)) {
-              if (pathway === 'darkness')       RangedWeaponBuffs.applyDarknessBuffs(player, sequence);
+              if (pathway === 'darkness')            RangedWeaponBuffs.applyDarknessBuffs(player, sequence);
               else if (pathway === 'twilight_giant') RangedWeaponBuffs.applyTwilightGiantBuffs(player, sequence);
             }
           }
         }
       } catch (_) {}
-
-      // ── Pathway passive abilities ──────────────────────────────────────────
-      if (pathway === PathwayManager.PATHWAYS.DARKNESS) {
-        if      (sequence === 9) SleeplessSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) MidnightPoetSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) NightmareSequence.applyPassiveAbilities(player);
-        else if (sequence === 6) SoulAssurerSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.DEATH) {
-        if (sequence === 9) {
-          CorpseCollectorSequence.applyPassiveAbilities(player);
-        } else if (sequence === 8) {
-          GravediggerSequence.applyPassiveAbilities(player);
+ 
+      // Passive abilities — each pathway isolated
+      try {
+        if (pathway === PathwayManager.PATHWAYS.DARKNESS) {
+          if      (sequence === 9) SleeplessSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) MidnightPoetSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) NightmareSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) SoulAssurerSequence.applyPassiveAbilities(player);
         }
-      } else if (pathway === PathwayManager.PATHWAYS.DOOR) {
-        if      (sequence === 9) ApprenticeSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) TrickmasterSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) AstrologerSequence.applyPassiveAbilities(player);
-        else if (sequence === 6) ScribeSequence.applyPassiveAbilities(player);
-        else if (sequence === 5) TravelerSequence.applyPassiveAbilities(player);
-        else if (sequence === 4) SecretsSorcererSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.TWILIGHT_GIANT) {
-        if      (sequence === 9) WarriorSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) PugilistSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) WeaponMasterSequence.applyPassiveAbilities(player);
-        else if (sequence === 6) DawnPaladinSequence.applyPassiveAbilities(player);
-        else if (sequence === 5) GuardianSequence.applyPassiveAbilities(player);
-        else if (sequence === 4) DemonHunterSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.SUN) {
-        if      (sequence === 9) BardSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) LightSuppliantSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.SEER) {
-        if      (sequence === 9) SeerSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) ClownSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) MagicianSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.JUSTICIAR) {
-        if      (sequence === 9) ArbiterSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) SheriffSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) InterrogatorSequence.applyPassiveAbilities(player);
-        else if (sequence === 6) JudgeSequence.applyPassiveAbilities(player);
-        else if (sequence === 5) DisciplinaryPaladinSequence.applyPassiveAbilities(player);
-        else if (sequence === 4) ImperativeMageSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.HANGED_MAN) {
-        if      (sequence === 9) SecretsSuppliantSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) ListenerSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) ShadowAsceticSequence.applyPassiveAbilities(player);
-        else if (sequence === 6) RoseBishopSequence.applyPassiveAbilities(player);
-        else if (sequence === 5) ShepherdSequence.applyPassiveAbilities(player);
-      } else if (pathway === PathwayManager.PATHWAYS.HERMIT) {
-      if      (sequence === 9) MysteryPryerSequence.applyPassiveAbilities(player);
-        else if (sequence === 8) MeleeScholarSequence.applyPassiveAbilities(player);
-        else if (sequence === 7) WarlockSequence.applyPassiveAbilities(player);
-        else if (sequence === 6) ScrollProfessorSequence.applyPassiveAbilities(player);
-        else if (sequence === 5) ConstellationsMasterSequence.applyPassiveAbilities(player);
+      } catch (_) {}
+ 
+      try {
+         if (pathway === PathwayManager.PATHWAYS.DEATH) {
+        if      (sequence === 9) CorpseCollectorSequence.applyPassiveAbilities(player);
+        else if (sequence === 8) GravediggerSequence.applyPassiveAbilities(player);
+        else if (sequence === 7) SpiritMediumSequence.applyPassiveAbilities(player);
       }
-    }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.DOOR) {
+          if      (sequence === 9) ApprenticeSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) TrickmasterSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) AstrologerSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) ScribeSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) TravelerSequence.applyPassiveAbilities(player);
+          else if (sequence === 4) SecretsSorcererSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.TWILIGHT_GIANT) {
+          if      (sequence === 9) WarriorSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) PugilistSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) WeaponMasterSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) DawnPaladinSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) GuardianSequence.applyPassiveAbilities(player);
+          else if (sequence === 4) DemonHunterSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.SUN) {
+          if      (sequence === 9) BardSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) LightSuppliantSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.HANGED_MAN) {
+          if      (sequence === 9) SecretsSuppliantSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) ListenerSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) ShadowAsceticSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) RoseBishopSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) ShepherdSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.HERMIT) {
+          if      (sequence === 9) MysteryPryerSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) MeleeScholarSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) WarlockSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) ScrollProfessorSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) ConstellationsMasterSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.SEER) {
+          if      (sequence === 9) SeerSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) ClownSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) MagicianSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.JUSTICIAR) {
+          if      (sequence === 9) ArbiterSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) SheriffSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) InterrogatorSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) JudgeSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) DisciplinaryPaladinSequence.applyPassiveAbilities(player);
+          else if (sequence === 4) ImperativeMageSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+ 
+    } // end player loop
 
     // Tick all rampagers`
-    for (const dimName of ['overworld', 'nether', 'the_end']) {
-      try {
-        const dim = world.getDimension(dimName);
+     try {
+      for (const dimName of ['overworld', 'nether', 'the_end']) {
+        try {
+          const dim = world.getDimension(dimName);
+          for (const r of dim.getEntities({ type: 'lotm:rampager' }))    RampagerSystem.tick(r);
+          for (const v of dim.getEntities({ type: 'lotm:voidwatcher' })) RampagerSystem.tickVoidwatcher(v);
+          for (const c of dim.getEntities({ type: 'lotm:clown' }))       ClownBeyonderSystem.tick(c);
+        } catch (_) {}
+      }
+    } catch (_) {}
  
-        const rampagers = dim.getEntities({ type: 'lotm:rampager' });
-        for (const rampager of rampagers) {
-          RampagerSystem.tick(rampager);
-        }
- 
-        const voidwatchers = dim.getEntities({ type: 'lotm:voidwatcher' });
-        for (const voidwatcher of voidwatchers) {
-          RampagerSystem.tickVoidwatcher(voidwatcher);
-        }
- 
-        const clowns = dim.getEntities({ type: 'lotm:clown' });
-        for (const clown of clowns) {
-          ClownBeyonderSystem.tick(clown);
-        }
- 
-      } catch (e) {}
-    }
+    try { FlyingRockSystem.tick(); } catch (_) {}
 
-    FlyingRockSystem.tick();
+    try { ChairSystem.tick();  } catch (_) {}
 
     ShepherdSequence.registerSequenceClasses({
     // Darkness
@@ -302,7 +311,33 @@ function initialize() {
 
 
   }, 4);
+
+
+   world.afterEvents.playerPlaceBlock.subscribe((event) => {
+    if (event.block.typeId === 'lotm:wooden_chair') {
+      ChairSystem.onChairPlaced(event.block);
+    }
+  });
+ 
+  world.afterEvents.playerBreakBlock.subscribe((event) => {
+    if (event.brokenBlockPermutation?.type?.id === 'lotm:wooden_chair') {
+      ChairSystem.onChairBroken(event.block);
+    }
+  });
+
+
+  world.afterEvents.playerBreakBlock.subscribe((event) => {
+    if (event.brokenBlockPermutation?.type?.id === 'lotm:wooden_chair') {
+      ChairSystem.onChairBroken(event.block.location);
+    }
+  });
+
+  system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
+    registerPlantGrowth(blockComponentRegistry);
+  });
 }
+
+
 
 // ============================================================================
 // ITEM COMPLETE USE (potions)
@@ -359,6 +394,17 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     SpiritSystem.setMaxSpirit(player, currentMax + 20);
     player.sendMessage('§8You have become a §7Gravedigger§8!');
     player.sendMessage('§7Craft a §8Spirit Whistle§7 to command the spirits');
+  }
+
+  if (itemId === 'lotm:death_potion_seq7') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway === PathwayManager.PATHWAYS.DEATH && sequence === 8) {
+      PathwayManager.advanceSequence(player);
+      SpiritMediumSequence.onAwaken(player);
+    } else {
+      player.sendMessage('§cYou must be a Gravedigger (Sequence 8) to use this!');
+    }
+    return;
   }
 
   // ── DOOR ──────────────────────────────────────────────────────────────────
@@ -685,6 +731,16 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
   }
 
 
+    // ── SPIRIT Enchancement ────────────────────────────────────────────────────
+  if (itemId === 'lotm:spirit_vial') {
+    SpiritVialSystem.onVialUse(player);
+    return;
+  }
+  if (itemId === 'lotm:spirit_expansion_potion') {
+    SpiritVialSystem.onPotionDrink(player);
+    return;
+  }
+
   // ── SPIRIT RESTORATION ────────────────────────────────────────────────────
   if (itemId === 'lotm:spirit_restoration_potion') {
     SpiritSystem.restoreSpirit(player, 50);
@@ -905,14 +961,18 @@ world.afterEvents.itemUse.subscribe((event) => {
       return;
     }
     if (player.isSneaking) {
+      // Sneak = open ability selection menu
       sequence <= 5 ? TwilightGiantMenus.showGuardianMenu(player, GuardianSequence, DawnPaladinSequence)
                     : TwilightGiantMenus.showDawnPaladinMenu(player, DawnPaladinSequence);
     } else {
-      sequence <= 5 ? GuardianSequence.handleAbilityUse(player, DawnPaladinSequence.getSelectedAbility(player))
-                    : DawnPaladinSequence.useSelectedAbility(player);
+      // Right-click = fire selected ability
+      const abilityId = DawnPaladinSequence.getSelectedAbility(player);
+      sequence <= 5 ? GuardianSequence.handleAbilityUse(player, abilityId)
+                    : DawnPaladinSequence.handleAbilityUse(player, abilityId);
     }
     return;
   }
+
   if (itemId === 'lotm:demon_hunter_powers') {
     const { pathway, sequence } = _getPS(player);
     if (pathway === PathwayManager.PATHWAYS.TWILIGHT_GIANT && sequence === 4) {
@@ -920,6 +980,15 @@ world.afterEvents.itemUse.subscribe((event) => {
                         : DemonHunterSequence.useSelectedAbility(player);
     } else {
       player.sendMessage('§cYou must be a Demon Hunter (Sequence 4) to use this!');
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:dawn_sword') {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway === PathwayManager.PATHWAYS.TWILIGHT_GIANT && sequence <= 6) {
+      DawnPaladinSequence.handleDawnSwordUse(player);
     }
     return;
   }
@@ -1290,16 +1359,17 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
 
    // ── Death — bonus vs undead ────────────────────────────
 
-   if (pathway === PathwayManager.PATHWAYS.DEATH) {
+  if (pathway === PathwayManager.PATHWAYS.DEATH) {
     if (sequence === 9) {
       CorpseCollectorSequence.applySmiteBonus?.(attacker, victim) ??
-        // inline fallback for seq 9 which doesn't have the method yet:
         (CorpseCollectorSequence.isUndeadCreature(victim) &&
           (() => { try { victim.applyDamage(4); } catch(e) {} })());
     } else if (sequence <= 8) {
-      GravediggerSequence.applySmiteBonus(attacker, victim);
+      // Seq 8 and 7 both get smite bonus via Gravedigger
+      try { GravediggerSequence.applySmiteBonus(attacker, victim); } catch (_) {}
     }
   }
+  
 
   // ── Knife hit effects ─────────────────────────────────────────────────────
   if (held?.typeId === 'lotm:knife') {

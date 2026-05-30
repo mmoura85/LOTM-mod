@@ -126,6 +126,34 @@
         },
         {
           "type": "item",
+          "name": "lotm:death_characteristic_seq9",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:death_characteristic_seq8",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
           "name": "lotm:door_characteristic_seq9",
           "weight": 10,
           "functions": [

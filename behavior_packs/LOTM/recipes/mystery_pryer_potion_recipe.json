@@ -8,10 +8,10 @@
     "pattern": [
       " E ",
       "AWA",
-      " E "
+      " W "
     ],
     "key": {
-      "E": { "item": "minecraft:ender_pearl" },
+      "E": { "item": "lotm:hermit_characteristic_seq9" },
       "A": { "item": "minecraft:glass" },
       "W": { "item": "minecraft:potion", "data": 0 }
     },

@@ -1,0 +1,25 @@
+{
+	"format_version": "1.21.0",
+	"minecraft:recipe_shaped": {
+		"description": {
+			"identifier": "lotm:wooden_chair_craft"
+		},
+		"tags": [
+			"crafting_table"
+		],
+		"pattern": [
+			"W ",
+			"WW",
+			"W "
+		],
+		"key": {
+			"W": {
+				"item": "minecraft:oak_planks"
+			}
+		},
+		"result": {
+			"item": "lotm:wooden_chair",
+			"count": 1
+		}
+	}
+}

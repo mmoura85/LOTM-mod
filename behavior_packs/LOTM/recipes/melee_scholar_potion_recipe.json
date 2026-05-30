@@ -12,9 +12,12 @@
     ],
     "key": {
       "B": { "item": "minecraft:book" },
-      "D": { "item": "minecraft:emerald" },
-      "P": { "item": "lotm:hermit_potion_seq9" },
-      "I": { "item": "minecraft:iron_sword" }
+      "I": { "item": "lotm:hermit_characteristic_seq8" },
+      "P": {
+        "item": "minecraft:potion",
+        "data": 0
+      },
+      "D": { "item": "minecraft:iron_sword" }
     },
     "result": {
       "item": "lotm:hermit_potion_seq8",

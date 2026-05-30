@@ -19,5 +19,8 @@
   },
   "lotm:grave_cross": {
     "sound": "stone"
+  },
+  "lotm:wooden_chair": {
+    "sound": "wood"
   }
 }

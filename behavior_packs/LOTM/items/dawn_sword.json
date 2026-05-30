@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:dawn_sword",
+      "menu_category": {
+        "category": "equipment",
+        "group": "itemGroup.name.sword"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "dawn_sword",
+      "minecraft:display_name": { "value": "§6Dawn Blade" },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 10,
+      "minecraft:durability": {
+        "max_durability": 1561,
+        "damage_chance": { "min": 100, "max": 100 }
+      },
+      "minecraft:enchantable": { "slot": "sword", "value": 22 },
+      "minecraft:cooldown": {
+        "category": "dawn_sword_use",
+        "duration": 0.5
+      }
+    }
+  }
+}

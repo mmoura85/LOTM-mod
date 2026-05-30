@@ -15,12 +15,12 @@ export class ConstellationsMasterSequence {
   static EFFECT_DURATION   = 999999;
 
   // ── Cooldowns (ticks) ────────────────────────────────────────────────
-  static CD_STARLIGHT_CAGE    = 400;   // 20s
-  static CD_STAR_CONCEALMENT  = 900;   // 45s
-  static CD_STAR_ILLUMINATION = 300;   // 15s
-  static CD_STAR_BRIDGE       = 400;   // 20s
-  static CD_STAR_PILLAR       = 1200;  // 60s
-  static CD_NIGHT_BLINK       = 600;   // 30s
+  static CD_STARLIGHT_CAGE    = 40;   // 20s
+  static CD_STAR_CONCEALMENT  = 90;   // 45s
+  static CD_STAR_ILLUMINATION = 50;   // 15s
+  static CD_STAR_BRIDGE       = 200;   // 20s
+  static CD_STAR_PILLAR       = 300;  // 60s
+  static CD_NIGHT_BLINK       = 60;   // 30s
 
   // ── Spirit costs ─────────────────────────────────────────────────────
   static SPIRIT_STARLIGHT_CAGE    = 35;
@@ -30,9 +30,9 @@ export class ConstellationsMasterSequence {
   static SPIRIT_STAR_PILLAR       = 30;
   static SPIRIT_NIGHT_BLINK       = 30;
   static SPIRIT_STELLAR_PULL      = 35;
-  static CD_STELLAR_PULL          = 400;   // 20s
+  static CD_STELLAR_PULL          = 40;   // 20s
   static SPIRIT_SPEAR_OF_LONGINUS = 20;
-  static CD_SPEAR_OF_LONGINUS     = 100;   // 30s
+  static CD_SPEAR_OF_LONGINUS     = 60;   // 30s
   // Warlock spells cast powder-free at seq 5: base cost + 10 extra
   static SPIRIT_POWDER_FREE_BONUS = 10;
 
@@ -184,6 +184,12 @@ export class ConstellationsMasterSequence {
     this._processCages(player);
     this._processBridge(player);
     this._processLantern(player);
+
+//     const spirit    = Math.floor(SpiritSystem.getSpirit(player));
+// const maxSpirit = SpiritSystem.getMaxSpirit(player);
+//     player.onScreenDisplay.setActionBar(
+//   `§bSpirit: §f${spirit}§7/§f${maxSpirit}  §7│  §eConstellations Master`
+// );
   }
 
   static _tickSpiritRegen(player) {
@@ -611,7 +617,7 @@ export class ConstellationsMasterSequence {
           excludeTypes: ['minecraft:item', 'minecraft:xp_orb', 'minecraft:player'],
         });
         for (const t of targets) {
-          t.applyDamage(25);
+          t.applyDamage(40);
           t.addEffect('wither', 100, { amplifier: 1, showParticles: true });
         }
         player.sendMessage(`§b✦ Star Pillar struck! §7(${targets.length} target${targets.length !== 1 ? 's' : ''} hit)`);
@@ -852,7 +858,7 @@ export class ConstellationsMasterSequence {
               if (spearEntity && target.id === spearEntity.id) continue;
               if (hitIds.has(target.id)) continue;
               hitIds.add(target.id);
-              target.applyDamage(22);
+              target.applyDamage(30);
               try { target.addEffect('wither', 40, { amplifier: 0, showParticles: true }); } catch(e) {}
               try { target.applyKnockback(dir.x * 1.5, dir.z * 1.5, 1.5, 0.2); } catch(e) {}
               this._spawnSpearHit(dim, target.location);

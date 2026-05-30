@@ -14,13 +14,14 @@
     ],
     "key": {
       "A": {
-        "item": "minecraft:emerald"
+        "item": "lotm:hermit_characteristic_seq7"
       },
       "E": {
         "item": "minecraft:ender_pearl"
       },
       "P": {
-        "item": "lotm:hermit_potion_seq8"
+        "item": "minecraft:potion",
+        "data": 0
       },
       "B": {
         "item": "minecraft:flint"

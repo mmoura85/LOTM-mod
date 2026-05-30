@@ -12,7 +12,7 @@
       "B": { "item": "minecraft:bone" },
       "R": { "item": "minecraft:rotten_flesh" },
       "W": { "item": "minecraft:potion", "data": 0 },
-      "S": { "item": "lotm:death_potion_seq9" }
+      "S": { "item": "lotm:death_characteristic_seq8" }
     },
     "result": { "item": "lotm:death_potion_seq8", "count": 1 },
     "unlock": [{ "item": "lotm:death_potion_seq9" }]

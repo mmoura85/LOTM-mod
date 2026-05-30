@@ -18,10 +18,11 @@
         "item": "minecraft:emerald"
       },
       "P": {
-        "item": "lotm:door_potion_seq9"
+        "item": "minecraft:potion",
+        "data": 0
       },
       "G": {
-        "item": "minecraft:ghast_tear"
+        "item": "lotm:door_characteristic_seq8"
       }
     },
     "result": {

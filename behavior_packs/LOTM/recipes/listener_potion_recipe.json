@@ -11,7 +11,7 @@
       " A "
     ],
     "key": {
-      "P": { "item": "minecraft:phantom_membrane" },
+      "P": { "item": "lotm:hanged_man_characteristic_seq8" },
       "A": { "item": "minecraft:ender_pearl" },
       "B": { "item": "minecraft:potion", "data": 0 }
     },

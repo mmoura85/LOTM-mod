@@ -14,13 +14,14 @@
       "A": {
         "item": "minecraft:iron_axe"
       },
-      "D": {
-        "item": "minecraft:diamond"
+      "E": {
+        "item": "lotm:twilight_giant_characteristic_seq7"
       },
       "P": {
-        "item": "lotm:twilight_potion_seq8"
+        "item": "minecraft:potion",
+        "data": 0
       },
-      "E": {
+      "D": {
         "item": "minecraft:emerald"
       }
     },

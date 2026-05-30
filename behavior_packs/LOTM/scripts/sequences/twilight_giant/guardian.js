@@ -84,11 +84,11 @@ export class GuardianSequence {
     this.processHurricaneOfLight(player);
     this.processProtection(player);
     // Sword/Shield processing inherited from DawnPaladinSequence
-    DawnPaladinSequence.processSwordOfLight(player);
-    DawnPaladinSequence.processShieldOfLight(player);
+    DawnPaladinSequence._processDawnSword(player);
+    DawnPaladinSequence._processDawnArmour(player);
 
     this.tickCooldowns(player);
-    DawnPaladinSequence.tickCooldowns(player); // Also tick sword/shield cooldowns
+    DawnPaladinSequence.tickCooldowns(player);
 
     this.applyWeaponEnchantments(player);
     this.applyArmorEnchantments(player);
@@ -99,11 +99,18 @@ export class GuardianSequence {
   // =============================================
   static handleAbilityUse(player, abilityId) {
     switch (abilityId) {
-      case this.ABILITIES.LIGHT_OF_DAWN:      return this.useLightOfDawn(player);
-      case this.ABILITIES.HURRICANE_OF_LIGHT: return this.useHurricaneOfLight(player);
-      case this.ABILITIES.SWORD_OF_LIGHT:     return DawnPaladinSequence.useSwordOfLight(player);
-      case this.ABILITIES.SHIELD_OF_LIGHT:    return DawnPaladinSequence.useShieldOfLight(player);
-      case this.ABILITIES.PROTECTION:         return this.useProtection(player);
+      case this.ABILITIES.LIGHT_OF_DAWN:
+        return this.useLightOfDawn(player);
+      case this.ABILITIES.HURRICANE_OF_LIGHT:
+        return this.useHurricaneOfLight(player);
+      case 'dawn_sword':
+      case 'sword_of_light':   // backwards compat
+        return DawnPaladinSequence.useDawnSword(player);
+      case 'dawn_armour':
+      case 'shield_of_light':  // backwards compat
+        return DawnPaladinSequence.useDawnArmour(player);
+      case this.ABILITIES.PROTECTION:
+        return this.useProtection(player);
       default:
         player.sendMessage('§cUnknown ability!');
         return false;
@@ -111,9 +118,8 @@ export class GuardianSequence {
   }
 
   static getAllAbilities(player) {
-    // Guardian (Seq 5) gets all Dawn Paladin abilities + Protection
     const abilities = DawnPaladinSequence.getAllAbilities(player);
-    abilities.push({ id: this.ABILITIES.PROTECTION, name: '§b⚔ Guardian Protection', cost: this.PROTECTION_SPIRIT_COST });
+    abilities.push({ id: 'protection', name: '§b⚔ Guardian Protection', cost: this.PROTECTION_SPIRIT_COST });
     return abilities;
   }
 
