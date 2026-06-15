@@ -4,35 +4,11 @@
     "description": {
       "identifier": "lotm:small_graveyard_feature"
     },
-    "structure_name": "lotm:smallGraveyard",
+    "structure_name": "lotm:small_graveyard",
     "adjustment_radius": 4,
     "facing_direction": "random",
     "constraints": {
-      "grounded": {},
-      "unburied": {},
-      "block_intersection": {
-        "block_allowlist": [
-          "minecraft:air",
-          "minecraft:grass",
-          "minecraft:dirt",
-          "minecraft:coarse_dirt",
-          "minecraft:gravel",
-          "minecraft:stone",
-          "minecraft:cobblestone",
-          "minecraft:mossy_cobblestone",
-          "minecraft:grass_block",
-          "minecraft:snow_layer",
-          "minecraft:sand",
-          "minecraft:short_grass",
-          "minecraft:tall_grass",
-          "minecraft:fern",
-          "minecraft:dead_bush",
-          "minecraft:poppy",
-          "minecraft:dandelion",
-          "minecraft:red_mushroom",
-          "minecraft:brown_mushroom"
-        ]
-      }
+      "grounded": {}
     }
   }
 }

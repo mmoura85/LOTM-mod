@@ -447,6 +447,16 @@
     },
     "death_characteristic_seq7": {
       "textures": "textures/items/death_characteristic_seq7"
-    }
+    },
+    "spirit_focus": {
+      "textures": "textures/items/spirit_focus"
+    },
+    "hermit_characteristic_seq4": { "textures": "textures/items/hermit_characteristic_seq4" },
+    "mystic_staff":  { "textures": "textures/items/mystic_staff" },
+    "defense_tome":  { "textures": "textures/items/defense_tome" },
+    "buff_tome":     { "textures": "textures/items/buff_tome" },
+    "mystic_compass":{ "textures": "textures/items/mystic_compass" },
+    "hermit_potion_seq4":         { "textures": "textures/items/hermit_potion_seq4" }
+
   }
 }

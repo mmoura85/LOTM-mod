@@ -1,0 +1,32 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:buff_tome_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "LE",
+      "EL"
+    ],
+    "key": {
+      "L": {
+        "item": "minecraft:leather"
+      },
+      "E": {
+        "item": "minecraft:emerald"
+      }
+    },
+    "result": {
+      "item": "lotm:buff_tome",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_potion_seq4"
+      }
+    ]
+  }
+}

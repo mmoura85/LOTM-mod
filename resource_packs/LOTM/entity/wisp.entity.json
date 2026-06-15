@@ -1,0 +1,35 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:wisp",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/wisp"
+      },
+      "geometry": {
+        "default": "geometry.bat"
+      },
+      "animations": {
+        "flying": "animation.bat.flying",
+        "sleeping": "animation.bat.sleeping",
+        "controller": "controller.animation.bat"
+      },
+      "scripts": {
+        "scale": "0.4",
+        "animate": [
+          "controller"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.bat"
+      ],
+      "spawn_egg": {
+        "base_color": "#88ccff",
+        "overlay_color": "#ffffff"
+      }
+    }
+  }
+}

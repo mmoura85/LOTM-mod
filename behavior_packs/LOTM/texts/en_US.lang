@@ -89,12 +89,16 @@ item.spawn_egg.entity.lotm:brownbear.name=Spawn Corrupted Bear
 entity.lotm:voidwatcher.name=Voidwatcher
 item.spawn_egg.entity.lotm:voidwatcher.name=Spawn Voidwatcher
 
+entity.lotm:wisp.name=Spirit Wisp
+item.spawn_egg.entity.lotm:wisp.name=Spawn Spirit Wisp
+item.lotm:spirit_focus.name=Spirit Focus
+
 entity.lotm:clown.name=Clown Beyonder
 item.spawn_egg.entity.lotm:clown.name=Spawn Clown Beyonder
 
 ## Items - General
 item.lotm:spirit_restoration_potion.name=Spirit Restoration Potion
-
+action.interact.bond=Bond with Wisp
 item.lotm:flying_rock_core.name=Flying Rock Core
 entity.lotm:flying_rock.name=Flying Rock
 
@@ -109,6 +113,13 @@ tile.lotm:grave_dirt.name=Disturbed Grave Dirt
 tile.lotm:grave_cross.name=Grave Cross
 tile.lotm:wooden_chair.name=Wooden Chair
 action.interact.sit=Sit
+
+item.lotm:hermit_characteristic_seq4.name=Mysticologist Characteristic
+item.lotm:hermit_potion_seq4.name=Mysticologist Potion
+item.lotm:mystic_staff.name=Mystic Staff
+item.lotm:defense_tome.name=Defense Tome
+item.lotm:buff_tome.name=Buff Tome
+item.lotm:mystic_compass.name=Mystic Compass
 
 ## Pathways
 lotm.pathway.darkness=Darkness
@@ -139,6 +150,7 @@ lotm.hermit.seq8=Melee Scholar
 lotm.hermit.seq7=Warlock
 lotm.hermit.seq6=Scroll Professor
 lotm.hermit.seq5=Constellations Master
+lotm.hermit.seq4=Mysticologist
 
 ## Hanged Man Pathway Sequences
 lotm.hanged_man.seq9=Secrets Suppliant

@@ -47,6 +47,8 @@ import { MeleeScholarSequence }  from './sequences/hermit/melee_scholar.js';
 import { WarlockSequence } from './sequences/hermit/warlock.js';
 import { ScrollProfessorSequence } from './sequences/hermit/scroll_professor.js';
 import { ConstellationsMasterSequence } from './sequences/hermit/constellations_master.js';
+import { MysticologistSequence } from './sequences/hermit/mysticologist.js';
+
 
 // UI
 import { SunPathwayMenus } from './ui/sun_pathway_menus.js';
@@ -80,6 +82,8 @@ import { FlyingRockSystem } from './entity/flyingRockSystem.js';
 // spirit enchancemnt potion
 import { SpiritVialSystem } from './world/spiritVialSystem.js';
 
+// wisp
+import { WispSystem } from './entity/wispSystem.js';
 
 // ── Block component registration — MUST be in startup, before world loads ──
 // This is the only place system.beforeEvents.startup should be called.
@@ -219,6 +223,7 @@ function initialize() {
           else if (sequence === 7) WarlockSequence.applyPassiveAbilities(player);
           else if (sequence === 6) ScrollProfessorSequence.applyPassiveAbilities(player);
           else if (sequence === 5) ConstellationsMasterSequence.applyPassiveAbilities(player);
+          else if (sequence === 4) MysticologistSequence.applyPassiveAbilities(player);
         }
       } catch (_) {}
  
@@ -240,6 +245,8 @@ function initialize() {
           else if (sequence === 4) ImperativeMageSequence.applyPassiveAbilities(player);
         }
       } catch (_) {}
+
+      // WispSystem.tick(player)
  
     } // end player loop
 
@@ -296,6 +303,7 @@ function initialize() {
     MeleeScholarSequence,
     WarlockSequence,
     ScrollProfessorSequence,
+    MysticologistSequence,
     // Seer
     SeerSequence,
     ClownSequence,
@@ -331,10 +339,50 @@ function initialize() {
       ChairSystem.onChairBroken(event.block.location);
     }
   });
+  // world.afterEvents.playerInteractWithEntity.subscribe((event) => {
+  //   world.sendMessage('§ainteract');
+  //   const { player, target } = event;
+  //   if (target.typeId === 'lotm:wisp') {
+  //     world.sendMessage('bonding wisp');
+  //     WispSystem.onInteract(player, target);
+  //   }
+  // });
 
-  system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
-    registerPlantGrowth(blockComponentRegistry);
+  world.afterEvents.dataDrivenEntityTriggerEvent.subscribe((event) => {
+    world.sendMessage('§ainteract');
+    if (event.eventId === 'lotm:on_bond') {
+      world.sendMessage('bonding?');
+      const wispEntity = event.entity;
+      // Find which player just tamed this wisp
+      // The nearest player within 5 blocks is the tamer
+      try {
+        const players = wispEntity.dimension.getPlayers({
+          location: wispEntity.location,
+          maxDistance: 5
+        });
+        if (players.length === 0) return;
+ 
+        // Get nearest player
+        let nearest = null, nearestDist = Infinity;
+        for (const p of players) {
+          const dx = p.location.x - wispEntity.location.x;
+          const dy = p.location.y - wispEntity.location.y;
+          const dz = p.location.z - wispEntity.location.z;
+          const d  = Math.sqrt(dx*dx+dy*dy+dz*dz);
+          if (d < nearestDist) { nearestDist = d; nearest = p; }
+        }
+        if (!nearest) return;
+ 
+        WispSystem.onBond(nearest, wispEntity);
+      } catch (e) {
+        console.warn('Wisp bond error: ' + e);
+      }
+    }
   });
+
+  // system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
+  //   registerPlantGrowth(blockComponentRegistry);
+  // });
 }
 
 
@@ -730,6 +778,17 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     player.playSound('mob.elder_guardian.curse', { pitch: 0.6, volume: 1.0 });
   }
 
+  if (itemId === 'lotm:hermit_potion_seq4') {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway === PathwayManager.PATHWAYS.HERMIT && sequence === 5) {
+      PathwayManager.advanceSequence(player);
+      MysticologistSequence.onAwaken(player);
+    } else {
+      player.sendMessage('§cYou must be a Constellations Master (Hermit Seq 5) to use this!');
+    }
+    return;
+  }
 
     // ── SPIRIT Enchancement ────────────────────────────────────────────────────
   if (itemId === 'lotm:spirit_vial') {
@@ -1192,6 +1251,45 @@ world.afterEvents.itemUse.subscribe((event) => {
       const selected = player.getDynamicProperty('lotm:constellations_selected')
         || ConstellationsMasterSequence.ABILITIES.STARLIGHT_CAGE;
       ConstellationsMasterSequence.handleAbilityUse(player, selected);
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:mystic_staff') {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway === PathwayManager.PATHWAYS.HERMIT && sequence <= 4) {
+      MysticologistSequence.handleStaffUse(player);
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:defense_tome') {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway === PathwayManager.PATHWAYS.HERMIT && sequence <= 4) {
+      MysticologistSequence.handleDefenseTomeUse(player);
+    }
+    return;
+  }
+
+  if (itemId === 'lotm:buff_tome') {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway === PathwayManager.PATHWAYS.HERMIT && sequence <= 4) {
+      MysticologistSequence.handleBuffTomeUse(player);
+    }
+    return;
+  }
+
+  // Mystic Compass — utility menu (build this separately with ActionFormData)
+ if (itemId === 'lotm:mystic_compass') {
+    const pathway  = PathwayManager.getPathway(player);
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway === PathwayManager.PATHWAYS.HERMIT && sequence <= 4) {
+      MysticologistSequence.handleCompassUse(player);
+    } else {
+      player.sendMessage('§cYou must be a Mysticologist (Hermit Seq 4) to use this!');
     }
     return;
   }

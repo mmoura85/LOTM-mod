@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:buff_tome",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "buff_tome",
+      "minecraft:display_name": {
+        "value": "\u00a7a\u00a7lBuff Tome"
+      },
+      "minecraft:hand_equipped": false,
+      "minecraft:cooldown": {
+        "category": "buff_tome",
+        "duration": 0.3
+      }
+    }
+  }
+}

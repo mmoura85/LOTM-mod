@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:defense_tome",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "defense_tome",
+      "minecraft:display_name": {
+        "value": "\u00a7b\u00a7lDefense Tome"
+      },
+      "minecraft:hand_equipped": false,
+      "minecraft:cooldown": {
+        "category": "defense_tome",
+        "duration": 0.3
+      }
+    }
+  }
+}
