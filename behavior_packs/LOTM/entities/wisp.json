@@ -1,0 +1,125 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:wisp",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+       "lotm:wisp_wild": {
+        "minecraft:tameable": {
+          "probability": 1.0,
+          "tame_items": "lotm:spirit_focus",
+          "tame_event": {
+            "event": "lotm:on_bond",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.random_hover": {
+          "priority": 8,
+          "xz_dist": 8,
+          "y_dist": 4,
+          "y_offset": 0,
+          "interval": 1,
+          "hover_height": [1.0, 2.0]
+        }
+      },
+      "lotm:wisp_bonded": {
+        "minecraft:is_tamed": {},
+        "minecraft:behavior.follow_owner": {
+          "priority": 2,
+          "speed_multiplier": 1.5,
+          "start_distance": 10,
+          "stop_distance": 2,
+          "can_teleport": true,
+          "max_distance": 10
+        },
+        "minecraft:sittable": {},
+        "minecraft:behavior.stay_while_sitting": {
+          "priority": 5
+        },
+        "minecraft:behavior.random_hover": {
+          "priority": 9,
+          "xz_dist": 3,
+          "y_dist": 1,
+          "y_offset": 0,
+          "interval": 2,
+          "hover_height": [1.5, 2.0]
+        },
+        "minecraft:leashable": {
+          "soft_distance": 4.0,
+          "hard_distance": 6.0,
+          "max_distance": 10.0
+        }
+      }
+    },
+    "components": {
+      "minecraft:is_hidden_when_invisible": {},
+      "minecraft:type_family": {
+        "family": ["wisp", "spirit", "mob"]
+      },
+      "minecraft:collision_box": { "width": 0.3, "height": 0.3 },
+      "minecraft:health": { "value": 2048, "max": 2048 },
+      "minecraft:damage_sensor": {
+        "triggers": [{ "cause": "all", "deals_damage": false }]
+      },
+      "minecraft:fire_immune": true,
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0,
+        "breathes_air": true,
+        "breathes_water": true,
+        "breathes_lava": false,
+        "breathes_solids": false,
+        "generates_bubbles": false
+      },
+      "minecraft:navigation.hover": {
+        "can_path_over_water": true,
+        "can_sink": false,
+        "can_pass_doors": true,
+        "can_path_from_air": true,
+        "can_open_doors": false,
+        "avoid_water": false,
+        "avoid_damage_blocks": true,
+        "avoid_sun": false
+      },
+      "minecraft:movement.hover": {},
+      "minecraft:movement": { "value": 0.12 },
+      "minecraft:flying_speed": { "value": 0.12 },
+      "minecraft:jump.static": {},
+      "minecraft:can_fly": {},
+      "minecraft:physics": {
+        "has_gravity": false,
+        "has_collision": true
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:nameable": {},
+      "minecraft:persistent": {},
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:despawn": { "despawn_from_distance": { "max_distance": 256 } },
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.look_at_player": {
+        "priority": 10,
+        "target_distance": 6,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": { "priority": 11 }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": { "component_groups": ["lotm:wisp_wild"] }
+      },
+      "lotm:on_bond": {
+         "add": { "component_groups": ["lotm:wisp_bonded"] },
+        "remove": { "component_groups": ["lotm:wisp_wild"] }
+       
+      },
+      "lotm:on_interact": {}
+    }
+  }
+}

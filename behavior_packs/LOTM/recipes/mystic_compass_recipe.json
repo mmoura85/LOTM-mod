@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:mystic_compass_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " G ",
+      "GAG",
+      " G "
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:gold_ingot"
+      },
+      "A": {
+        "item": "minecraft:amethyst_shard"
+      }
+    },
+    "result": {
+      "item": "lotm:mystic_compass",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_potion_seq4"
+      }
+    ]
+  }
+}

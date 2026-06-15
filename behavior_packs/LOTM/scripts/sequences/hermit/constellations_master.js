@@ -10,8 +10,8 @@ export class ConstellationsMasterSequence {
 
   // ── Spirit ───────────────────────────────────────────────────────────
   static SPIRIT_BONUS      = 240;
-  static SPIRIT_REGEN_RATE = 6;        // per regen tick
-  static SPIRIT_REGEN_TICK = 60;       // every 60 ticks (3s)
+  static SPIRIT_REGEN_RATE = 10;        // per regen tick
+  static SPIRIT_REGEN_TICK = 20;       // every 60 ticks (3s)
   static EFFECT_DURATION   = 999999;
 
   // ── Cooldowns (ticks) ────────────────────────────────────────────────

@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:mystic_compass",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "mystic_compass",
+      "minecraft:display_name": {
+        "value": "\u00a76\u00a7lMystic Compass"
+      },
+      "minecraft:hand_equipped": false
+    }
+  }
+}

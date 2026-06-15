@@ -1,0 +1,36 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:mystic_staff",
+      "menu_category": {
+        "category": "equipment",
+        "group": "itemGroup.name.sword"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "mystic_staff",
+      "minecraft:display_name": {
+        "value": "\u00a79\u00a7lMystic Staff"
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 7,
+      "minecraft:durability": {
+        "max_durability": 1561,
+        "damage_chance": {
+          "min": 100,
+          "max": 100
+        }
+      },
+      "minecraft:enchantable": {
+        "slot": "sword",
+        "value": 22
+      },
+      "minecraft:cooldown": {
+        "category": "mystic_staff",
+        "duration": 0.3
+      }
+    }
+  }
+}

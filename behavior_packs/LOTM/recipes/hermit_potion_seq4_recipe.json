@@ -1,0 +1,35 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:hermit_potion_seq4_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:potion",
+        "data": 0
+      },
+      {
+        "item": "minecraft:blaze_rod"
+      },
+      {
+        "item": "minecraft:amethyst_shard"
+      },
+      {
+        "item": "lotm:hermit_characteristic_seq4"
+      }
+    ],
+    "result": {
+      "item": "lotm:hermit_potion_seq4",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_characteristic_seq4"
+      }
+    ]
+  }
+}

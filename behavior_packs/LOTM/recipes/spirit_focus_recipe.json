@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:spirit_focus_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " G ",
+      "GEG",
+      " G "
+    ],
+    "key": {
+      "G": {
+        "item": "minecraft:gold_ingot"
+      },
+      "E": {
+        "item": "minecraft:ender_pearl"
+      }
+    },
+    "result": {
+      "item": "lotm:spirit_focus",
+      "count": 3
+    },
+    "unlock": [
+      {
+        "item": "lotm:death_potion_seq7"
+      }
+    ]
+  }
+}
