@@ -113,6 +113,9 @@ tile.lotm:grave_dirt.name=Disturbed Grave Dirt
 tile.lotm:grave_cross.name=Grave Cross
 tile.lotm:wooden_chair.name=Wooden Chair
 action.interact.sit=Sit
+tile.lotm:stone_bench.name=Stone Bench
+action.interact.sit=Sit
+
 
 item.lotm:hermit_characteristic_seq4.name=Mysticologist Characteristic
 item.lotm:hermit_potion_seq4.name=Mysticologist Potion

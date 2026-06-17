@@ -1,168 +1,172 @@
-// ============================================================================
-// CHAIR SYSTEM — rewritten using FlyingRock's proven ride pattern
-// ============================================================================
-
 import { world, system } from '@minecraft/server';
 
 export class ChairSystem {
 
-  static seated    = new Map(); // playerName -> { seatEntity, blockLocation }
-  static pendingSit = new Map(); // playerName -> { blockLocation, attempts }
+  static CHAIR_TYPES = {
+    'lotm:wooden_chair': 'lotm:chair_seat',
+    'lotm:stone_bench':  'lotm:bench_seat',
+  };
 
-  // ── Player right-clicks a chair ───────────────────────────────────────────
-  static onChairInteract(player, block) {
-    // Already seated — ignore
-    if (ChairSystem.seated.has(player.name)) return;
-    // Already pending — ignore
-    if (ChairSystem.pendingSit.has(player.name)) return;
+  static _cooldowns  = new Set();  // per-player click debounce
+  static _activeSits = new Map();  // playerId → { seat, intervalId }
 
-    // Check nobody already sitting in this chair
-    const blockLoc = block.location;
-    for (const [, data] of ChairSystem.seated) {
-      if (data.blockLocation.x === blockLoc.x &&
-          data.blockLocation.y === blockLoc.y &&
-          data.blockLocation.z === blockLoc.z) {
-        player.sendMessage('§7This seat is already occupied.');
-        return;
+  static registerEvents() {
+    // Clean up any orphaned seat entities left over from a previous server session
+    system.run(() => {
+      for (const dimId of ['overworld', 'nether', 'the_end']) {
+        try {
+          const dim = world.getDimension(dimId);
+          for (const type of ['lotm:chair_seat', 'lotm:bench_seat']) {
+            try {
+              for (const e of dim.getEntities({ type })) {
+                try { e.remove(); } catch (_) {}
+              }
+            } catch (_) {}
+          }
+        } catch (_) {}
       }
-    }
+    });
 
-    // Spawn the seat entity at the seat surface (y + 0.5)
-    const dim  = block.dimension;
-    const sx   = blockLoc.x + 0.5;
-    const sy   = blockLoc.y + 0.5;
-    const sz   = blockLoc.z + 0.5;
+    world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
+      const blockId = event.block.typeId;
+      const seatType = ChairSystem.CHAIR_TYPES[blockId];
+      if (!seatType) return;
+      if (event.player.isSneaking) return;
 
-    let seatEntity = null;
-    try {
-      seatEntity = dim.spawnEntity('lotm:chair_seat', { x: sx, y: sy, z: sz });
-    } catch (e) {
-      player.sendMessage('§cCould not place seat.');
-      return;
-    }
+      event.cancel = true;
 
-    if (!seatEntity) return;
+      const playerId = event.player.id;
+      if (ChairSystem._cooldowns.has(playerId)) return;
+      ChairSystem._cooldowns.add(playerId);
+      system.runTimeout(() => ChairSystem._cooldowns.delete(playerId), 20);
 
-    // Store pending sit — tick() will poll and mount when entity is ready
-    ChairSystem.pendingSit.set(player.name, {
-      seatEntity,
-      blockLocation: blockLoc,
-      attempts: 0
+      const player = event.player;
+      const block  = event.block;
+      system.run(() => ChairSystem._sit(player, block, seatType));
     });
   }
 
-  // ── Main tick ─────────────────────────────────────────────────────────────
-  static tick() {
+  static _sit(player, block, seatType) {
+    if (player.isSneaking) return;
+    if (ChairSystem._activeSits.has(player.id)) return;
 
-    // ── Process pending mounts ──────────────────────────────────────────────
-    for (const [playerName, pending] of ChairSystem.pendingSit) {
-      pending.attempts++;
+    const loc = block.location;
+    const dim  = block.dimension;
+    const cx   = loc.x + 0.5;
+    const cy   = loc.y;
+    const cz   = loc.z + 0.5;
 
-      // Give up after 40 attempts (~2s at 20tps)
-      if (pending.attempts > 40) {
-        try { pending.seatEntity.kill(); } catch (_) {}
-        ChairSystem.pendingSit.delete(playerName);
-        continue;
-      }
+    const dir = block.permutation.getState('minecraft:cardinal_direction') ?? 'south';
+    // Yaw values match the chair front direction after the permutation fix:
+    // south→face south (0°), west→face west (90°), north→face north (180°), east→face east (-90°)
+    const yawMap = { south: 0, west: 90, north: 180, east: -90 };
+    const targetYaw = yawMap[dir] ?? 0;
 
-      // Find the player
-      let player = null;
-      try { player = world.getPlayers({ name: playerName })[0] ?? null; } catch (_) {}
-      if (!player) {
-        try { pending.seatEntity.kill(); } catch (_) {}
-        ChairSystem.pendingSit.delete(playerName);
-        continue;
-      }
-
-      // Verify entity is alive
-      let entityAlive = false;
-      try { void pending.seatEntity.location; entityAlive = true; } catch (_) {}
-      if (!entityAlive) {
-        ChairSystem.pendingSit.delete(playerName);
-        continue;
-      }
-
-      // Try mounting — same pattern as FlyingRock
-      let mounted = false;
-      try {
-        player.runCommand('ride @s start_riding @e[type=lotm:chair_seat,r=2] teleport_rider nearest_surface');
-        mounted = true;
-      } catch (_) {}
-
-      if (mounted) {
-        ChairSystem.seated.set(playerName, {
-          seatEntity: pending.seatEntity,
-          blockLocation: pending.blockLocation
-        });
-        ChairSystem.pendingSit.delete(playerName);
-        player.sendMessage('§7§o*You sit down. Sneak or jump to stand up.*');
-      }
-      // If not mounted yet, keep trying next tick
-    }
-
-    // ── Check seated players for stand-up conditions ────────────────────────
-    for (const [playerName, data] of ChairSystem.seated) {
-
-      // Entity still alive?
-      let entityAlive = false;
-      try { void data.seatEntity.location; entityAlive = true; } catch (_) {}
-      if (!entityAlive) {
-        ChairSystem.seated.delete(playerName);
-        continue;
-      }
-
-      // Find player
-      let player = null;
-      try { player = world.getPlayers({ name: playerName })[0] ?? null; } catch (_) {}
-      if (!player) {
-        ChairSystem._removeSeat(playerName, data);
-        continue;
-      }
-
-      // Chair block still exists?
-      let chairExists = false;
-      try {
-        const block = player.dimension.getBlock(data.blockLocation);
-        chairExists = block && block.typeId === 'lotm:wooden_chair';
-      } catch (_) {}
-
-      // Stand up conditions
-      const shouldStand = player.isSneaking || player.isJumping || !chairExists;
-
-      if (shouldStand) {
-        ChairSystem._standUp(player, playerName, data);
-      }
-    }
-  }
-
-  static _standUp(player, playerName, data) {
-    try { player.runCommand('ride @s stop_riding'); } catch (_) {}
     try {
-      player.teleport({
-        x: data.blockLocation.x + 0.5,
-        y: data.blockLocation.y + 1.1,
-        z: data.blockLocation.z + 0.5
-      }, { dimension: player.dimension });
-    } catch (_) {}
-    ChairSystem._removeSeat(playerName, data);
-    try { player.sendMessage('§7§o*You stand up.*'); } catch (_) {}
-  }
-
-  static _removeSeat(playerName, data) {
-    try { data.seatEntity.kill(); } catch (_) {}
-    ChairSystem.seated.delete(playerName);
-  }
-
-  static onChairBroken(blockLocation) {
-    for (const [playerName, data] of ChairSystem.seated) {
-      if (data.blockLocation.x === blockLocation.x &&
-          data.blockLocation.y === blockLocation.y &&
-          data.blockLocation.z === blockLocation.z) {
-        let player = null;
-        try { player = world.getPlayers({ name: playerName })[0]; } catch (_) {}
-        if (player) ChairSystem._standUp(player, playerName, data);
-        else         ChairSystem._removeSeat(playerName, data);
+      const existing = dim.getEntities({
+        type: seatType,
+        location: { x: cx, y: cy, z: cz },
+        maxDistance: 1.0,
+      });
+      if (existing.length > 0) {
+        player.sendMessage('§7This seat is already taken.');
+        return;
       }
+    } catch (_) {}
+
+    system.run(() => {
+      let seat;
+      try {
+        seat = dim.spawnEntity(seatType, { x: cx, y: cy, z: cz });
+      } catch (e) {
+        player.sendMessage('§c[Chair] spawn failed: ' + e);
+        return;
+      }
+
+      system.run(() => {
+        // Rotate the player BEFORE mounting so the engine preserves the facing direction.
+        // post-mount player.setRotation() is a no-op and /tp while riding causes dismount.
+        try { player.teleport(player.location, { rotation: { x: 0, y: targetYaw } }); } catch (_) {}
+        try { seat.setRotation({ x: 0, y: targetYaw }); } catch (_) {}
+
+        let result;
+        try {
+          result = seat.runCommand('ride @p start_riding @s teleport_rider if_group_fits');
+        } catch (e) {
+          player.sendMessage('§c[Chair] ride failed: ' + e);
+          try { seat.remove(); } catch (_) {}
+          return;
+        }
+
+        if (result.successCount === 0) {
+          player.sendMessage('§c[Chair] mount failed (success=0)');
+          try { seat.remove(); } catch (_) {}
+          return;
+        }
+
+        player.sendMessage('§a[Chair] seated!');
+
+        // Poll every 10 ticks — when the player moves away they have dismounted
+        const playerId = player.id;
+        const seatRef  = seat;
+        const intervalId = system.runInterval(() => {
+          if (!seatRef.isValid()) {
+            system.clearRun(intervalId);
+            ChairSystem._activeSits.delete(playerId);
+            return;
+          }
+          try {
+            const pp = player.location;
+            const sp = seatRef.location;
+            const dx = pp.x - sp.x;
+            const dz = pp.z - sp.z;
+            if (Math.sqrt(dx * dx + dz * dz) > 1.5) {
+              try { seatRef.remove(); } catch (_) {}
+              system.clearRun(intervalId);
+              ChairSystem._activeSits.delete(playerId);
+            }
+          } catch (_) {
+            try { seatRef.remove(); } catch (_) {}
+            system.clearRun(intervalId);
+            ChairSystem._activeSits.delete(playerId);
+          }
+        }, 10);
+
+        ChairSystem._activeSits.set(playerId, { seat, intervalId });
+      });
+    });
+  }
+
+  static onFurnitureBroken(block) {
+    const loc = block.location;
+    const dim  = block.dimension;
+    const cx   = loc.x + 0.5;
+    const cy   = loc.y + 0.5;
+    const cz   = loc.z + 0.5;
+
+    system.run(() => {
+      for (const seatType of ['lotm:chair_seat', 'lotm:bench_seat']) {
+        try {
+          const seats = dim.getEntities({
+            type: seatType,
+            location: { x: cx, y: cy, z: cz },
+            maxDistance: 1.5,
+          });
+          for (const seat of seats) {
+            try { seat.runCommand('ride @a[r=2] stop_riding'); } catch (_) {}
+            try { seat.remove(); } catch (_) {}
+          }
+        } catch (_) {}
+      }
+    });
+  }
+
+  static onChairPlaced(_block) {}
+  static onChairBroken(blockOrLoc) {
+    if (blockOrLoc && typeof blockOrLoc.dimension !== 'undefined') {
+      this.onFurnitureBroken(blockOrLoc);
     }
   }
+  static tick() {}
+  static register(_registry) {}
 }
