@@ -68,18 +68,14 @@ export class ChairSystem {
         location: { x: cx, y: cy, z: cz },
         maxDistance: 1.0,
       });
-      if (existing.length > 0) {
-        player.sendMessage('§7This seat is already taken.');
-        return;
-      }
+      if (existing.length > 0) return;
     } catch (_) {}
 
     system.run(() => {
       let seat;
       try {
         seat = dim.spawnEntity(seatType, { x: cx, y: cy, z: cz });
-      } catch (e) {
-        player.sendMessage('§c[Chair] spawn failed: ' + e);
+      } catch (_) {
         return;
       }
 
@@ -92,19 +88,15 @@ export class ChairSystem {
         let result;
         try {
           result = seat.runCommand('ride @p start_riding @s teleport_rider if_group_fits');
-        } catch (e) {
-          player.sendMessage('§c[Chair] ride failed: ' + e);
+        } catch (_) {
           try { seat.remove(); } catch (_) {}
           return;
         }
 
         if (result.successCount === 0) {
-          player.sendMessage('§c[Chair] mount failed (success=0)');
           try { seat.remove(); } catch (_) {}
           return;
         }
-
-        player.sendMessage('§a[Chair] seated!');
 
         // Poll every 10 ticks — when the player moves away they have dismounted
         const playerId = player.id;

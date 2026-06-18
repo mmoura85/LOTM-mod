@@ -2,8 +2,8 @@
 	"format_version": "1.21.0",
 	"minecraft:feature_rules": {
 		"description": {
-			"identifier": "lotm:abandoned_tower_feature_rule",
-			"places_feature": "lotm:abandoned_tower_feature"
+			"identifier": "lotm:ruined_abandoned_tower_feature_rule",
+			"places_feature": "lotm:ruined_abandoned_tower_feature"
 		},
 		"conditions": {
 			"placement_pass": "surface_pass",

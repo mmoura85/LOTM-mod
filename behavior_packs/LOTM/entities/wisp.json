@@ -88,7 +88,6 @@
       "minecraft:movement.hover": {},
       "minecraft:movement": { "value": 0.12 },
       "minecraft:flying_speed": { "value": 0.12 },
-      "minecraft:jump.static": {},
       "minecraft:can_fly": {},
       "minecraft:physics": {
         "has_gravity": false,
