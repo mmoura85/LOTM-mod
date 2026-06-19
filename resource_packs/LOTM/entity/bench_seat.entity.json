@@ -2,7 +2,7 @@
 	"format_version": "1.10.0",
 	"minecraft:client_entity": {
 		"description": {
-			"identifier": "lotm:chair_seat",
+			"identifier": "lotm:bench_seat",
 			"materials": {
 				"default": "entity_alphatest"
 			},

@@ -8,18 +8,21 @@
 			"crafting_table"
 		],
 		"pattern": [
-			"W ",
-			"WW",
-			"W "
+			"P ",
+			"PP",
+			"P "
 		],
 		"key": {
-			"W": {
+			"P": {
 				"item": "minecraft:oak_planks"
 			}
 		},
 		"result": {
 			"item": "lotm:wooden_chair",
 			"count": 1
-		}
+		},
+		"unlock": [
+			{ "item": "minecraft:oak_planks" }
+		]
 	}
 }

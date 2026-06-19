@@ -20,7 +20,6 @@
   "lotm:grave_cross": {
     "sound": "stone"
   },
-  "lotm:wooden_chair": {
-    "sound": "wood"
-  }
+ "lotm:wooden_chair": { "textures": "wooden_chair" },
+ "lotm:stone_bench":  { "textures": "stone_bench" }
 }

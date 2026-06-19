@@ -90,7 +90,7 @@ import { WispSystem } from './entity/wispSystem.js';
 // Importing plant_growth.js and calling it here guarantees the component
 // is registered before Bedrock tries to load any plant blocks.
 // system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
-//   registerPlantGrowth(blockComponentRegistry);
+//   ChairSystem.register(blockComponentRegistry);
 // });
 
 // ── Ability selection maps ─────────────────────────────────────────────────
@@ -320,33 +320,30 @@ function initialize() {
 
   }, 4);
 
-
-   world.afterEvents.playerPlaceBlock.subscribe((event) => {
-    if (event.block.typeId === 'lotm:wooden_chair') {
-      ChairSystem.onChairPlaced(event.block);
-    }
-  });
- 
-  world.afterEvents.playerBreakBlock.subscribe((event) => {
-    if (event.brokenBlockPermutation?.type?.id === 'lotm:wooden_chair') {
-      ChairSystem.onChairBroken(event.block);
-    }
-  });
-
-
-  world.afterEvents.playerBreakBlock.subscribe((event) => {
-    if (event.brokenBlockPermutation?.type?.id === 'lotm:wooden_chair') {
-      ChairSystem.onChairBroken(event.block.location);
-    }
-  });
-  // world.afterEvents.playerInteractWithEntity.subscribe((event) => {
-  //   world.sendMessage('§ainteract');
-  //   const { player, target } = event;
-  //   if (target.typeId === 'lotm:wisp') {
-  //     world.sendMessage('bonding wisp');
-  //     WispSystem.onInteract(player, target);
+  ChairSystem.registerEvents();
+  //  world.afterEvents.playerPlaceBlock.subscribe((event) => {
+  //   if (event.block.typeId === 'lotm:wooden_chair') {
+  //     ChairSystem.onChairPlaced(event.block);
   //   }
   // });
+
+  world.afterEvents.playerBreakBlock.subscribe((event) => {
+      const id = event.brokenBlockPermutation?.type?.id;
+      if (id === 'lotm:wooden_chair' || id === 'lotm:stone_bench') {
+          ChairSystem.onFurnitureBroken(event.block);
+      }
+  });
+
+
+  world.afterEvents.playerInteractWithEntity.subscribe((event) => {
+    world.sendMessage('§ainteract');
+    const { player, target } = event;
+    if (target.typeId === 'lotm:wisp') {
+      world.sendMessage('bonding wisp');
+      WispSystem.onInteract(player, target);
+    }
+
+  });
 
   world.afterEvents.dataDrivenEntityTriggerEvent.subscribe((event) => {
     world.sendMessage('§ainteract');

@@ -1,0 +1,20 @@
+{
+    "format_version": "1.10.0",
+    "animation_controllers": {
+        "controller.animation.lotm_direbear_movement": {
+            "initial_state": "default",
+            "states": {
+                "default": {
+                    "animations": [
+                        {
+                            "animWalk": "query.ground_speed > 0 || query.is_in_water"
+                        },
+                        {
+                            "animAttack": "query.is_attacking"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

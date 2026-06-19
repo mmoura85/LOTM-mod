@@ -246,7 +246,7 @@ export class MysticologistSequence {
         const near=dim.getEntities({location:pos,maxDistance:1.2,excludeTypes:['minecraft:item','minecraft:xp_orb','minecraft:player','lotm:wisp']});
         for(const e of near){
           if(e.id===player.id) continue;
-          try{e.applyDamage(3,{cause:'magic',damagingEntity:player});}catch(_){try{e.applyDamage(3);}catch(_){}}
+          try{e.applyDamage(35,{cause:'magic',damagingEntity:player});}catch(_){try{e.applyDamage(3);}catch(_){}}
           try{dim.spawnParticle('minecraft:electric_spark_particle',e.location);}catch(_){}
           player.playSound('conduit.attack.damage',{pitch:1.5,volume:0.6});
           return;

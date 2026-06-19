@@ -23,7 +23,10 @@
       "textures": "textures/blocks/grave_cross"
     },
     "wooden_chair": {
-      "textures": "textures/blocks/wooden_chair"
+    "textures": "textures/blocks/wooden_chair"
+    },
+    "stone_bench": {
+      "textures": "textures/blocks/stone_bench"
     }
   }
 }

@@ -3,7 +3,6 @@
   "minecraft:entity": {
     "description": {
       "identifier": "lotm:voidwatcher",
-      "runtime_identifier": "minecraft:blaze",
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false
@@ -27,22 +26,15 @@
       },
       "minecraft:can_fly": {},
       "minecraft:movement": {
-        "value": 0.23
+        "value": 0.05
       },
       "minecraft:flying_speed": {
-        "value": 0.23
+        "value": 0.05
       },
-      "minecraft:navigation.hover": {
-        "can_path_over_water": true,
-        "can_sink": false,
-        "can_pass_doors": false,
-        "can_path_from_air": true,
-        "avoid_water": false,
-        "avoid_damage_blocks": true,
-        "avoid_sun": false
+      "minecraft:navigation.float": {
+        "can_path_over_water": true
       },
       "minecraft:movement.hover": {},
-      "minecraft:jump.static": {},
       "minecraft:collision_box": {
         "width": 0.85,
         "height": 0.85
@@ -97,6 +89,12 @@
       "minecraft:behavior.hurt_by_target": {
         "priority": 1
       },
+      "minecraft:behavior.melee_attack": {
+        "priority": 3,
+        "speed_multiplier": 1.2,
+        "track_target": true,
+        "require_complete_path": false
+      },
       "minecraft:behavior.nearest_attackable_target": {
         "priority": 2,
         "within_radius": 24.0,
@@ -112,16 +110,12 @@
           }
         ]
       },
-      "minecraft:behavior.random_hover": {
+      "minecraft:behavior.float_wander": {
         "priority": 6,
-        "xz_dist": 12,
-        "y_dist": 3,
-        "y_offset": 2,
-        "interval": 1,
-        "hover_height": [
-          2,
-          5
-        ]
+        "xz_dist": 8,
+        "y_dist": 1,
+        "float_duration": [2, 5],
+        "random_reselect": true
       },
       "minecraft:behavior.look_at_player": {
         "priority": 7,

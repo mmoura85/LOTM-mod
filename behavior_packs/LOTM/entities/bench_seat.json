@@ -2,7 +2,7 @@
 	"format_version": "1.21.0",
 	"minecraft:entity": {
 		"description": {
-			"identifier": "lotm:chair_seat",
+			"identifier": "lotm:bench_seat",
 			"runtime_identifier": "minecraft:minecart",
 			"is_spawnable": false,
 			"is_summonable": true,
@@ -10,7 +10,7 @@
 		},
 		"components": {
 			"minecraft:type_family": {
-				"family": ["chair_seat", "inanimate"]
+				"family": ["bench_seat", "inanimate"]
 			},
 			"minecraft:physics": {
 				"has_gravity": false,
@@ -45,7 +45,7 @@
 				"family_types": ["player"],
 				"seats": [
 					{
-						"position": [0, 0.6, 0],
+						"position": [0, 0.55, 0],
 						"min_rider_count": 0,
 						"max_rider_count": 1
 					}

@@ -1,0 +1,62 @@
+{
+	"format_version": "1.19.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.stone_bench",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2.5,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.5, 0]
+			},
+			"bones": [
+				{
+					"name": "block",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"comment": "Seat slab — full block wide, 8 units deep",
+							"origin": [-8, 8, -4],
+							"size": [16, 2, 8],
+							"uv": {
+								"north": { "uv": [0, 8], "uv_size": [16, 2] },
+								"south": { "uv": [0, 8], "uv_size": [16, 2] },
+								"east":  { "uv": [0, 8], "uv_size": [8,  2] },
+								"west":  { "uv": [0, 8], "uv_size": [8,  2] },
+								"up":    { "uv": [0, 0], "uv_size": [16, 8] },
+								"down":  { "uv": [0, 0], "uv_size": [16, 8] }
+							}
+						},
+						{
+							"comment": "Left support leg",
+							"origin": [-8, 0, -3],
+							"size": [2, 8, 6],
+							"uv": {
+								"north": { "uv": [0, 8], "uv_size": [2, 8] },
+								"south": { "uv": [0, 8], "uv_size": [2, 8] },
+								"east":  { "uv": [0, 8], "uv_size": [6, 8] },
+								"west":  { "uv": [0, 8], "uv_size": [6, 8] },
+								"up":    { "uv": [0, 0], "uv_size": [2, 6] },
+								"down":  { "uv": [0, 0], "uv_size": [2, 6] }
+							}
+						},
+						{
+							"comment": "Right support leg",
+							"origin": [6, 0, -3],
+							"size": [2, 8, 6],
+							"uv": {
+								"north": { "uv": [0, 8], "uv_size": [2, 8] },
+								"south": { "uv": [0, 8], "uv_size": [2, 8] },
+								"east":  { "uv": [0, 8], "uv_size": [6, 8] },
+								"west":  { "uv": [0, 8], "uv_size": [6, 8] },
+								"up":    { "uv": [0, 0], "uv_size": [2, 6] },
+								"down":  { "uv": [0, 0], "uv_size": [2, 6] }
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
