@@ -27,6 +27,16 @@
     },
     "stone_bench": {
       "textures": "textures/blocks/stone_bench"
-    }
+    },
+    "silver_ore": {
+      "textures": "textures/items/silver_ore"
+    },
+    "tin_ore": {
+      "textures": "textures/items/tin_ore"
+    },
+    "lotm_blast_furnace_front":     { "textures": "textures/items/lotm_blast_furnace_front"     },
+    "lotm_blast_furnace_front_lit": { "textures": "textures/items/lotm_blast_furnace_front_lit" },
+    "lotm_blast_furnace_side":      { "textures": "textures/items/lotm_blast_furnace_side"      },
+    "lotm_blast_furnace_top":       { "textures": "textures/items/lotm_blast_furnace_top"       }
   }
 }

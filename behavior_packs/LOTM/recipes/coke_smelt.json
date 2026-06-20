@@ -1,0 +1,9 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_furnace": {
+        "description": { "identifier": "lotm:coke_smelt" },
+        "tags": ["furnace", "blast_furnace"],
+        "input": { "item": "minecraft:coal" },
+        "output": { "item": "lotm:coke" }
+    }
+}

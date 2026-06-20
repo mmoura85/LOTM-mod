@@ -1,0 +1,13 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:recipe_shapeless": {
+        "description": { "identifier": "lotm:bronze_ingot_alloy" },
+        "tags": ["lotm:alloy_forge"],
+        "ingredients": [
+            { "item": "minecraft:copper_ingot" },
+            { "item": "lotm:tin_ingot" }
+        ],
+        "result": { "item": "lotm:bronze_ingot" },
+        "unlock": [{ "item": "lotm:tin_ingot" }]
+    }
+}

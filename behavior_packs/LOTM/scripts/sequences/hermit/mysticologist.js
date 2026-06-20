@@ -71,16 +71,20 @@ export class MysticologistSequence {
     'minecraft:emerald_ore':            { label: '§aEmerald',        precious: true  },
     'minecraft:deepslate_emerald_ore':  { label: '§aEmerald §7(ds)', precious: true  },
     'minecraft:ancient_debris':         { label: '§4Ancient Debris', precious: true  },
+    'lotm:silver_ore':                  { label: '§7Silver',          precious: true  },
+    'lotm:tin_ore':                     { label: '§fTin',             precious: false },
   };
- 
+
   static ORE_DISPLAY_ORDER = [
     '§4Ancient Debris',
     '§bDiamond','§bDiamond §7(ds)',
     '§aEmerald','§aEmerald §7(ds)',
     '§9Lapis','§9Lapis §7(ds)',
     '§eGold','§eGold §7(ds)',
+    '§7Silver',
     '§cRedstone','§cRedstone §7(ds)',
     '§6Copper','§6Copper §7(ds)',
+    '§fTin',
     '§7Iron','§7Iron §7(ds)',
     '§8Coal','§8Coal §7(ds)',
   ];

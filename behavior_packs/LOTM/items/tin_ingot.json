@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:item": {
+        "description": {
+            "identifier": "lotm:tin_ingot",
+            "menu_category": { "category": "items", "group": "itemGroup.name.ingot" }
+        },
+        "components": {
+            "minecraft:max_stack_size": 64,
+            "minecraft:icon": "tin_ingot",
+            "minecraft:display_name": { "value": "§7Tin Ingot" }
+        }
+    }
+}

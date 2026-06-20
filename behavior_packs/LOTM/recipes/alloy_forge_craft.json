@@ -1,0 +1,18 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:recipe_shaped": {
+        "description": { "identifier": "lotm:alloy_forge_craft" },
+        "tags": ["crafting_table"],
+        "pattern": [
+            "III",
+            " B ",
+            "III"
+        ],
+        "key": {
+            "I": { "item": "minecraft:iron_ingot" },
+            "B": { "item": "minecraft:blast_furnace" }
+        },
+        "result": { "item": "lotm:alloy_forge" },
+        "unlock": [{ "item": "minecraft:blast_furnace" }]
+    }
+}
