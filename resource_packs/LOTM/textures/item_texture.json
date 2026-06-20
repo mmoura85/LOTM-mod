@@ -456,7 +456,20 @@
     "defense_tome":  { "textures": "textures/items/defense_tome" },
     "buff_tome":     { "textures": "textures/items/buff_tome" },
     "mystic_compass":{ "textures": "textures/items/mystic_compass" },
-    "hermit_potion_seq4":         { "textures": "textures/items/hermit_potion_seq4" }
+    "hermit_potion_seq4":         { "textures": "textures/items/hermit_potion_seq4" },
+    "coke":            { "textures": "textures/items/coal" },
+    "raw_silver":      { "textures": "textures/items/raw_iron" },
+    "raw_tin":         { "textures": "textures/items/raw_copper" },
+    "silver_ingot":    { "textures": "textures/items/iron_ingot" },
+    "tin_ingot":       { "textures": "textures/items/tin_ingot" },
+    "steel_ingot":     { "textures": "textures/items/steel_ingot" },
+    "bronze_ingot":    { "textures": "textures/items/bronze_ingot" },
+    "voidsteel_ingot": { "textures": "textures/items/voidsteel_ingot" },
+    "steel_sword":     { "textures": "textures/items/steel_sword" },
+    "steel_pickaxe":   { "textures": "textures/items/steel_pickaxe" },
+    "steel_axe":       { "textures": "textures/items/steel_axe" },
+    "steel_shovel":    { "textures": "textures/items/steel_shovel" },
+    "steel_hoe":       { "textures": "textures/items/steel_hoe" }
 
   }
 }

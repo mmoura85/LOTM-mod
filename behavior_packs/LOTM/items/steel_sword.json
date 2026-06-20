@@ -1,0 +1,26 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:item": {
+        "description": {
+            "identifier": "lotm:steel_sword",
+            "menu_category": { "category": "equipment", "group": "itemGroup.name.sword" }
+        },
+        "components": {
+            "minecraft:display_name": { "value": "§bSteel Sword" },
+            "minecraft:icon": "steel_sword",
+            "minecraft:max_stack_size": 1,
+            "minecraft:hand_equipped": true,
+            "minecraft:damage": { "value": 8 },
+            "minecraft:durability": {
+                "max_durability": 450,
+                "damage_chance": { "min": 0, "max": 100 }
+            },
+            "minecraft:enchantable": { "slot": "sword", "value": 14 },
+            "minecraft:repairable": {
+                "repair_items": [
+                    { "items": ["lotm:steel_ingot"], "repair_amount": 150 }
+                ]
+            }
+        }
+    }
+}

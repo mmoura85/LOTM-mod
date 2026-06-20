@@ -1,0 +1,9 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_furnace": {
+        "description": { "identifier": "lotm:silver_ingot_smelt" },
+        "tags": ["furnace", "blast_furnace"],
+        "input": { "item": "lotm:raw_silver" },
+        "output": { "item": "lotm:silver_ingot" }
+    }
+}

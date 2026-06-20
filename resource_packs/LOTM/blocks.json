@@ -20,6 +20,9 @@
   "lotm:grave_cross": {
     "sound": "stone"
   },
- "lotm:wooden_chair": { "textures": "wooden_chair" },
- "lotm:stone_bench":  { "textures": "stone_bench" }
+ "lotm:wooden_chair":  { "textures": "wooden_chair" },
+ "lotm:stone_bench":   { "textures": "stone_bench" },
+ "lotm:silver_ore":  { "textures": "silver_ore",              "sound": "stone" },
+ "lotm:tin_ore":     { "textures": "tin_ore",                 "sound": "stone" },
+ "lotm:alloy_forge": { "textures": "lotm_blast_furnace_front", "sound": "stone" }
 }

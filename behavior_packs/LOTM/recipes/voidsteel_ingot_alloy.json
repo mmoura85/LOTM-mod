@@ -1,0 +1,13 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:recipe_shapeless": {
+        "description": { "identifier": "lotm:voidsteel_ingot_alloy" },
+        "tags": ["lotm:alloy_forge"],
+        "ingredients": [
+            { "item": "lotm:steel_ingot" },
+            { "item": "minecraft:diamond" }
+        ],
+        "result": { "item": "lotm:voidsteel_ingot" },
+        "unlock": [{ "item": "lotm:steel_ingot" }]
+    }
+}

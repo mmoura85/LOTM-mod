@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:block": {
+        "description": {
+            "identifier": "lotm:silver_ore",
+            "menu_category": { "category": "nature" }
+        },
+        "components": {
+"minecraft:geometry": "minecraft:geometry.full_block",
+            "minecraft:material_instances": {
+                "*": { "texture": "silver_ore", "render_method": "opaque" }
+            },
+            "minecraft:loot": "loot_tables/blocks/lotm/silver_ore.json",
+            "minecraft:destructible_by_mining": { "seconds_to_destroy": 3.0 },
+            "minecraft:destructible_by_explosion": { "explosion_resistance": 6.0 },
+            "minecraft:map_color": "#C0C0C0"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:recipe_shaped": {
+        "description": { "identifier": "lotm:steel_pickaxe_craft" },
+        "tags": ["crafting_table"],
+        "pattern": ["SSS", " # ", " # "],
+        "key": {
+            "S": { "item": "lotm:steel_ingot" },
+            "#": { "item": "minecraft:stick" }
+        },
+        "result": { "item": "lotm:steel_pickaxe" },
+        "unlock": [{ "item": "lotm:steel_ingot" }]
+    }
+}
