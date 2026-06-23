@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:silver_bullet_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "  S",
+      " G ",
+      "G  "
+    ],
+    "key": {
+      "S": {
+        "item": "lotm:silver_ingot"
+      },
+      "G": {
+        "item": "minecraft:gunpowder"
+      }
+    },
+    "result": {
+      "item": "lotm:silver_bullet",
+      "count": 6
+    },
+    "unlock": [
+      {
+        "item": "lotm:silver_ingot"
+      }
+    ]
+  }
+}

@@ -266,7 +266,6 @@ export class MysticologistSequence {
     const eye=player.getHeadLocation(), dir=player.getViewDirection(), dim=player.dimension;
     const hitIds=new Set();
     player.playSound('item.trident.throw',{pitch:0.7,volume:1.5});
-    player.sendMessage('§b✦ §fSpear of Longinus!');
     const sx=eye.x+dir.x*1.5, sy=eye.y+dir.y*1.5, sz=eye.z+dir.z*1.5;
     let spear=null, stopped=false;
     try{spear=dim.spawnEntity('lotm:spear_projectile',{x:sx,y:sy,z:sz});}catch(_){}
@@ -322,7 +321,6 @@ export class MysticologistSequence {
     const start={x:eye.x+view.x*1.5,y:eye.y,z:eye.z+view.z*1.5};
     let hit=false;
     player.playSound('fire.fire',{pitch:1.2,volume:1.0});
-    player.sendMessage('§c§o Fire Bolt!');
     for(let i=0;i<24;i++){
       system.runTimeout(()=>{
         if(hit) return;
@@ -357,7 +355,6 @@ export class MysticologistSequence {
   static _castEarthSpike(player) {
     const origin=player.getHeadLocation(), view=player.getViewDirection(), dim=player.dimension;
     const SPIKES=3,SPACING=0.9,STEPS=28,STEP_SZ=0.75,DAMAGE=22;
-    player.sendMessage('§2§l⬆ EARTH SPIKE!');
     player.playSound('dig.stone',{pitch:0.5,volume:1.2});
     const rx=view.z,rz=-view.x,rLen=Math.sqrt(rx*rx+rz*rz)||1;
     const normRx=rx/rLen,normRz=rz/rLen;
@@ -411,7 +408,6 @@ export class MysticologistSequence {
     const view=player.getViewDirection(),eye=player.getHeadLocation();
     const SPEED=0.7,STEPS=50,DAMAGE=42;
     const start={x:eye.x+view.x*2,y:eye.y,z:eye.z+view.z*2};
-    player.sendMessage('§c§l🔥 FIREBALL!');
     player.playSound('mob.ghast.fireball',{pitch:1.0,volume:1.0});
     let pos={...start},step=0;
     const tick=()=>{
@@ -455,7 +451,6 @@ export class MysticologistSequence {
     const hit=this._raycastBlock(player,40);
     const tl=hit?hit:{...player.location};
     const dim=player.dimension;
-    player.sendMessage('§e§l✦ STAR PILLAR ✦');
     player.playSound('item.trident.thunder',{pitch:0.6,volume:1.5});
     for(let x=-8;x<=8;x+=3) for(let z=-8;z<=8;z+=3) try{dim.spawnParticle('lotm:star-fall',{x:tl.x+x,y:tl.y+8,z:tl.z+z});}catch(_){}
     for(let i=0;i<30;i++){const a=(i/30)*Math.PI*2;try{dim.spawnParticle('minecraft:totem_particle',{x:tl.x+Math.cos(a)*8,y:tl.y+12,z:tl.z+Math.sin(a)*8});}catch(_){}}
@@ -491,7 +486,6 @@ export class MysticologistSequence {
   }
 
   static _castHeal(player) {
-    player.sendMessage('§a§l♥ HEAL!');
     player.playSound('random.orb', { pitch: 0.8, volume: 1.0 });
 
     // Always heal the caster first
@@ -526,7 +520,6 @@ export class MysticologistSequence {
   static _castEarthWall(player) {
     const view=player.getViewDirection(),facingNS=Math.abs(view.z)>Math.abs(view.x);
     const cx=Math.floor(player.location.x+view.x*3),cy=Math.floor(player.location.y),cz=Math.floor(player.location.z+view.z*3);
-    player.sendMessage('§7§l■ EARTH WALL!');
     player.playSound('dig.stone',{pitch:0.7,volume:1.0});
     for(let wide=-1;wide<=1;wide++) for(let tall=0;tall<=2;tall++){
       const bx=facingNS?cx+wide:cx,by=cy+tall,bz=facingNS?cz:cz+wide;
@@ -544,7 +537,6 @@ export class MysticologistSequence {
   static _castForceField(player) {
     const loc=player.location,cx=Math.floor(loc.x),cy=Math.floor(loc.y),cz=Math.floor(loc.z);
     const dim=player.dimension,placed=[];
-    player.sendMessage('§b§l◎ FORCE FIELD!');
     player.playSound('conduit.activate',{pitch:0.9,volume:1.0});
     for(let x=-2;x<=2;x++) for(let y=-1;y<=2;y++) for(let z=-2;z<=2;z++){
       if(Math.abs(x)!==2&&Math.abs(z)!==2) continue;
@@ -568,7 +560,6 @@ export class MysticologistSequence {
 
   static _castExorcism(player) {
     const uKeywords=['zombie','skeleton','phantom','wither','drowned','husk','stray','vex','lotm:ghoul','lotm:vengeful_ghost','lotm:shade'];
-    player.sendMessage('§f§l☩ EXORCISM!');
     player.playSound('random.levelup',{pitch:0.7,volume:1.0});
     let count=0;
     try{
@@ -589,7 +580,6 @@ export class MysticologistSequence {
 
   static _castPurification(player) {
     const debuffs=['wither','poison','weakness','slowness','mining_fatigue','nausea','blindness','hunger','levitation','fatal_poison'];
-    player.sendMessage('§e§l✦ PURIFICATION!');
     player.playSound('note.harp',{pitch:1.5,volume:1.0});
     try{
       const players=player.dimension.getPlayers({location:player.location,maxDistance:10});
@@ -623,7 +613,6 @@ export class MysticologistSequence {
     }
     this.raisedEarths.set(player.name,placed);
     system.runTimeout(()=>{try{player.teleport({x:loc.x,y:platformBase+3,z:loc.z},{dimension:player.dimension,rotation:player.getRotation()});}catch(_){}},5);
-    player.sendMessage('§6§l🪨 RAISE EARTH!');
     player.playSound('dig.stone',{pitch:0.6,volume:1.5});
     return true;
   }
@@ -651,14 +640,12 @@ export class MysticologistSequence {
     player.addEffect('water_breathing',1200,{amplifier:0,showParticles:false});
     player.addEffect('dolphins_grace',1200,{amplifier:0,showParticles:false});
     player.addEffect('speed',1200,{amplifier:3,showParticles:false});
-    player.sendMessage('§b§l🌊 SEA WAVE!');
     player.playSound('ambient.underwater.loop',{pitch:1.5,volume:0.8});
     for(let r=1;r<=6;r++){system.runTimeout(()=>{for(let i=0;i<12;i++){const a=(i/12)*Math.PI*2;try{player.dimension.spawnParticle('minecraft:water_evaporation_actor_emitter',{x:player.location.x+Math.cos(a)*r,y:player.location.y+0.2,z:player.location.z+Math.sin(a)*r});}catch(_){};}},r*3);}
     return true;
   }
 
    static _castSlowFall(player) {
-    player.sendMessage('§f§l↓ SLOW FALL!');
     player.playSound('mob.bat.hurt', { pitch: 0.5, volume: 0.8 });
 
     // Always apply to caster
@@ -683,7 +670,6 @@ export class MysticologistSequence {
   }
 
   static _castArcaneArmour(player) {
-    player.sendMessage('§6§l🛡 ARCANE ARMOUR!');
     player.playSound('armor.equip_diamond',{pitch:0.8,volume:1.2});
     player.addEffect('resistance',600,{amplifier:3,showParticles:false});
     player.addEffect('fire_resistance',600,{amplifier:0,showParticles:false});
@@ -733,7 +719,6 @@ export class MysticologistSequence {
     try{player.teleport(dest,{dimension:player.dimension});}catch(_){}
     this._starRing(player.dimension,dest,12,0.8);
     player.playSound('mob.endermen.portal',{pitch:1.6,volume:0.8});
-    player.sendMessage('§9§o Night Blink!');
     return true;
   }
 
@@ -751,7 +736,6 @@ export class MysticologistSequence {
       try{const block=dim.getBlock({x:bx,y:by,z:bz});if(block&&!block.isAir) break;dim.runCommand(`setblock ${bx} ${by} ${bz} minecraft:blue_stained_glass`);placed.push({x:bx,y:by,z:bz});}catch(_){}
     }
     this.activeBridges.set(player.name,{blocks:placed,ticksLeft:150});
-    player.sendMessage(`§b✦ Star Bridge! §7(${placed.length} blocks, fades in 30s)`);
     player.playSound('block.amethyst_block.place',{pitch:0.9,volume:1.0});
     return true;
   }
@@ -803,7 +787,6 @@ export class MysticologistSequence {
       return false;
     }
 
-    player.sendMessage('§8§l⛏ TUNNEL!');
     player.playSound('dig.stone', { pitch: 1.2, volume: 1.5 });
 
     // ── Step 2: Mine 3×3×3 cube centred on target block
@@ -894,7 +877,6 @@ export class MysticologistSequence {
 
   static _castOreSense(player) {
     const RANGE = 32;
-    player.sendMessage('§e⛏ §lORE SENSE§r§e scanning...');
     player.playSound('random.orb', { pitch: 1.6, volume: 0.8 });
  
     const { counts, nearest } = this._scanOres(player, RANGE);

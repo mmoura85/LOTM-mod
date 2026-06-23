@@ -3,7 +3,10 @@
   "minecraft:item": {
     "description": {
       "identifier": "lotm:hanged_man_characteristic_seq8",
-      "menu_category": { "category": "items" }
+      "menu_category": {
+        "category": "items",
+        "group": "itemGroup.name.lotm_characteristic"
+      }
     },
     "components": {
       "minecraft:max_stack_size": 16,

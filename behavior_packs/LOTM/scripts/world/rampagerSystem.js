@@ -291,7 +291,7 @@ export class RampagerSystem {
       z: wz + view.z * 1.5
     };
 
-    const speed  = 0.35;
+    const speed  = 0.7;
     const maxAge = 80;
     let pos = { ...start };
     let hit = false;

@@ -4,7 +4,8 @@
     "description": {
       "identifier": "lotm:darkness_characteristic_seq7",
       "menu_category": {
-        "category": "items"
+        "category": "items",
+        "group": "itemGroup.name.lotm_characteristic"
       }
     },
     "components": {

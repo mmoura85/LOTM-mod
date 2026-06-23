@@ -3,7 +3,10 @@
   "minecraft:item": {
     "description": {
       "identifier": "lotm:death_potion_seq8",
-      "menu_category": { "category": "items" }
+      "menu_category": {
+        "category": "items",
+        "group": "itemGroup.name.lotm_sequence_potion"
+      }
     },
     "components": {
       "minecraft:max_stack_size": 1,

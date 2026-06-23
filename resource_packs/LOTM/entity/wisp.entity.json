@@ -4,27 +4,19 @@
     "description": {
       "identifier": "lotm:wisp",
       "materials": {
-        "default": "entity_alphatest"
+        "default": "entity_alphatest",
+        "outer": "entity_alphablend"
       },
       "textures": {
         "default": "textures/entity/wisp"
       },
       "geometry": {
-        "default": "geometry.bat"
-      },
-      "animations": {
-        "flying": "animation.bat.flying",
-        "sleeping": "animation.bat.sleeping",
-        "controller": "controller.animation.bat"
-      },
-      "scripts": {
-        "scale": "0.4",
-        "animate": [
-          "controller"
-        ]
+        "default": "geometry.wisp",
+        "outer": "geometry.wisp_outer"
       },
       "render_controllers": [
-        "controller.render.bat"
+        "controller.render.wisp_inner",
+        "controller.render.wisp_outer"
       ],
       "spawn_egg": {
         "base_color": "#88ccff",
