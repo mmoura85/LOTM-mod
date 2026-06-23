@@ -1,0 +1,48 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.wisp",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "Innercube",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "incube",
+					"parent": "Innercube",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-2, 2, 0], "size": [1, 1, 1], "uv": [2, 1]}
+					]
+				}
+			]
+		},
+		{
+			"description": {
+				"identifier": "geometry.wisp_outer",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-3, 1, -1], "size": [3, 3, 3], "uv": [18, 9]}
+					]
+				}
+			]
+		}
+	]
+}

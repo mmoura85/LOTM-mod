@@ -24,7 +24,7 @@
                 "use_efficiency": true,
                 "destroy_speeds": [
                     {
-                        "block": { "tags": "q.any_tag('stone', 'metal', 'nether_rock', 'diamond_pick_diggable')" },
+                        "block": { "tags": "q.any_tag('stone', 'metal', 'nether_rock', 'diamond_pick_diggable', 'iron_pick_diggable', 'stone_pick_diggable', 'wood_pick_diggable')" },
                         "speed": 7
                     },
                     { "block": "lotm:silver_ore", "speed": 7 },

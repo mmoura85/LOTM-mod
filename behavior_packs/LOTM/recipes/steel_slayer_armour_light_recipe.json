@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:steel_slayer_armour_light_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "L L",
+      "LSL",
+      "LSL"
+    ],
+    "key": {
+      "S": {
+        "item": "lotm:steel_ingot"
+      },
+      "L": {
+        "item": "minecraft:leather"
+      }
+    },
+    "result": {
+      "item": "lotm:steel_slayer_armour_light",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:steel_ingot"
+      }
+    ]
+  }
+}

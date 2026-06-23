@@ -4,7 +4,8 @@
     "description": {
       "identifier": "lotm:seer_potion_seq8",
       "menu_category": {
-        "category": "items"
+        "category": "items",
+        "group": "itemGroup.name.lotm_sequence_potion"
       }
     },
     "components": {

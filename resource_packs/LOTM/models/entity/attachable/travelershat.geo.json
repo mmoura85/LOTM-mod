@@ -14,6 +14,7 @@
 				{
 					"name": "root_item",
 					"pivot": [0, 0, 0],
+					"binding": "'head'",
 					"cubes": [
 						{"origin": [-3, 9, -3], "size": [6, 3, 6], "uv": [-8, -4]}
 					]

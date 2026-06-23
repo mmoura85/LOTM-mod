@@ -14,11 +14,11 @@
             }
         },
         "distribution": {
-            "iterations": 4,
+            "iterations": 8,
             "x": { "distribution": "uniform", "extent": [0, 16] },
             "y": { "distribution": "uniform", "extent": [0, 64] },
             "z": { "distribution": "uniform", "extent": [0, 16] },
-            "scatter_chance": 50
+            "scatter_chance": 70
         }
     }
 }

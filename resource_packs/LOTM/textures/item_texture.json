@@ -149,6 +149,15 @@
     "copper_bullet": {
       "textures": "textures/items/copper_bullet"
     },
+    "silver_bullet": {
+      "textures": "textures/items/silver_bullet"
+    },
+    "steel_slayer_armour": {
+      "textures": "textures/items/steel_slayer_armour"
+    },
+    "steel_slayer_armour_light": {
+      "textures": "textures/items/steel_slayer_armour_light"
+    },
     "knife": {
       "textures": "textures/items/knife"
     },
@@ -458,8 +467,8 @@
     "mystic_compass":{ "textures": "textures/items/mystic_compass" },
     "hermit_potion_seq4":         { "textures": "textures/items/hermit_potion_seq4" },
     "coke":            { "textures": "textures/items/coal" },
-    "raw_silver":      { "textures": "textures/items/raw_iron" },
-    "raw_tin":         { "textures": "textures/items/raw_copper" },
+    "raw_silver":      { "textures": "textures/items/raw_silver" },
+    "raw_tin":         { "textures": "textures/items/raw_tin" },
     "silver_ingot":    { "textures": "textures/items/iron_ingot" },
     "tin_ingot":       { "textures": "textures/items/tin_ingot" },
     "steel_ingot":     { "textures": "textures/items/steel_ingot" },

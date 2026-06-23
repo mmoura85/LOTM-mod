@@ -19,15 +19,18 @@
 //     WispSystem.tick(player);
 // ============================================================================
 import { world, system } from '@minecraft/server';
+import { PathwayManager } from '../core/pathwayManager.js';
 export class WispSystem {
 
-  static MAX_WISPS = 60;
+  static MAX_WISPS = 1;
 
   // Wisp role assigned by bond order
+  // Capped at 1 bonded wisp for now — it always grants Beyonder Sense.
+  // (proximity/detection roles kept here for when the cap is raised later)
   static WISP_ROLES = {
-    0: 'proximity',  // First bonded — danger proximity
-    1: 'detection',  // Second bonded — ore detection
-    2: 'beyonder',   // Third bonded — player/beyonder/rampager detection
+    0: 'beyonder',   // Only bonded wisp — player/beyonder/rampager detection
+    1: 'proximity',  // danger proximity
+    2: 'detection',  // ore detection
   };
 
   // Dynamic property keys
@@ -49,9 +52,17 @@ export class WispSystem {
   static onBond(player, wispEntity) {
     let pathway;
     try { pathway = player.getDynamicProperty('lotm:pathway'); } catch (_) {}
- 
+
     if (!pathway) {
       player.sendMessage('§8You must be a Beyonder to bond with a wisp.');
+      // Undo the tame — kill and respawn wild (or just warn for now)
+      return;
+    }
+
+    // Spirits only answer to Death pathway, Sequence 7 (Spirit Medium) and beyond
+    const sequence = PathwayManager.getSequence(player);
+    if (pathway !== PathwayManager.PATHWAYS.DEATH || sequence === -1 || sequence > 7) {
+      player.sendMessage('§8This spirit will not answer to you — only a Death pathway Spirit Medium (Sequence 7 and beyond) can bond it.');
       // Undo the tame — kill and respawn wild (or just warn for now)
       return;
     }
@@ -59,7 +70,7 @@ export class WispSystem {
     // Check max wisps
     const bonded = this._getBondedWisps(player);
     if (bonded.length >= this.MAX_WISPS) {
-      player.sendMessage(`§8You already have ${this.MAX_WISPS} bonded wisps.`);
+      player.sendMessage(this.MAX_WISPS === 1 ? '§8You already have a bonded wisp.' : `§8You already have ${this.MAX_WISPS} bonded wisps.`);
       // Could kill the wisp here to prevent over-bonding
       return;
     }

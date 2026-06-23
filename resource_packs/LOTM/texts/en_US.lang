@@ -1,3 +1,9 @@
 tile.lotm:silver_ore.name=§7Silver Ore
 tile.lotm:tin_ore.name=§7Tin Ore
 tile.lotm:alloy_forge.name=§8Alloy Forge
+
+itemGroup.name.lotm_sequence_potion=Sequence Potions
+itemGroup.name.lotm_characteristic=Characteristics
+
+item.lotm:steel_slayer_armour.name=Steel Slayer Armour
+item.lotm:steel_slayer_armour_light.name=Steel Slayer Armour (Light)

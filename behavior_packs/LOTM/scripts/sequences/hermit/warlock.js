@@ -218,6 +218,11 @@ export class WarlockSequence {
     if (t % this.AURA_SCAN_INTERVAL !== 0) return;
 
     try {
+      // Mysticologist (Hermit seq 4) and beyond: passive detection still works,
+      // just without the chat spam — too many messages eating the screen.
+      const ownSeq = PathwayManager.getSequence(player);
+      const quietDetection = ownSeq !== -1 && ownSeq <= 4;
+
       const nearbyPlayers = player.dimension.getPlayers({
         location: player.location, maxDistance: this.AURA_DETECT_RANGE
       });
@@ -225,11 +230,11 @@ export class WarlockSequence {
         if (other.name === player.name) continue;
         const seq = PathwayManager.getSequence(other);
         if (seq !== -1 && seq <= 4) {
-          player.sendMessage(`§5[Eyes of Mystery] §7An extraordinary presence — Sequence §e${seq}§7 detected!`);
+          if (!quietDetection) player.sendMessage(`§5[Eyes of Mystery] §7An extraordinary presence — Sequence §e${seq}§7 detected!`);
           player.playSound('note.pling', { pitch: 0.4, volume: 0.6 });
           break;
         } else if (seq !== -1 && seq <= 7) {
-          player.sendMessage(`§5[Eyes of Mystery] §7A beyonder presence stirs nearby...`);
+          if (!quietDetection) player.sendMessage(`§5[Eyes of Mystery] §7A beyonder presence stirs nearby...`);
           player.playSound('note.pling', { pitch: 0.6, volume: 0.4 });
           break;
         }
@@ -266,9 +271,11 @@ export class WarlockSequence {
         }
       }
 
-      if (t1 > 0) player.sendMessage(`§c[Premonition] §7${t1} hostile(s) within §c5 §7blocks!`);
-      if (t2 > 0) player.sendMessage(`§e[Premonition] §7${t2} hostile(s) within §e20 §7blocks.`);
-      if (t3 > 0) player.sendMessage(`§7[Premonition] ${t3} distant hostile(s) within 40 blocks.`);
+      if (!quietDetection) {
+        if (t1 > 0) player.sendMessage(`§c[Premonition] §7${t1} hostile(s) within §c5 §7blocks!`);
+        if (t2 > 0) player.sendMessage(`§e[Premonition] §7${t2} hostile(s) within §e20 §7blocks.`);
+        if (t3 > 0) player.sendMessage(`§7[Premonition] ${t3} distant hostile(s) within 40 blocks.`);
+      }
     } catch (_) {}
   }
 

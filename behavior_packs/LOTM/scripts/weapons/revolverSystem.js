@@ -5,6 +5,7 @@
 // Higher damage than bow, hitscan projectile
 
 import { world, system } from '@minecraft/server';
+import { CorpseCollectorSequence } from '../sequences/death/corpse_collector.js';
 
 export class RevolverSystem {
   // Weapon stats
@@ -12,11 +13,13 @@ export class RevolverSystem {
   static RANGE = 50; // blocks
   static FIRE_RATE = 10; // ticks between shots (0.5 seconds)
   static DURABILITY_COST = 1; // durability per shot
-  
+
   // Ammo tracking
   static lastShotTime = new Map(); // player name -> tick
   static currentTick = 0; // Manual tick counter
   static COPPER_DAMAGE = 10; // §6Copper Bullet§r — cheaper, lower damage
+  static SILVER_DAMAGE = 18; // §fSilver Bullet§r — premium, anti-supernatural
+  static SILVER_UNDEAD_BONUS = 10; // extra flat damage vs undead/supernatural targets
   
   /**
    * Initialize the tick counter (call this from main.js on load)
@@ -38,7 +41,7 @@ export class RevolverSystem {
       for (let i = 0; i < inventory.container.size; i++) {
         const item = inventory.container.getItem(i);
         if (!item || item.amount <= 0) continue;
-        if (item.typeId === 'lotm:bullet' || item.typeId === 'lotm:copper_bullet') {
+        if (item.typeId === 'lotm:bullet' || item.typeId === 'lotm:copper_bullet' || item.typeId === 'lotm:silver_bullet') {
           return true;
         }
       }
@@ -86,6 +89,21 @@ export class RevolverSystem {
           return consumed;
         }
       }
+
+      // Third pass — silver bullets last (precious, anti-supernatural ammo)
+      for (let i = 0; i < inventory.container.size; i++) {
+        const item = inventory.container.getItem(i);
+        if (item && item.typeId === 'lotm:silver_bullet' && item.amount > 0) {
+          const consumed = item.typeId;
+          if (item.amount === 1) {
+            inventory.container.setItem(i, undefined);
+          } else {
+            item.amount--;
+            inventory.container.setItem(i, item);
+          }
+          return consumed;
+        }
+      }
     } catch (e) {}
     return null;
   }
@@ -106,7 +124,7 @@ export class RevolverSystem {
       if (!this.canShoot(player)) return false;
 
       if (!this.hasBullets(player)) {
-        player.sendMessage('§cOut of ammo! Craft §7Bullets§c (Iron Nugget + Gunpowder) or §6Copper Bullets§c (Copper Ingot + Gunpowder)');
+        player.sendMessage('§cOut of ammo! Craft §7Bullets§c (Iron Nugget + Gunpowder), §6Copper Bullets§c (Copper Ingot + Gunpowder), or §fSilver Bullets§c (Silver Ingot + Gunpowder)');
         try { player.playSound('block.barrel.close', { pitch: 1.0, volume: 0.5 }); } catch (e) {}
         return false;
       }
@@ -120,7 +138,8 @@ export class RevolverSystem {
 
       // Damage is determined by bullet type
       const isCopperBullet = bulletType === 'lotm:copper_bullet';
-      const bulletDamage   = isCopperBullet ? this.COPPER_DAMAGE : this.DAMAGE;
+      const isSilverBullet = bulletType === 'lotm:silver_bullet';
+      const bulletDamage   = isSilverBullet ? this.SILVER_DAMAGE : (isCopperBullet ? this.COPPER_DAMAGE : this.DAMAGE);
 
       // Perform raycast
       const hitResult = this.performRaycast(player);
@@ -128,17 +147,20 @@ export class RevolverSystem {
       // Muzzle flash + sound
       this.spawnMuzzleFlash(player);
       try {
-        // Copper bullets sound slightly different — a drier, lighter crack
+        // Copper bullets sound a drier, lighter crack; silver rings with a sharper, higher tone
         player.playSound('random.explode', {
-          pitch: isCopperBullet ? 2.3 : 2.0,
-          volume: isCopperBullet ? 0.65 : 0.8
+          pitch: isSilverBullet ? 2.6 : (isCopperBullet ? 2.3 : 2.0),
+          volume: isSilverBullet ? 0.85 : (isCopperBullet ? 0.65 : 0.8)
         });
+        if (isSilverBullet) {
+          player.playSound('block.amethyst_block.hit', { pitch: 1.8, volume: 0.4 });
+        }
       } catch (e) {}
 
       // Apply damage if hit
       if (hitResult.hit) {
         if (hitResult.entity) {
-          this.damageEntity(player, hitResult.entity, hitResult.location, bulletDamage);
+          this.damageEntity(player, hitResult.entity, hitResult.location, bulletDamage, isSilverBullet);
         }
         this.spawnImpactEffects(player.dimension, hitResult.location);
       }
@@ -281,7 +303,7 @@ export class RevolverSystem {
   /**
  * Damage the hit entity - WITH PATHWAY BUFFS
  */
-  static damageEntity(shooter, target, hitLocation, overrideDamage = null) {
+  static damageEntity(shooter, target, hitLocation, overrideDamage = null, isSilverBullet = false) {
     try {
       let pathway = null;
       let sequence = 10;
@@ -299,7 +321,16 @@ export class RevolverSystem {
         multiplier = RangedWeaponBuffs.getDamageMultiplier(pathway, sequence);
       }
 
-      const finalDamage = Math.max(1, Math.floor((baseDamage + variance) * multiplier));
+      let finalDamage = Math.max(1, Math.floor((baseDamage + variance) * multiplier));
+
+      // Silver bullets bite harder against undead/supernatural targets
+      if (isSilverBullet) {
+        try {
+          if (CorpseCollectorSequence.isUndeadCreature(target)) {
+            finalDamage += this.SILVER_UNDEAD_BONUS;
+          }
+        } catch (e) {}
+      }
 
       let success = false;
       try {
