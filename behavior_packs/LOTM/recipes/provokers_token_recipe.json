@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:provoker_idol_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " G ",
+      "GRG",
+      " G "
+    ],
+    "key": {
+      "G": { "item": "minecraft:gold_ingot" },
+      "R": { "item": "minecraft:red_dye" }
+    },
+    "result": { "item": "lotm:provoker_idol", "count": 1 },
+    "unlock": [{ "item": "lotm:red_priest_characteristic_seq8" }]
+  }
+}

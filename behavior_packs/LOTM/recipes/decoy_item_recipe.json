@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:decoy_item_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "P P",
+      "PSP",
+      " S "
+    ],
+    "key": {
+      "P": { "item": "minecraft:planks" },
+      "S": { "item": "minecraft:stick" }
+    },
+    "result": { "item": "lotm:decoy_item", "count": 2 }
+  }
+}

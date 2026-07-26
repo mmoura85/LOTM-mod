@@ -1,0 +1,22 @@
+{
+  "format_version": "1.17.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:rope_ladder_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "S S",
+      "I I",
+      "S S"
+    ],
+    "key": {
+      "S": { "item": "minecraft:string" },
+      "I": { "item": "minecraft:stick" }
+    },
+    "result": {
+      "item": "lotm:rope_ladder",
+      "count": 2
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lotm:fire_arrow",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/fire_arrow"
+			},
+			"geometry": {
+				"default": "geometry.flame_spear"
+			},
+			"render_controllers": ["controller.render.default"]
+		}
+	}
+}

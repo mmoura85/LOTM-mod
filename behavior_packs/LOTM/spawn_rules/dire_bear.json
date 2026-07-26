@@ -17,7 +17,7 @@
                     "min": "normal",
                     "max": "hard"
                 },
-                "minecraft:weight": { "default": 5 },
+                "minecraft:weight": { "default": 3 },
                 "minecraft:herd": { "min_size": 1, "max_size": 2 },
                 "minecraft:biome_filter": {
                     "any_of": [

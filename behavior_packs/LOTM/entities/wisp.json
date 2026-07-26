@@ -11,7 +11,7 @@
        "lotm:wisp_wild": {
         "minecraft:tameable": {
           "probability": 1.0,
-          "tame_items": "lotm:spirit_focus",
+          "tame_items": "lotm:spirit_channeler",
           "tame_event": {
             "event": "lotm:on_bond",
             "target": "self"

@@ -9,7 +9,7 @@
         },
         "components": {
             "minecraft:type_family": {
-                "family": ["dire_wolf", "mob", "carnivore", "animal"]
+                "family": ["dire_wolf", "mob", "carnivore", "animal", "lotm_beast"]
             },
             "minecraft:physics": {},
             "minecraft:movement.basic": {},
@@ -83,7 +83,7 @@
             "minecraft:behavior.nearest_attackable_target": {
                 "priority": 2,
                 "within_radius": 24.0,
-                "must_see": true,
+                "must_see": false,
                 "entity_types": [
                     {
                         "filters": {
@@ -119,6 +119,22 @@
                             ]
                         },
                         "max_dist": 32
+                    },
+                    {
+                        "filters": { "test": "is_family", "subject": "other", "value": "monster" },
+                        "max_dist": 24
+                    },
+                    {
+                        "filters": { "test": "is_family", "subject": "other", "value": "ghoul" },
+                        "max_dist": 24
+                    },
+                    {
+                        "filters": { "test": "is_family", "subject": "other", "value": "dire_bear" },
+                        "max_dist": 24
+                    },
+                    {
+                        "filters": { "test": "is_family", "subject": "other", "value": "decoy" },
+                        "max_dist": 24
                     }
                 ]
             },

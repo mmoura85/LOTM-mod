@@ -16,7 +16,8 @@ export class PathwayManager {
     TWILIGHT_GIANT: 'twilight_giant',
     JUSTICIAR: 'justiciar',
     HANGED_MAN: 'hanged_man',
-    HERMIT: 'hermit'
+    HERMIT: 'hermit',
+    RED_PRIEST: 'red_priest'
   };
   
   // Spirit growth rates (spirit added per sequence advancement)
@@ -31,6 +32,7 @@ export class PathwayManager {
     [this.PATHWAYS.JUSTICIAR]: 25,     // Physical pathway - slower growth
     [this.PATHWAYS.HANGED_MAN]: 30,
     [this.PATHWAYS.HERMIT]: 40,   // Mystical focus — solid spirit growth
+    [this.PATHWAYS.RED_PRIEST]: 12, // Physical hunter — same low rate as twilight_giant
   };
   
   /**
@@ -76,6 +78,8 @@ export class PathwayManager {
       baseSpirit = 150;
     } else if (pathway === this.PATHWAYS.TWILIGHT_GIANT) {
       baseSpirit = 50; // Physical pathway, lower spirit
+    } else if (pathway === this.PATHWAYS.RED_PRIEST) {
+      baseSpirit = 60; // Physical hunter pathway, low spirit
     } else if (pathway === this.PATHWAYS.HANGED_MAN) {
       baseSpirit = 140; // High spirituality pathway
     } 

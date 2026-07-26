@@ -1,0 +1,23 @@
+{
+  "format_version": "1.13.0",
+  "minecraft:feature_rules": {
+    "description": {
+      "identifier": "lotm:silver_fern_feature_rule",
+      "places_feature": "lotm:silver_fern_scatter_feature"
+    },
+    "conditions": {
+      "placement_pass": "surface_pass",
+      "minecraft:biome_filter": {
+        "test": "has_biome_tag",
+        "operator": "==",
+        "value": "taiga"
+      }
+    },
+    "distribution": {
+      "iterations": 1,
+      "x": 0,
+      "y": 64,
+      "z": 0
+    }
+  }
+}

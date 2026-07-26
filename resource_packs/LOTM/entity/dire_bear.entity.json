@@ -4,25 +4,22 @@
         "description": {
             "identifier": "lotm:dire_bear",
             "materials": {
-                "default": "skeleton"
+                "default": "entity_alphatest"
             },
             "textures": {
-                "variant1": "textures/entity/direbear/direbear 1",
-                "variant2": "textures/entity/direbear/direbear 2",
-                "variant3": "textures/entity/direbear/direbear 3",
-                "variant4": "textures/entity/direbear/direbear 4"
+                "default": "textures/entity/direbear/direbear"
             },
             "geometry": {
-                "default": "geometry.direbear"
+                "default": "geometry.dire_bear"
             },
             "animations": {
-                "animWalk": "animation.direbear.walk",
-                "animLook": "animation.direbear.look",
-                "animAttack": "animation.direbear.bite",
+                "animWalk": "animation.dire_bear.walk",
+                "animMove": "animation.dire_bear.move",
+                "animLook": "animation.common.look_at_target",
                 "contMove": "controller.animation.lotm_direbear_movement"
             },
             "scripts": {
-                "animate": ["contMove", "animLook"]
+                "animate": ["contMove", "animMove", "animLook"]
             },
             "render_controllers": ["controller.render.lotm_direbear"],
             "spawn_egg": {

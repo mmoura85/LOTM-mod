@@ -1,0 +1,88 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:rimewraith",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["rimewraith", "monster", "mob"] },
+      "minecraft:physics": {},
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:can_climb": {},
+      "minecraft:nameable": {},
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:health": { "value": 160, "max": 160 },
+      "minecraft:attack": { "damage": 12 },
+      "minecraft:movement": { "value": 0.25 },
+      "minecraft:knockback_resistance": { "value": 0.5 },
+      "minecraft:collision_box": { "width": 0.7, "height": 2.0 },
+      "minecraft:follow_range": { "value": 24, "max": 24 },
+      "minecraft:loot": { "table": "loot_tables/entities/lotm/rimewraith.json" },
+      "minecraft:experience_reward": { "on_death": "Math.Random(20,40)" },
+      "minecraft:despawn": { "despawn_from_distance": { "max_distance": 128 } },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.hurt_by_target": { "priority": 1 },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "within_radius": 24.0,
+        "must_see": false,
+        "entity_types": [
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "player" },
+            "max_dist": 24
+          },
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "decoy" },
+            "max_dist": 24
+          }
+        ]
+      },
+      "minecraft:behavior.ranged_attack": {
+        "priority": 3,
+        "attack_interval": 2,
+        "attack_radius": 16,
+        "speed_multiplier": 1
+      },
+      "minecraft:shooter": {
+        "def": "lotm:flesh_orb"
+      },
+      "minecraft:behavior.random_stroll": { "priority": 8, "speed_multiplier": 0.8 },
+      "minecraft:behavior.look_at_player": { "priority": 9, "look_distance": 10 },
+      "minecraft:behavior.random_look_around": { "priority": 10 },
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:conditional_bandwidth_optimization": {}
+    },
+    "events": {
+      "minecraft:entity_spawned": {}
+    }
+  }
+}

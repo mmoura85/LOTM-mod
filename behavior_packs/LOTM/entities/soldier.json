@@ -1,0 +1,192 @@
+{
+	"format_version": "1.13.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "lotm:soldier",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"component_groups": {
+			"lotm:player_created": {
+				"minecraft:behavior.hurt_by_target": {
+					"priority": 1,
+					"entity_types": {
+						"filters": {
+							"all_of": [
+								{ "test": "is_family", "subject": "other", "operator": "!=", "value": "lotm_soldier" },
+								{
+									"any_of": [
+										{ "test": "is_family", "subject": "other", "value": "monster" },
+										{ "test": "is_type", "subject": "other", "value": "lotm:dire_wolf" },
+										{ "test": "is_type", "subject": "other", "value": "lotm:dire_bear" },
+										{ "test": "is_type", "subject": "other", "value": "lotm:rampager" }
+									]
+								}
+							]
+						}
+					}
+				}
+			}
+		},
+		"components": {
+			"minecraft:type_family": {
+				"family": ["irongolem", "lotm_soldier", "mob"]
+			},
+			"minecraft:nameable": {},
+			"minecraft:collision_box": {
+				"width": 1.4,
+				"height": 2.9
+			},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/lotm/soldier.json"
+			},
+			"minecraft:health": {
+				"value": 100,
+				"max": 100
+			},
+			"minecraft:hurt_on_condition": {
+				"damage_conditions": [
+					{
+						"filters": {
+							"test": "in_lava",
+							"subject": "self",
+							"operator": "==",
+							"value": true
+						},
+						"cause": "lava",
+						"damage_per_tick": 4
+					}
+				]
+			},
+			"minecraft:movement": {
+				"value": 0.28
+			},
+			"minecraft:navigation.walk": {
+				"can_path_over_water": false,
+				"avoid_water": true,
+				"avoid_damage_blocks": true
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:jump.static": {},
+			"minecraft:can_climb": {},
+			"minecraft:attack": {
+				"damage": {
+					"range_min": 7,
+					"range_max": 21
+				}
+			},
+			"minecraft:damage_sensor": {
+				"triggers": {
+					"cause": "fall",
+					"deals_damage": false
+				}
+			},
+			"minecraft:knockback_resistance": {
+				"value": 1
+			},
+			"minecraft:leashable": {
+				"soft_distance": 4,
+				"hard_distance": 6,
+				"max_distance": 10
+			},
+			"minecraft:home": {
+				"restriction_radius": 32
+			},
+			"minecraft:preferred_path": {
+				"max_fall_blocks": 1,
+				"jump_cost": 5,
+				"default_block_cost": 1.5,
+				"preferred_path_blocks": [
+					{ "cost": 0, "blocks": ["grass_path"] },
+					{ "cost": 1, "blocks": ["cobblestone", "stone", "planks", "brick_block"] }
+				]
+			},
+			"minecraft:behavior.nearest_attackable_target": {
+				"priority": 2,
+				"must_reach": true,
+				"must_see": true,
+				"entity_types": [
+					{
+						"filters": {
+							"all_of": [
+								{ "test": "is_family", "subject": "other", "value": "monster" },
+								{ "test": "is_family", "subject": "other", "operator": "!=", "value": "lotm_soldier" }
+							]
+						},
+						"within_default": 16
+					},
+					{
+						"filters": {
+							"any_of": [
+								{ "test": "is_type", "subject": "other", "value": "lotm:dire_wolf" },
+								{ "test": "is_type", "subject": "other", "value": "lotm:dire_bear" },
+								{ "test": "is_type", "subject": "other", "value": "lotm:rampager" }
+							]
+						},
+						"within_default": 16
+					}
+				]
+			},
+			"minecraft:behavior.hurt_by_target": {
+				"priority": 1,
+				"entity_types": {
+					"filters": {
+						"all_of": [
+							{ "test": "is_family", "subject": "other", "operator": "!=", "value": "lotm_soldier" },
+							{
+								"any_of": [
+									{ "test": "is_family", "subject": "other", "value": "monster" },
+									{ "test": "is_type", "subject": "other", "value": "lotm:dire_wolf" },
+									{ "test": "is_type", "subject": "other", "value": "lotm:dire_bear" },
+									{ "test": "is_type", "subject": "other", "value": "lotm:rampager" }
+								]
+							}
+						]
+					}
+				}
+			},
+			"minecraft:behavior.melee_attack": {
+				"priority": 3,
+				"track_target": true
+			},
+			"minecraft:behavior.move_towards_target": {
+				"priority": 4,
+				"speed_multiplier": 0.9,
+				"within_radius": 32
+			},
+			"minecraft:behavior.move_towards_home_restriction": {
+				"priority": 5,
+				"speed_multiplier": 1.0
+			},
+			"minecraft:behavior.random_stroll": {
+				"priority": 6,
+				"speed_multiplier": 0.6,
+				"xz_dist": 12
+			},
+			"minecraft:behavior.look_at_player": {
+				"priority": 7,
+				"look_distance": 6,
+				"probability": 0.02
+			},
+			"minecraft:behavior.random_look_around": {
+				"priority": 8
+			},
+			"minecraft:persistent": {},
+			"minecraft:physics": {},
+			"minecraft:pushable": {
+				"is_pushable": true,
+				"is_pushable_by_piston": false
+			},
+			"minecraft:follow_range": {
+				"value": 48
+			},
+			"minecraft:conditional_bandwidth_optimization": {}
+		},
+		"events": {
+			"minecraft:from_player": {
+				"add": { "component_groups": ["lotm:player_created"] }
+			}
+		}
+	}
+}

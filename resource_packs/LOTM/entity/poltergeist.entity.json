@@ -1,0 +1,36 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:poltergeist",
+      "materials": {
+        "default": "zombie"
+      },
+      "textures": {
+        "default": "textures/entity/poltergeist"
+      },
+      "geometry": {
+        "default": "geometry.poltergeist"
+      },
+      "animations": {
+        "hover_bob": "animation.poltergeist.hover_bob",
+        "arm_sway": "animation.poltergeist.arm_sway",
+        "look_at_target_default": "animation.humanoid.look_at_target.default",
+        "attack.rotations": "animation.humanoid.attack.rotations",
+        "zombie_attack_bare_hand": "animation.zombie.attack_bare_hand"
+      },
+      "scripts": {
+        "animate": [
+          "hover_bob",
+          "arm_sway",
+          "look_at_target_default"
+        ]
+      },
+      "render_controllers": [ "controller.render.lotm_poltergeist" ],
+      "spawn_egg": {
+        "base_color": "#6B0AC9",
+        "overlay_color": "#B06BFF"
+      }
+    }
+  }
+}

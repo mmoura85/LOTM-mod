@@ -1,0 +1,39 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:feature_rules": {
+    "description": {
+      "identifier": "lotm:big_graveyrd_feature_rule",
+      "places_feature": "lotm:graveyard_marker_feature"
+    },
+    "conditions": {
+      "placement_pass": "surface_pass",
+      "minecraft:biome_filter": {
+        "any_of": [
+          { "test": "has_biome_tag", "operator": "==", "value": "plains"  },
+          { "test": "has_biome_tag", "operator": "==", "value": "meadow"  },
+          { "test": "has_biome_tag", "operator": "==", "value": "savanna" },
+          { "test": "has_biome_tag", "operator": "==", "value": "desert"  },
+          { "test": "has_biome_tag", "operator": "==", "value": "swamp"   },
+          { "test": "has_biome_tag", "operator": "==", "value": "frozen"  },
+          { "test": "has_biome_tag", "operator": "==", "value": "mesa"    }
+        ]
+      }
+    },
+    "distribution": {
+      "iterations": 1,
+      "x": {
+        "distribution": "uniform",
+        "extent": [ 0, 16 ]
+      },
+      "y": "q.heightmap(v.worldx, v.worldz) - 1",
+      "z": {
+        "distribution": "uniform",
+        "extent": [ 0, 16 ]
+      },
+      "scatter_chance": {
+        "numerator": 0,
+        "denominator": 100
+      }
+    }
+  }
+}

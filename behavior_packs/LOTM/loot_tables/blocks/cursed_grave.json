@@ -1,0 +1,9 @@
+{
+	"pools": [{
+		"rolls": 1,
+		"entries": [{
+			"type": "item",
+			"name": "lotm:cursed_grave"
+		}]
+	}]
+}

@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:throwing_knife_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " F ",
+      " I ",
+      " S "
+    ],
+    "key": {
+      "F": { "item": "minecraft:flint" },
+      "I": { "item": "minecraft:iron_ingot" },
+      "S": { "item": "minecraft:stick" }
+    },
+    "result": { "item": "lotm:throwing_knife", "count": 4 },
+    "unlock": [{ "item": "minecraft:iron_ingot" }]
+  }
+}

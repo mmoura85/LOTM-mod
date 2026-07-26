@@ -9,7 +9,7 @@
         },
         "components": {
             "minecraft:type_family": {
-                "family": ["dire_bear", "mob", "omnivore", "animal"]
+                "family": ["dire_bear", "mob", "omnivore", "animal", "lotm_beast"]
             },
             "minecraft:physics": {},
             "minecraft:movement.basic": {},
@@ -82,7 +82,17 @@
                 "priority": 0
             },
             "minecraft:behavior.hurt_by_target": {
-                "priority": 1
+                "priority": 1,
+                "entity_types": [
+                    {
+                        "filters": {
+                            "test": "is_family",
+                            "subject": "other",
+                            "operator": "!=",
+                            "value": "dire_bear"
+                        }
+                    }
+                ]
             },
             "minecraft:behavior.nearest_attackable_target": {
                 "priority": 2,
@@ -105,6 +115,10 @@
                             ]
                         },
                         "max_dist": 24
+                    },
+                    {
+                        "filters": { "test": "is_family", "subject": "other", "value": "decoy" },
+                        "max_dist": 20
                     }
                 ]
             },

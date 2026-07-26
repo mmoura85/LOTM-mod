@@ -1,0 +1,12 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "lotm:medium_graveyard_random_feature"
+        },
+        "features": [
+            { "feature": "lotm:small_medium_graveyard_feature",   "weight": 1 },
+            { "feature": "lotm:small_medium_graveyard_b_feature", "weight": 1 }
+        ]
+    }
+}

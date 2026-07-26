@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:fire_trap_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " F ",
+      "INI"
+    ],
+    "key": {
+      "F": { "item": "minecraft:flint" },
+      "I": { "item": "minecraft:iron_ingot" },
+      "N": { "item": "minecraft:netherrack" }
+    },
+    "result": { "item": "lotm:fire_trap", "count": 1 },
+    "unlock": [{ "item": "minecraft:netherrack" }]
+  }
+}

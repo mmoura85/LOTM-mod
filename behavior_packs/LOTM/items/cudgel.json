@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:cudgel",
+      "menu_category": {
+        "category": "equipment",
+        "group": "itemGroup.name.sword"
+      }
+    },
+    "components": {
+      "minecraft:display_name": { "value": "§8Cudgel" },
+      "minecraft:icon": "cudgel",
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": { "value": 9 },
+      "minecraft:durability": {
+        "max_durability": 350,
+        "damage_chance": { "min": 0, "max": 100 }
+      },
+      "minecraft:enchantable": { "slot": "sword", "value": 5 },
+      "minecraft:repairable": {
+        "repair_items": [
+          { "items": ["minecraft:iron_ingot"], "repair_amount": 100 }
+        ]
+      }
+    }
+  }
+}

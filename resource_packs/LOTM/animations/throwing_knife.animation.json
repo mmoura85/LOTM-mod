@@ -1,0 +1,29 @@
+{
+  "format_version": "1.10.0",
+  "animations": {
+    "animation.lotm.throwing_knife.spin": {
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [
+            "query.modified_distance_moved * 80",
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "animation.lotm.throwing_knife.move": {
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [
+            "variable.shake_power",
+            "query.target_x_rotation",
+            0
+          ]
+        }
+      }
+    }
+  }
+}

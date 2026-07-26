@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:fake_grass_trap_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "G",
+      "S"
+    ],
+    "key": {
+      "G": { "item": "minecraft:dirt" },
+      "S": { "item": "minecraft:string" }
+    },
+    "result": { "item": "lotm:fake_grass", "count": 2 },
+    "unlock": [{ "item": "minecraft:dirt" }]
+  }
+}

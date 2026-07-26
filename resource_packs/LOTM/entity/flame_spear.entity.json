@@ -1,0 +1,18 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lotm:flame_spear",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/flame_spear"
+			},
+			"geometry": {
+				"default": "geometry.flame_spear"
+			},
+			"render_controllers": ["controller.render.default"]
+		}
+	}
+}

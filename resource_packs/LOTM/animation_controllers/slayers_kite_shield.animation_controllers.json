@@ -1,0 +1,46 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.lotm_kite_shield.wield": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            { "main_fp":       "query.is_first_person && c.item_slot == 'slot.weapon.mainhand' && !query.blocking" },
+            { "main_fp_block": "query.is_first_person && c.item_slot == 'slot.weapon.mainhand' && query.blocking" },
+            { "off_fp":        "query.is_first_person && c.item_slot == 'slot.weapon.offhand' && !query.blocking" },
+            { "off_fp_block":  "query.is_first_person && c.item_slot == 'slot.weapon.offhand' && query.blocking" }
+          ]
+        },
+        "main_fp": {
+          "animations": ["wield_main_hand_first_person"],
+          "transitions": [
+            { "main_fp_block": "query.blocking" },
+            { "default": "!query.is_first_person" }
+          ]
+        },
+        "main_fp_block": {
+          "animations": ["wield_main_hand_first_person_block"],
+          "transitions": [
+            { "main_fp": "!query.blocking" },
+            { "default": "!query.is_first_person" }
+          ]
+        },
+        "off_fp": {
+          "animations": ["wield_off_hand_first_person"],
+          "transitions": [
+            { "off_fp_block": "query.blocking" },
+            { "default": "!query.is_first_person" }
+          ]
+        },
+        "off_fp_block": {
+          "animations": ["wield_off_hand_first_person_block"],
+          "transitions": [
+            { "off_fp": "!query.blocking" },
+            { "default": "!query.is_first_person" }
+          ]
+        }
+      }
+    }
+  }
+}

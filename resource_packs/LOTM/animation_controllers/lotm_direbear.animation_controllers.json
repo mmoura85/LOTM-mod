@@ -8,9 +8,6 @@
                     "animations": [
                         {
                             "animWalk": "query.ground_speed > 0 || query.is_in_water"
-                        },
-                        {
-                            "animAttack": "query.is_attacking"
                         }
                     ]
                 }

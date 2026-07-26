@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:silence_bomb_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " G ",
+      " B ",
+      " K "
+    ],
+    "key": {
+      "G": { "item": "minecraft:gunpowder" },
+      "B": { "item": "minecraft:glass_bottle" },
+      "K": { "item": "minecraft:ink_sac" }
+    },
+    "result": { "item": "lotm:silence_bomb", "count": 3 },
+    "unlock": [{ "item": "minecraft:gunpowder" }]
+  }
+}

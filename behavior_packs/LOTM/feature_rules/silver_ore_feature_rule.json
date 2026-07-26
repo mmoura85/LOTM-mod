@@ -16,9 +16,9 @@
         "distribution": {
             "iterations": 3,
             "x": { "distribution": "uniform", "extent": [0, 16] },
-            "y": { "distribution": "uniform", "extent": [-32, 16] },
+            "y": { "distribution": "uniform", "extent": [-25, 35] },
             "z": { "distribution": "uniform", "extent": [0, 16] },
-            "scatter_chance": 40
+            "scatter_chance": 80
         }
     }
 }

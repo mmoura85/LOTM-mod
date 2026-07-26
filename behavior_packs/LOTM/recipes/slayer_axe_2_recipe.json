@@ -1,0 +1,17 @@
+{
+	"format_version": "1.20.0",
+	"minecraft:recipe_shaped": {
+		"description": { "identifier": "lotm:slayer_axe_2_recipe" },
+		"tags": ["crafting_table"],
+		"pattern": [
+			"SS",
+			"S#",
+			" #"
+		],
+		"key": {
+			"S": { "item": "lotm:steel_ingot" },
+			"#": { "item": "minecraft:stick" }
+		},
+		"result": { "item": "lotm:slayer_axe_2", "count": 1 }
+	}
+}

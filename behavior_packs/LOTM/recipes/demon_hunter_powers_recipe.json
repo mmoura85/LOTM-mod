@@ -15,13 +15,13 @@
         "item": "minecraft:soul_sand"
       },
       "E": {
-        "item": "minecraft:ender_eye"
+        "item": "lotm:ectoplasm"
       },
       "D": {
         "item": "minecraft:diamond"
       },
       "N": {
-        "item": "minecraft:nether_star"
+        "item": "lotm:soul_crystal"
       }
     },
     "result": {
@@ -30,7 +30,7 @@
     },
     "unlock": [
       {
-        "item": "minecraft:nether_star"
+        "item": "lotm:soul_crystal"
       }
     ]
   }

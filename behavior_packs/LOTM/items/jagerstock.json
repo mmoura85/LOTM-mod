@@ -1,0 +1,55 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:item": {
+        "description": {
+            "identifier": "lotm:jagerstock",
+            "menu_category": { "category": "equipment" }
+        },
+        "components": {
+            "minecraft:display_name": { "value": "§6Jägerstock" },
+            "minecraft:icon": "jagerstock",
+            "minecraft:max_stack_size": 1,
+            "minecraft:hand_equipped": true,
+            "minecraft:damage": { "value": 10 },
+            "minecraft:durability": {
+                "max_durability": 500,
+                "damage_chance": { "min": 0, "max": 100 }
+            },
+            "minecraft:enchantable": { "slot": "melee_spear", "value": 12 },
+            "minecraft:use_modifiers": {
+                "use_duration": 72000,
+                "emit_vibrations": false,
+                "movement_modifier": 1.0
+            },
+            "minecraft:cooldown": {
+                "category": "jagerstock",
+                "duration": 0.4,
+                "type": "attack"
+            },
+            "minecraft:swing_duration": { "value": 1.0 },
+            "minecraft:repairable": {
+                "repair_items": [
+                    { "items": ["lotm:steel_ingot"], "repair_amount": 150 }
+                ]
+            },
+            "minecraft:tags": {
+                "tags": [ "lotm:double_spear", "lotm:jagerstock", "minecraft:is_spear" ]
+            },
+            "minecraft:piercing_weapon": {
+                "reach": { "min": 2.0, "max": 4.5 },
+                "creative_reach": { "min": 2.0, "max": 7.5 },
+                "hitbox_margin": 0.25
+            },
+            "minecraft:kinetic_weapon": {
+                "delay": 12,
+                "reach": { "min": 2.0, "max": 4.5 },
+                "creative_reach": { "min": 2.0, "max": 7.5 },
+                "hitbox_margin": 0.25,
+                "damage_multiplier": 0.95,
+                "damage_conditions": { "max_duration": 225, "min_relative_speed": 4.6 },
+                "knockback_conditions": { "max_duration": 135, "min_speed": 5.1 },
+                "dismount_conditions": { "max_duration": 50, "min_speed": 11.0 }
+            }
+        }
+    }
+}

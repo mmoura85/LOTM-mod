@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:steel_slayer_helmet_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "SSS",
+      "S S"
+    ],
+    "key": {
+      "S": {
+        "item": "lotm:steel_ingot"
+      }
+    },
+    "result": {
+      "item": "lotm:steel_slayer_helmet",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:steel_ingot"
+      }
+    ]
+  }
+}

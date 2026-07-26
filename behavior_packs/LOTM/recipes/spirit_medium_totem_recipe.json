@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:spirit_medium_totem_craft" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "TET",
+      "BGB",
+      " B "
+    ],
+    "key": {
+      "T": { "item": "lotm:ghost_tear" },
+      "E": { "item": "lotm:ectoplasm" },
+      "B": { "item": "minecraft:bone" },
+      "G": { "item": "lotm:ghost_blossom" }
+    },
+    "result": { "item": "lotm:spirit_medium_totem", "count": 1 },
+    "unlock": [{ "item": "lotm:death_potion_seq7" }]
+  }
+}

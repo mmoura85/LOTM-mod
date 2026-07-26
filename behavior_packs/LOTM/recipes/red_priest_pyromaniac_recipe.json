@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:red_priest_pyromaniac_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " L ",
+      "F F",
+      " T "
+    ],
+    "key": {
+      "L": { "item": "minecraft:lava_bucket" },
+      "F": { "item": "minecraft:flint_and_steel" },
+      "T": { "item": "lotm:red_priest_characteristic_seq7" }
+    },
+    "result": { "item": "lotm:red_priest_potion_seq7", "count": 1 },
+    "unlock": [{ "item": "lotm:red_priest_characteristic_seq7" }]
+  }
+}

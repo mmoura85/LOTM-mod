@@ -1,0 +1,58 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:lotmtrader",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["villager", "trader", "mob"] },
+      "minecraft:health": { "value": 20, "max": 20 },
+      "minecraft:collision_box": { "width": 0.6, "height": 1.8 },
+      "minecraft:movement": { "value": 0.5 },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:physics": {},
+      "minecraft:nameable": {},
+      "minecraft:pushable": { "is_pushable": true, "is_pushable_by_piston": true },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_water": true,
+        "can_open_doors": false
+      },
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.panic": {
+        "priority": 1,
+        "speed_multiplier": 0.4
+      },
+      "minecraft:behavior.avoid_mob_type": {
+        "priority": 2,
+        "max_dist": 8,
+        "walk_speed_multiplier": 0.3,
+        "sprint_speed_multiplier": 0.4,
+        "entity_types": [
+          { "filters": { "test": "is_family", "subject": "other", "value": "monster" } }
+        ]
+      },
+      "minecraft:behavior.trade_with_player": { "priority": 3 },
+      "minecraft:behavior.look_at_player": { "priority": 4, "look_distance": 6.0 },
+      "minecraft:behavior.random_look_around": { "priority": 5 },
+      "minecraft:behavior.random_stroll": {
+        "priority": 6,
+        "speed_multiplier": 0.6
+      },
+      "minecraft:trade_table": {
+        "display_name": "Mysterious Peddler",
+        "table": "trading/lotm_trader_trades.json",
+        "new_screen": true
+      },
+      "minecraft:despawn": {
+        "despawn_from_distance": { "max_distance": 128, "min_distance": 32 }
+      },
+      "minecraft:experience_reward": { "on_death": "Math.Random(3,7)" },
+      "minecraft:loot": { "table": "loot_tables/entities/lotm/lotmtrader.json" }
+    }
+  }
+}

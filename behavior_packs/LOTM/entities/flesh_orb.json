@@ -1,0 +1,42 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:flesh_orb",
+      "is_spawnable": false,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:collision_box": {
+        "width": 0.25,
+        "height": 0.25
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:projectile": {
+        "anchor": 1,
+        "angle_offset": 0.0,
+        "offset": [0, -0.1, 0],
+        "gravity": 0.02,
+        "power": 1.6,
+        "on_hit": {
+          "impact_damage": {
+            "damage": 10,
+            "knockback": true
+          },
+          "particle_on_hit": {
+            "num_particles": 10,
+            "on_other_hit": true,
+            "on_entity_hit": true,
+            "particle_type": "minecraft:crimson_spore_particle"
+          },
+          "remove_on_hit": {}
+        }
+      }
+    }
+  }
+}

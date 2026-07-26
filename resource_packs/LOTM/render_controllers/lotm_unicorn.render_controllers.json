@@ -1,0 +1,23 @@
+{
+    "format_version": "1.10.0",
+    "render_controllers": {
+        "controller.render.lotm_unicorn": {
+            "geometry": "Geometry.default",
+            "materials": [{ "*": "Material.default" }],
+            "textures": ["Texture.default"],
+            "part_visibility": [
+                { "*":       "1.0" },
+                { "Saddle":  "query.is_saddled" },
+                { "Bridle":  "query.is_saddled" },
+                { "BitL":    "query.is_saddled" },
+                { "BitR":    "query.is_saddled" },
+                { "ReinsL":  "query.is_saddled" },
+                { "ReinsR":  "query.is_saddled" },
+                { "BagL":    "0.0" },
+                { "BagR":    "0.0" },
+                { "MuleEarL":"0.0" },
+                { "MuleEarR":"0.0" }
+            ]
+        }
+    }
+}

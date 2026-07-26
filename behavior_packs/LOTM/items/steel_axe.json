@@ -30,7 +30,7 @@
                     }
                 ]
             },
-            "tag:minecraft:is_axe": {}
+            "minecraft:tags": { "tags": ["minecraft:is_axe"] }
         }
     }
 }

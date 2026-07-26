@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:wooden_spike_trap_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "SSS",
+      " P "
+    ],
+    "key": {
+      "S": { "item": "minecraft:stick" },
+      "P": { "tag": "minecraft:planks" }
+    },
+    "result": { "item": "lotm:wooden_spike_trap", "count": 2 },
+    "unlock": [
+      { "item": "minecraft:oak_planks" },
+      { "item": "minecraft:birch_planks" },
+      { "item": "minecraft:spruce_planks" },
+      { "item": "minecraft:jungle_planks" },
+      { "item": "minecraft:acacia_planks" },
+      { "item": "minecraft:dark_oak_planks" },
+      { "item": "minecraft:mangrove_planks" },
+      { "item": "minecraft:cherry_planks" },
+      { "item": "minecraft:bamboo_planks" }
+    ]
+  }
+}

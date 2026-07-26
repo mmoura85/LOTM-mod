@@ -1181,6 +1181,7 @@ export class WarlockSequence {
 
     player.sendMessage('§7§o*Your eyes pierce the stone...*');
     player.playSound('mob.elder_guardian.curse', { pitch: 2.0, volume: 0.6 });
+    this._spawnOreSensePulse(player.dimension, player.location, range);
 
     const { counts, nearest } = this._scanOres(player, range);
 
@@ -1213,6 +1214,25 @@ export class WarlockSequence {
 
     if (!any) player.sendMessage('§7  None found.');
     return true;
+  }
+
+  static _spawnOreSensePulse(dimension, location, maxRadius) {
+    for (let r = 2; r <= maxRadius; r += 2) {
+      const rCopy = r;
+      system.runTimeout(() => {
+        const count = Math.floor(rCopy * 3);
+        for (let i = 0; i < count; i++) {
+          const a = (i / count) * Math.PI * 2;
+          try {
+            dimension.spawnParticle('minecraft:endrod', {
+              x: location.x + Math.cos(a) * rCopy,
+              y: location.y + 0.2,
+              z: location.z + Math.sin(a) * rCopy
+            });
+          } catch (e) {}
+        }
+      }, r * 2);
+    }
   }
 
   // =============================================

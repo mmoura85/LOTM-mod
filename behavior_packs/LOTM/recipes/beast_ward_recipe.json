@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:beast_ward_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " B ",
+      "BGB",
+      " B "
+    ],
+    "key": {
+      "B": { "item": "minecraft:bone" },
+      "G": { "item": "minecraft:gold_ingot" }
+    },
+    "result": { "item": "lotm:beast_ward", "count": 1 },
+    "unlock": [{ "item": "minecraft:bone" }]
+  }
+}

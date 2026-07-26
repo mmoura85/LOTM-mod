@@ -2,6 +2,9 @@
   "resource_pack_name": "lotm_resources",
   "texture_name": "atlas.items",
   "texture_data": {
+    "jagerstock": {
+      "textures": "textures/entity/attachable/jagerstock"
+    },
     "darkness_potion_seq9": {
       "textures": "textures/items/darkness_potion_seq9"
     },
@@ -95,6 +98,12 @@
     "guardian_shield": {
       "textures": "textures/items/guardian_shield"
     },
+    "slayer_axe_2": {
+      "textures": "textures/items/slayer_axe_2"
+    },
+    "slayers_kite_shield": {
+      "textures": "textures/items/slayers_kite_shield"
+    },
     "sun_potion_seq9": {
       "textures": "textures/items/sun_potion_seq9"
     },
@@ -157,6 +166,18 @@
     },
     "steel_slayer_armour_light": {
       "textures": "textures/items/steel_slayer_armour_light"
+    },
+    "steel_slayer_pants_light": {
+      "textures": "textures/items/steel_slayer_pants_light"
+    },
+    "steel_slayer_helmet_light": {
+      "textures": "textures/items/steel_slayer_helmet_light"
+    },
+    "steel_slayer_helmet": {
+      "textures": "textures/items/steel_slayer_helmet"
+    },
+    "steel_slayer_boots": {
+      "textures": "textures/items/steel_slayer_boots"
     },
     "knife": {
       "textures": "textures/items/knife"
@@ -264,9 +285,6 @@
     "raw_characteristic": {
       "textures": "textures/items/raw_characteristic"
     },
-    "purified_characteristic": {
-      "textures": "textures/items/purified_characteristic"
-    },
     "demonic_bone_powder": {
       "textures": "textures/items/demonic_bone_powder"
     },
@@ -282,6 +300,12 @@
     "spirit_blood": {
       "textures": "textures/items/spirit_blood"
     },
+    "unicorn_horn": {
+      "textures": "textures/items/unicorn_horn"
+    },
+    "unicorn_blood": {
+      "textures": "textures/items/unicorn_blood"
+    },
     "nightmare_fragment": {
       "textures": "textures/items/nightmare_fragment"
     },
@@ -290,6 +314,12 @@
     },
     "ghost_tear": {
       "textures": "textures/items/ghost_tear"
+    },
+    "black_bear_heart": {
+      "textures": "textures/items/black_bear_heart"
+    },
+    "wolf_fur": {
+      "textures": "textures/items/wolf_fur"
     },
     "corruption_stain": {
       "textures": "textures/items/corruption_stain"
@@ -387,6 +417,15 @@
     "spirit_whistle": {
       "textures": "textures/items/spirit_whistle"
     },
+    "spirit_medium_totem": {
+      "textures": "textures/items/spirit_medium_totem"
+    },
+    "spirit_channeler": {
+      "textures": "textures/items/spirit_channeler"
+    },
+    "spirit_vanguard_charm": {
+      "textures": "textures/items/spirit_vanguard_charm"
+    },
     "hanged_man_potion_seq9": {
       "textures": "textures/items/hanged_man_potion_seq9"
     },
@@ -478,7 +517,30 @@
     "steel_pickaxe":   { "textures": "textures/items/steel_pickaxe" },
     "steel_axe":       { "textures": "textures/items/steel_axe" },
     "steel_shovel":    { "textures": "textures/items/steel_shovel" },
-    "steel_hoe":       { "textures": "textures/items/steel_hoe" }
-
+    "steel_hoe":       { "textures": "textures/items/steel_hoe" },
+    "cudgel":          { "textures": "textures/items/cudgel" },
+    "red_priest_potion_seq9":         { "textures": "textures/items/red_priest_potion_seq9" },
+    "red_priest_characteristic_seq9": { "textures": "textures/items/red_priest_characteristic_seq9" },
+    "red_priest_potion_seq8":         { "textures": "textures/items/red_priest_potion_seq8" },
+    "red_priest_characteristic_seq8": { "textures": "textures/items/red_priest_characteristic_seq8" },
+    "red_priest_potion_seq7":         { "textures": "textures/items/red_priest_potion_seq7" },
+    "red_priest_characteristic_seq7": { "textures": "textures/items/red_priest_characteristic_seq7" },
+    "red_priest_potion_seq6":         { "textures": "textures/items/red_priest_potion_seq6" },
+    "red_priest_characteristic_seq6": { "textures": "textures/items/red_priest_characteristic_seq6" },
+    "decoy_item":    { "textures": "textures/items/decoy_item" },
+    "silence_bomb":  { "textures": "textures/items/silence_bomb" },
+    "steel_slayer_medium_pants": { "textures": "textures/items/steel_slayer_medium_pants" },
+    "steel_slayer_heavy_helmet": { "textures": "textures/items/steel_slayer_heavy_helmet" },
+    "steel_slayer_heavy_armour": { "textures": "textures/items/steel_slayer_heavy_armour" },
+    "provoker_idol":      { "textures": "textures/items/provoker_idol" },
+    "pyromaniac_focus":   { "textures": "textures/items/pyromaniac_focus" },
+    "conspirer_focus":                { "textures": "textures/items/conspirer_focus" },
+    "flame_sword":                    { "textures": "textures/items/flame_sword" },
+    "red_priest_potion_seq5":         { "textures": "textures/items/red_priest_potion_seq5" },
+    "red_priest_characteristic_seq5": { "textures": "textures/items/red_priest_characteristic_seq5" },
+    "reaper_focus":                   { "textures": "textures/items/reaper_focus" },
+    "hunter_chest":                   { "textures": "textures/items/hunter_chest" },
+    "hunter_pants":                   { "textures": "textures/items/hunter_pants" },
+    "throwing_knife":     { "textures": "textures/items/throwing_knife" }
   }
 }

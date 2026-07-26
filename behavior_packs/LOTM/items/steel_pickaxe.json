@@ -10,6 +10,7 @@
             "minecraft:icon": "steel_pickaxe",
             "minecraft:max_stack_size": 1,
             "minecraft:hand_equipped": true,
+            "minecraft:damage": { "value": 5 },
             "minecraft:durability": {
                 "max_durability": 500,
                 "damage_chance": { "min": 0, "max": 100 }
@@ -23,6 +24,16 @@
             "minecraft:digger": {
                 "use_efficiency": true,
                 "destroy_speeds": [
+                    { "block": "minecraft:deepslate", "speed": 14 },
+                    { "block": "minecraft:cobbled_deepslate", "speed": 14 },
+                    { "block": "minecraft:deepslate_coal_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_iron_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_copper_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_gold_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_redstone_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_lapis_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_diamond_ore", "speed": 14 },
+                    { "block": "minecraft:deepslate_emerald_ore", "speed": 14 },
                     {
                         "block": { "tags": "q.any_tag('stone', 'metal', 'nether_rock', 'diamond_pick_diggable', 'iron_pick_diggable', 'stone_pick_diggable', 'wood_pick_diggable')" },
                         "speed": 7
@@ -31,7 +42,7 @@
                     { "block": "lotm:tin_ore", "speed": 7 }
                 ]
             },
-            "tag:minecraft:is_pickaxe": {}
+            "minecraft:tags": { "tags": ["minecraft:is_pickaxe"] }
         }
     }
 }

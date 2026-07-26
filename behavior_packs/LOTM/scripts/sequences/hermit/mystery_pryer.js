@@ -222,6 +222,7 @@ export class MysteryPryerSequence {
     // --- Analyse ---
     player.sendMessage('§5§l✦ DIVINE INSIGHT ✦');
     player.playSound('block.bell.hit', { pitch: 1.2, volume: 0.8 });
+    this._spawnDivinationPulse(player.dimension, player.location);
 
     // Health
     try {

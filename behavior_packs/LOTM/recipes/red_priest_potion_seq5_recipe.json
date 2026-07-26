@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:red_priest_potion_seq5_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " W ",
+      "LBL",
+      " T "
+    ],
+    "key": {
+      "W": { "item": "minecraft:wither_rose" },
+      "L": { "item": "minecraft:lava_bucket" },
+      "B": { "item": "minecraft:glass_bottle" },
+      "T": { "item": "lotm:red_priest_characteristic_seq5" }
+    },
+    "result": { "item": "lotm:red_priest_potion_seq5", "count": 1 },
+    "unlock": [{ "item": "lotm:red_priest_characteristic_seq5" }]
+  }
+}

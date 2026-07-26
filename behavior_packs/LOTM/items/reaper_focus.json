@@ -1,0 +1,18 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:reaper_focus",
+      "menu_category": {
+        "category": "equipment",
+        "group": "itemGroup.name.lotm_beyonder_items"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": { "max_stack_size": 1 },
+      "minecraft:icon": "reaper_focus",
+      "minecraft:display_name": { "value": "§4§lReaper's Focus" },
+      "minecraft:hand_equipped": true
+    }
+  }
+}

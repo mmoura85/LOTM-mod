@@ -1,0 +1,47 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.slayers_kite_shield",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "shield",
+					"pivot": [1, 15.5, 3],
+					"binding": "q.item_slot_to_bone_name(c.item_slot)",
+					"cubes": [
+						{"origin": [0, 25, 0], "size": [2, 6, 6], "uv": [26, 0]},
+						{"origin": [-4, 18, -1], "size": [10, 18, 1], "uv": [2, 0]}
+					]
+				},
+				{
+					"name": "bb_main",
+					"parent": "shield",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [0, 18, -1], "size": [2, 1, 1], "uv": [29, 20]},
+						{"origin": [-1, 19, -1], "size": [4, 1, 1], "uv": [26, 19], "mirror": true},
+						{"origin": [-1, 20, -1], "size": [4, 1, 1], "uv": [29, 21], "mirror": true},
+						{"origin": [-2, 21, -1], "size": [6, 1, 1], "uv": [27, 19], "mirror": true},
+						{"origin": [-3, 22, -1], "size": [8, 1, 1], "uv": [27, 16], "mirror": true},
+						{"origin": [-1, 31, -1], "size": [4, 1, 1], "uv": [27, 13], "mirror": true},
+						{"origin": [-4, 34, -1], "size": [1, 2, 1], "uv": [9, 20], "mirror": true},
+						{"origin": [5, 34, -1], "size": [1, 2, 1], "uv": [9, 20], "mirror": true},
+						{"origin": [-3, 33, -1], "size": [1, 1, 1], "uv": [18, 20], "mirror": true},
+						{"origin": [4, 33, -1], "size": [1, 1, 1], "uv": [18, 20], "mirror": true},
+						{"origin": [-4, 23, -1], "size": [1, 1, 1], "uv": [18, 20], "mirror": true},
+						{"origin": [5, 23, -1], "size": [1, 1, 1], "uv": [18, 20], "mirror": true},
+						{"origin": [-2, 32, -1], "size": [1, 1, 1], "uv": [38, 13], "mirror": true},
+						{"origin": [3, 32, -1], "size": [1, 1, 1], "uv": [38, 13], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}
