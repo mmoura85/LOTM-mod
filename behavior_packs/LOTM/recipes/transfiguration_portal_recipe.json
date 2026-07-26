@@ -21,7 +21,7 @@
         "item": "minecraft:diamond"
       },
       "G": {
-        "item": "minecraft:dragon_breath"
+        "item": "lotm:spirit_world_key"
       }
     },
     "result": {
@@ -30,7 +30,7 @@
     },
     "unlock": [
       {
-        "item": "minecraft:dragon_breath"
+        "item": "lotm:spirit_world_key"
       }
     ]
   }

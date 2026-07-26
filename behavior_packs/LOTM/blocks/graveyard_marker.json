@@ -1,0 +1,15 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:block": {
+        "description": {
+            "identifier": "lotm:graveyard_marker"
+        },
+        "components": {
+            "minecraft:destructible_by_mining": false,
+            "minecraft:destructible_by_explosion": { "explosion_resistance": 3600000 },
+            "minecraft:material_instances": {
+                "*": { "texture": "stone", "render_method": "opaque" }
+            }
+        }
+    }
+}

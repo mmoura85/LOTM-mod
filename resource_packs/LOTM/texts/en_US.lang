@@ -7,3 +7,15 @@ itemGroup.name.lotm_characteristic=Characteristics
 
 item.lotm:steel_slayer_armour.name=Steel Slayer Armour
 item.lotm:steel_slayer_armour_light.name=Steel Slayer Armour (Light)
+item.lotm:steel_slayer_pants_light.name=Steel Slayer Pants (Light)
+item.lotm:steel_slayer_helmet_light.name=Steel Slayer Helmet (Light)
+item.lotm:steel_slayer_helmet.name=Steel Slayer Helmet
+item.lotm:steel_slayer_boots.name=Steel Slayer Boots
+item.lotm:black_bear_heart.name=Black Bear Heart
+item.lotm:wolf_fur.name=Wolf Fur
+
+entity.lotm:ogre.name=Ogre
+entity.lotm:earth_spirit.name=Earth Spirit
+item.lotm:cudgel.name=Cudgel
+
+tile.lotm:rope_ladder.name=Rope Ladder

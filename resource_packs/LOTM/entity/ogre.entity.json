@@ -1,0 +1,40 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lotm:ogre",
+			"materials": {
+				"default": "iron_golem"
+			},
+			"textures": {
+				"default": "textures/entity/ogre"
+			},
+			"geometry": {
+				"default": "geometry.ogre"
+			},
+			"animations": {
+				"walk": "animation.ogre.walk",
+				"move": "animation.ogre.move",
+				"walk_to_target": "animation.ogre.walk_to_target",
+				"move_to_target": "animation.ogre.move_to_target",
+				"attack": "animation.ogre.attack",
+				"flower": "animation.ogre.flower",
+				"look_at_target": "animation.common.look_at_target",
+				"move_controller": "controller.animation.iron_golem.move",
+				"arm_controller": "controller.animation.iron_golem.arm_movement"
+			},
+			"scripts": {
+				"pre_animation": [
+					"variable.modified_tcos0 = Math.clamp(((Math.cos(query.modified_distance_moved * 13.5) * Math.min(query.modified_move_speed, 0.6) / variable.gliding_speed_value) * 25.0), -12.5, 12.5);"
+				],
+				"animate": ["look_at_target", "move_controller", "arm_controller"]
+			},
+			"render_controllers": ["controller.render.default"],
+			"enable_attachables": true,
+			"spawn_egg": {
+				"base_color": "#716b6e",
+				"overlay_color": "#52c189"
+			}
+		}
+	}
+}

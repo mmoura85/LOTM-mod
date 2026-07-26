@@ -107,6 +107,10 @@
               "value": "player"
             },
             "max_dist": 24
+          },
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "decoy" },
+            "max_dist": 24
           }
         ]
       },

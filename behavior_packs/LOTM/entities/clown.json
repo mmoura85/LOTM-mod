@@ -51,7 +51,7 @@
     },
     "components": {
       "minecraft:type_family": {
-        "family": ["clown_beyonder", "player", "monster", "mob"]
+        "family": ["clown_beyonder", "monster", "mob"]
       },
       "minecraft:physics": {},
       "minecraft:movement.basic": {},

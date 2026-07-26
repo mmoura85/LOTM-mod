@@ -48,6 +48,35 @@ export class WispSystem {
   // Tick counters
   static tickCounters = new Map(); // playerName -> tick
 
+  // ── Called from main.js playerInteractWithEntity ─────────────────────────
+  static onInteract(player, wispEntity) {
+    // Already bonded — show status
+    let existingOwner;
+    try { existingOwner = wispEntity.getDynamicProperty('lotm:wisp_owner'); } catch (_) {}
+    if (existingOwner) {
+      if (existingOwner === player.name) {
+        player.sendMessage('§8Your wisp hums softly in recognition...');
+      } else {
+        player.sendMessage('§8This wisp is already bonded to another.');
+      }
+      return;
+    }
+
+    // Must be holding spirit_focus
+    let heldItem = null;
+    try {
+      const inv = player.getComponent('minecraft:inventory');
+      heldItem = inv?.container?.getItem(player.selectedSlotIndex);
+    } catch (_) {}
+
+    if (!heldItem || heldItem.typeId !== 'lotm:spirit_channeler') {
+      player.sendMessage('§8The wisp watches you warily... (hold §7Spirit Channeler§8 to bond)');
+      return;
+    }
+
+    this.onBond(player, wispEntity);
+  }
+
   // ── Player interacts with wild wisp ───────────────────────────────────────
   static onBond(player, wispEntity) {
     let pathway;
@@ -227,7 +256,7 @@ export class WispSystem {
     }
   }
 
-  // ── WISP 3: Beyonder/player/rampager detection ────────────────────────────
+  // ── WISP 3: Beyonder/player/rampager/general-mob detection ────────────────
   static _tickBeyonderWisp(player, wisp) {
     const RANGE = 40;
     const beyonderTypes = [
@@ -237,9 +266,10 @@ export class WispSystem {
 
     let nearestBeyonder = null, nearestDist = Infinity;
     let nearestPlayer   = null, nearestPDist = Infinity;
+    let nearestMob      = null, nearestMDist = Infinity;
 
     try {
-      // Check for LOTM hostile mobs
+      // Check for LOTM hostile mobs + general monster-family mobs
       const entities = player.dimension.getEntities({
         location: player.location, maxDistance: RANGE,
         excludeTypes: ['minecraft:item','minecraft:xp_orb']
@@ -250,8 +280,10 @@ export class WispSystem {
         const dy = e.location.y-player.location.y;
         const dz = e.location.z-player.location.z;
         const d  = Math.sqrt(dx*dx+dy*dy+dz*dz);
-        if (beyonderTypes.some(t => e.typeId === t) && d < nearestDist) {
-          nearestDist = d; nearestBeyonder = e;
+        if (beyonderTypes.some(t => e.typeId === t)) {
+          if (d < nearestDist) { nearestDist = d; nearestBeyonder = e; }
+        } else if (e.matches({ families: ['monster'] })) {
+          if (d < nearestMDist) { nearestMDist = d; nearestMob = e; }
         }
       }
 
@@ -267,15 +299,15 @@ export class WispSystem {
       }
     } catch (_) {}
 
-    if (nearestBeyonder && nearestDist < nearestPDist) {
-      // Red/purple — beyonder mob nearby
+    if (nearestBeyonder && nearestDist <= nearestPDist && nearestDist <= nearestMDist) {
+      // Red/purple — dangerous/stronger mob nearby
       try { player.dimension.spawnParticle('minecraft:soul_particle',
         { x: wisp.location.x, y: wisp.location.y+0.1, z: wisp.location.z }); } catch (_) {}
       try { player.dimension.spawnParticle('minecraft:basic_flame_particle',
         { x: wisp.location.x, y: wisp.location.y, z: wisp.location.z }); } catch (_) {}
       if ((this.tickCounters.get(player.name)||0) % 60 === 0)
-        player.sendMessage(`§5☉ WISP: Beyonder entity ~${Math.round(nearestDist)}m`);
-    } else if (nearestPlayer) {
+        player.sendMessage(`§5☉ WISP: ⚠ Dangerous entity nearby ~${Math.round(nearestDist)}m!`);
+    } else if (nearestPlayer && nearestPDist <= nearestMDist) {
       // White — another player nearby
       try { player.dimension.spawnParticle('minecraft:endrod',
         { x: wisp.location.x, y: wisp.location.y+0.1, z: wisp.location.z }); } catch (_) {}
@@ -283,6 +315,12 @@ export class WispSystem {
         { x: wisp.location.x, y: wisp.location.y, z: wisp.location.z }); } catch (_) {}
       if ((this.tickCounters.get(player.name)||0) % 60 === 0)
         player.sendMessage(`§f☉ WISP: Player nearby ~${Math.round(nearestPDist)}m`);
+    } else if (nearestMob) {
+      // Dim white — generic hostile mob nearby
+      try { player.dimension.spawnParticle('minecraft:endrod',
+        { x: wisp.location.x, y: wisp.location.y+0.1, z: wisp.location.z }); } catch (_) {}
+      if ((this.tickCounters.get(player.name)||0) % 60 === 0)
+        player.sendMessage(`§7☉ WISP: Mob nearby ~${Math.round(nearestMDist)}m`);
     }
   }
 

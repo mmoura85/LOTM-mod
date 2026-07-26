@@ -1,0 +1,23 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:earth_spirit_dig",
+      "materials": { "default": "iron_golem" },
+      "textures": { "default": "textures/entity/earth_spirit" },
+      "geometry": { "default": "geometry.earth_spirit" },
+      "animations": {
+        "look_at_target": "animation.common.look_at_target",
+        "walk": "animation.copper_golem.walk",
+        "walk_controller": "controller.animation.copper_golem.walk"
+      },
+      "scripts": {
+        "pre_animation": [
+          "v.walking = query.modified_move_speed > 0.01;"
+        ],
+        "animate": ["look_at_target", "walk_controller"]
+      },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

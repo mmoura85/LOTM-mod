@@ -49,6 +49,12 @@
                             }
                         }
                     ]
+                },
+                {
+                    "type": "item",
+                    "name": "lotm:black_bear_heart",
+                    "weight": 30,
+                    "functions": [{ "function": "set_count", "count": { "min": 1, "max": 1 } }]
                 }
             ]
         }

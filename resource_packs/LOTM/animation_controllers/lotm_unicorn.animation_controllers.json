@@ -1,0 +1,31 @@
+{
+    "format_version": "1.10.0",
+    "animation_controllers": {
+        "controller.animation.lotm_unicorn.move": {
+            "initial_state": "idle",
+            "states": {
+                "idle": {
+                    "animations": ["idle"],
+                    "transitions": [
+                        { "moving":   "query.ground_speed > 0.1" },
+                        { "attacking": "query.has_target" }
+                    ]
+                },
+                "moving": {
+                    "animations": ["walk"],
+                    "transitions": [
+                        { "idle":     "query.ground_speed <= 0.1 && !query.has_target" },
+                        { "attacking": "query.has_target && query.ground_speed <= 0.1" }
+                    ]
+                },
+                "attacking": {
+                    "animations": ["attack"],
+                    "transitions": [
+                        { "idle":   "!query.has_target" },
+                        { "moving": "query.ground_speed > 0.1" }
+                    ]
+                }
+            }
+        }
+    }
+}

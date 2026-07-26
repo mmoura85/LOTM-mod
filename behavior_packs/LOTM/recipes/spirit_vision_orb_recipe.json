@@ -20,7 +20,7 @@
         "item": "minecraft:purple_dye"
       },
       "E": {
-        "item": "minecraft:ender_eye"
+        "item": "lotm:ghost_tear"
       }
     },
     "result": {

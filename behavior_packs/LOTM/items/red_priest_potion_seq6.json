@@ -1,0 +1,24 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:red_priest_potion_seq6",
+      "menu_category": {
+        "category": "items",
+        "group": "itemGroup.name.lotm_sequence_potion"
+      }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "red_priest_potion_seq6",
+      "minecraft:display_name": { "value": "§4Conspirer Potion" },
+      "minecraft:use_duration": 32,
+      "minecraft:use_animation": "drink",
+      "minecraft:food": {
+        "nutrition": 0,
+        "saturation_modifier": 0,
+        "can_always_eat": true
+      }
+    }
+  }
+}

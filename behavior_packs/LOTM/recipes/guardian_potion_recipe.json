@@ -1,37 +1,21 @@
 {
   "format_version": "1.21.0",
-  "minecraft:recipe_shaped": {
+  "minecraft:recipe_shapeless": {
     "description": {
       "identifier": "lotm:guardian_potion"
     },
     "tags": ["crafting_table"],
-    "pattern": [
-      " B ",
-      "NPN",
-      " T "
+    "ingredients": [
+      { "item": "lotm:twilight_giant_characteristic_seq5" },
+      { "item": "minecraft:ghast_tear" },
+      { "item": "minecraft:nether_wart" }
     ],
-    "key": {
-      "B": {
-        "item": "minecraft:blaze_rod"
-      },
-      "N": {
-        "item": "minecraft:nether_wart"
-      },
-      "P": {
-        "item": "lotm:twilight_potion_seq6"
-      },
-      "T": {
-        "item": "minecraft:totem_of_undying"
-      }
-    },
     "result": {
       "item": "lotm:twilight_potion_seq5",
       "count": 1
     },
     "unlock": [
-      {
-        "item": "lotm:twilight_potion_seq6"
-      }
+      { "item": "lotm:twilight_giant_characteristic_seq5" }
     ]
   }
 }

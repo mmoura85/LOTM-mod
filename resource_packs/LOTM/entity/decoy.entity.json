@@ -1,0 +1,22 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+        "description": {
+            "identifier": "lotm:decoy",
+            "materials": { "default": "entity_alphatest" },
+            "textures": { "default": "textures/entity/decoy" },
+            "geometry": { "default": "geometry.goat" },
+            "animations": {
+                "walk": "animation.goat.walk"
+            },
+            "scripts": {
+                "pre_animation": [
+                    "variable.tcos_right_side = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / 0.1) * 57.3;",
+                    "variable.tcos_left_side = -variable.tcos_right_side;"
+                ],
+                "animate": ["walk"]
+            },
+            "render_controllers": ["controller.render.default"]
+        }
+    }
+}

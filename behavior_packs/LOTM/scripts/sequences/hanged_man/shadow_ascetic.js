@@ -964,10 +964,11 @@ export class ShadowAsceticSequence {
       { id: this.ABILITIES.SHADOW_LURKING,      name: '§8👻 Shadow Lurking',      cost: this.LURK_SPIRIT_COST },
       { id: this.ABILITIES.SHADOW_SHAPING,      name: '§8⚔ Shadow Shaping',      cost: this.SHAPE_SPIRIT_COST },
       { id: this.ABILITIES.TOGGLE_LISTEN,       name: listenLabel,                cost: 0 },
-      { id: this.ABILITIES.FOCUSED_LISTEN,      name: '§5👂 Focused Listen',      cost: ListenerSequence.FOCUSED_LISTEN_SPIRIT_COST },
-      { id: this.ABILITIES.SUPPRESS_VOICES,     name: '§b🌀 Suppress Voices',     cost: ListenerSequence.SUPPRESS_SPIRIT_COST },
-      // { id: this.ABILITIES.DIVINATION,          name: '§5👁 Divination',          cost: SecretsSuppliantSequence.DIVINATION_SPIRIT_COST },
-      // { id: this.ABILITIES.ENCHANTMENT_INSCRIPTION, name: '§d📖 Enchantment Inscription', cost: SecretsSuppliantSequence.INSCRIPTION_SPIRIT_COST },
+      { id: this.ABILITIES.FOCUSED_LISTEN,          name: '§5👂 Focused Listen',           cost: ListenerSequence.FOCUSED_LISTEN_SPIRIT_COST },
+      { id: this.ABILITIES.SUPPRESS_VOICES,         name: '§b🌀 Suppress Voices',          cost: ListenerSequence.SUPPRESS_SPIRIT_COST },
+      { id: this.ABILITIES.AURA_READING,            name: '§b✧ Aura Reading',              cost: SecretsSuppliantSequence.AURA_READ_SPIRIT_COST },
+      { id: this.ABILITIES.DIVINATION,              name: '§5👁 Divination',               cost: SecretsSuppliantSequence.DIVINATION_SPIRIT_COST },
+      { id: this.ABILITIES.ENCHANTMENT_INSCRIPTION, name: '§d📖 Enchantment Inscription',  cost: SecretsSuppliantSequence.INSCRIPTION_SPIRIT_COST },
     ];
   }
 

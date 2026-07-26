@@ -1,0 +1,32 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.poltergeist.hover_bob": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"position": ["0.0", "math.sin(query.life_time * 72) * 0.3", "0.0"]
+				}
+			}
+		},
+		"animation.poltergeist.arm_sway": {
+			"loop": true,
+			"bones": {
+				"leftArm": {
+					"rotation": [
+						"math.sin(query.life_time * 60) * 18",
+						"math.sin(query.life_time * 45) * 8",
+						"math.cos(query.life_time * 55) * 6"
+					]
+				},
+				"rightArm": {
+					"rotation": [
+						"math.sin(query.life_time * 60 + 180) * 18",
+						"math.sin(query.life_time * 45 + 120) * -8",
+						"math.cos(query.life_time * 55 + 90) * -6"
+					]
+				}
+			}
+		}
+	}
+}

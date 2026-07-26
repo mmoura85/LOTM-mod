@@ -41,6 +41,13 @@ import { ShadowAsceticSequence } from './sequences/hanged_man/shadow_ascetic.js'
 import { RoseBishopSequence }  from './sequences/hanged_man/rose_bishop.js';
 import { ShepherdSequence } from './sequences/hanged_man/shepherd.js';
 
+// Red Priest
+import { HunterSequence } from './sequences/red_priest/hunter.js';
+import { ProvokerSequence } from './sequences/red_priest/provoker.js';
+import { PyromancerSequence } from './sequences/red_priest/pyromaniac.js';
+import { ConspirierSequence } from './sequences/red_priest/conspirer.js';
+import { ReaperSequence } from './sequences/red_priest/reaper.js';
+
 // Hermit
 import { MysteryPryerSequence } from './sequences/hermit/mystery_pryer.js';
 import { MeleeScholarSequence }  from './sequences/hermit/melee_scholar.js';
@@ -64,17 +71,27 @@ import { ConstellationsMasterMenus }    from './ui/constellations_master_menus.j
 // Weapons
 import { RevolverSystem } from './weapons/revolverSystem.js';
 import { RangedWeaponBuffs } from './weapons/rangedWeaponBuffs.js';
-// Plants
-import { registerPlantGrowth } from './world/plant_growth.js';
-
 //RAMPAGER
 import { RampagerSystem } from './world/rampagerSystem.js';
+import { RimewraithSystem } from './world/rimewraithSystem.js';
 
 // Beyonder mobs
 import { ClownBeyonderSystem } from './beyonderMobs/clownBeyonderSystem.js';
 
 // Chair
 import { ChairSystem } from './world/chairSystem.js';
+
+// Trap system
+import { TrapSystem } from './world/trapSystem.js';
+import { WardSystem } from './world/wardSystem.js';
+import { ScapegoatSystem } from './world/scapegoatSystem.js';
+import { SoldierSpawnerSystem } from './world/soldierSpawnerSystem.js';
+import { PoltergeistSpawnerSystem } from './world/poltergeistSpawnerSystem.js';
+import { GraveyardSystem } from './world/graveyardSystem.js';
+import { ShieldSystem } from './world/shieldSystem.js';
+
+// Rope Ladder (disabled)
+// import { RopeLadderSystem } from './world/ropeLadderSystem.js';
 
 //Flying Rock
 import { FlyingRockSystem } from './entity/flyingRockSystem.js';
@@ -85,13 +102,9 @@ import { SpiritVialSystem } from './world/spiritVialSystem.js';
 // wisp
 import { WispSystem } from './entity/wispSystem.js';
 
-// ── Block component registration — MUST be in startup, before world loads ──
-// This is the only place system.beforeEvents.startup should be called.
-// Importing plant_growth.js and calling it here guarantees the component
-// is registered before Bedrock tries to load any plant blocks.
-// system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
-//   ChairSystem.register(blockComponentRegistry);
-// });
+// earth spirit
+import { EarthSpiritSystem } from './entity/earthSpiritSystem.js';
+import { SpiritChannelerMenu } from './ui/spirit_channeler_menu.js';
 
 // ── Ability selection maps ─────────────────────────────────────────────────
 const selectedNightmareAbilities  = new Map();
@@ -107,7 +120,10 @@ function initialize() {
 
   system.runInterval(() => {
     for (const player of world.getAllPlayers()) {
- 
+
+      // Shield system runs for ALL players regardless of pathway
+      try { ShieldSystem.tick(player); } catch (_) {}
+
       // Get pathway/sequence — skip if not a beyonder
       let pathway, sequence;
       try {
@@ -246,8 +262,34 @@ function initialize() {
         }
       } catch (_) {}
 
-      // WispSystem.tick(player)
- 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.RED_PRIEST) {
+          if (sequence === 9) HunterSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) ProvokerSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) PyromancerSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) ConspirierSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) ReaperSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+
+      // Heavy armour — Resistance I + knockback resistance while worn
+      try {
+        const equipment = player.getComponent('minecraft:equippable');
+        if (equipment?.getEquipment('Chest')?.typeId === 'lotm:steel_slayer_heavy_armour') {
+          const res = player.getEffect('resistance');
+          if (!res || res.duration < 200) {
+            player.addEffect('resistance', 600, { amplifier: 0, showParticles: false });
+          }
+          try {
+            const kr = player.getComponent('minecraft:knockback_resistance');
+            if (kr) kr.value = 0.5;
+          } catch (_) {}
+        }
+      } catch (_) {}
+
+      try { WispSystem.tick(player); } catch (_) {}
+      try { EarthSpiritSystem.tick(player); } catch (_) {}
+
     } // end player loop
 
     // Tick all rampagers`
@@ -258,6 +300,7 @@ function initialize() {
           for (const r of dim.getEntities({ type: 'lotm:rampager' }))    RampagerSystem.tick(r);
           for (const v of dim.getEntities({ type: 'lotm:voidwatcher' })) RampagerSystem.tickVoidwatcher(v);
           for (const c of dim.getEntities({ type: 'lotm:clown' }))       ClownBeyonderSystem.tick(c);
+          for (const w of dim.getEntities({ type: 'lotm:rimewraith' }))  RimewraithSystem.tick(w);
         } catch (_) {}
       }
     } catch (_) {}
@@ -265,6 +308,15 @@ function initialize() {
     try { FlyingRockSystem.tick(); } catch (_) {}
 
     try { ChairSystem.tick();  } catch (_) {}
+
+    try { TrapSystem.tick(); } catch (_) {}
+    try { WardSystem.tick(); } catch (_) {}
+    try { SoldierSpawnerSystem.tick(); } catch (_) {}
+        try { PoltergeistSpawnerSystem.tick(); } catch (_) {}
+    try { GraveyardSystem.tick(); } catch (_) {}
+    try { PyromancerSequence.tickEffects(); } catch (_) {}
+    try { ConspirierSequence.tickEffects(); } catch (_) {}
+    try { ReaperSequence.tickEffects(); } catch (_) {}
 
     ShepherdSequence.registerSequenceClasses({
     // Darkness
@@ -315,12 +367,24 @@ function initialize() {
     JudgeSequence,
     DisciplinaryPaladinSequence,
     ImperativeMageSequence,
+    // Red Priest
+    HunterSequence,
+    ProvokerSequence,
+    PyromancerSequence,
+    ConspirierSequence,
+    ReaperSequence,
   });
 
 
   }, 4);
 
   ChairSystem.registerEvents();
+  ShieldSystem.registerEvents();
+  TrapSystem.registerEvents();
+  WardSystem.registerEvents();
+  SoldierSpawnerSystem.registerEvents();
+  PoltergeistSpawnerSystem.registerEvents();
+  // RopeLadderSystem.registerEvents();
   //  world.afterEvents.playerPlaceBlock.subscribe((event) => {
   //   if (event.block.typeId === 'lotm:wooden_chair') {
   //     ChairSystem.onChairPlaced(event.block);
@@ -336,50 +400,18 @@ function initialize() {
 
 
   world.afterEvents.playerInteractWithEntity.subscribe((event) => {
-    world.sendMessage('§ainteract');
     const { player, target } = event;
     if (target.typeId === 'lotm:wisp') {
-      world.sendMessage('bonding wisp');
       WispSystem.onInteract(player, target);
     }
-
-  });
-
-  world.afterEvents.dataDrivenEntityTriggerEvent.subscribe((event) => {
-    world.sendMessage('§ainteract');
-    if (event.eventId === 'lotm:on_bond') {
-      world.sendMessage('bonding?');
-      const wispEntity = event.entity;
-      // Find which player just tamed this wisp
-      // The nearest player within 5 blocks is the tamer
-      try {
-        const players = wispEntity.dimension.getPlayers({
-          location: wispEntity.location,
-          maxDistance: 5
-        });
-        if (players.length === 0) return;
- 
-        // Get nearest player
-        let nearest = null, nearestDist = Infinity;
-        for (const p of players) {
-          const dx = p.location.x - wispEntity.location.x;
-          const dy = p.location.y - wispEntity.location.y;
-          const dz = p.location.z - wispEntity.location.z;
-          const d  = Math.sqrt(dx*dx+dy*dy+dz*dz);
-          if (d < nearestDist) { nearestDist = d; nearest = p; }
-        }
-        if (!nearest) return;
- 
-        WispSystem.onBond(nearest, wispEntity);
-      } catch (e) {
-        console.warn('Wisp bond error: ' + e);
-      }
+    if (target.typeId === 'lotm:earth_spirit') {
+      EarthSpiritSystem.onInteract(player, target);
     }
   });
 
-  // system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
-  //   registerPlantGrowth(blockComponentRegistry);
-  // });
+  // dataDrivenEntityTriggerEvent removed in Bedrock 1.21.130 — disabled until wisp is reworked
+  // world.afterEvents.dataDrivenEntityTriggerEvent.subscribe((event) => { ... });
+
 }
 
 
@@ -446,6 +478,7 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     if (pathway === PathwayManager.PATHWAYS.DEATH && sequence === 8) {
       PathwayManager.advanceSequence(player);
       SpiritMediumSequence.onAwaken(player);
+      player.sendMessage('§7Craft a §8Spirit Medium\'s Totem§7 to summon your spirit wolves');
     } else {
       player.sendMessage('§cYou must be a Gravedigger (Sequence 8) to use this!');
     }
@@ -546,6 +579,71 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     player.sendMessage('§aYou have become a §2Demon Hunter (Witcher)§a!');
     player.sendMessage('§7Your spirituality surges! (+100 max spirit)');
     player.sendMessage('§7You possess godlike strength!');
+  }
+
+  // ── RED PRIEST TRAPS ──────────────────────────────────────────────────────
+  if (itemId === 'lotm:silence_bomb') {
+    const nearby = player.dimension.getEntities({
+      location: player.location,
+      maxDistance: 8
+    });
+    let count = 0;
+    for (const entity of nearby) {
+      if (entity === player || entity.typeId === 'minecraft:player') continue;
+      try { entity.addEffect('blindness', 120, { amplifier: 0, showParticles: true }); } catch (_) {}
+      try { entity.addEffect('slowness',  120, { amplifier: 1, showParticles: true }); } catch (_) {}
+      count++;
+    }
+    try {
+      player.dimension.spawnParticle('minecraft:large_explosion', player.location);
+    } catch (_) {}
+    player.sendMessage(`§8A cloud of silence envelops the area... (${count} affected)`);
+  }
+
+  // ── RED PRIEST ────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:red_priest_potion_seq9') {
+    PathwayManager.assignPathway(player, PathwayManager.PATHWAYS.RED_PRIEST);
+    player.sendMessage('§cYou have become a §4Hunter§c!');
+    player.sendMessage('§7Your senses sharpen — you can feel the danger around you');
+  }
+  if (itemId === 'lotm:red_priest_potion_seq8') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.RED_PRIEST, itemId)) return;
+    if (!_requireSequence(player, sequence, 9, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    SpiritSystem.initializePlayer(player, ProvokerSequence.BASE_SPIRIT);
+    player.sendMessage('§cYou have become a §4Provoker§c!');
+    player.sendMessage('§7Your observation has deepened — you can stoke the rage of others.');
+  }
+  if (itemId === 'lotm:red_priest_potion_seq7') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.RED_PRIEST, itemId)) return;
+    if (!_requireSequence(player, sequence, 8, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    SpiritSystem.initializePlayer(player, PyromancerSequence.BASE_SPIRIT);
+    player.sendMessage('§4You have become a §cPyromaniac§4!');
+    player.sendMessage('§7Flame is your creed — craft a Pyromaniac\'s Focus to wield fire spells.');
+  }
+  if (itemId === 'lotm:red_priest_potion_seq6') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.RED_PRIEST, itemId)) return;
+    if (!_requireSequence(player, sequence, 7, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    SpiritSystem.initializePlayer(player, ConspirierSequence.BASE_SPIRIT);
+    player.sendMessage('§4You have become a §5Conspirer§4!');
+    player.sendMessage('§7Your perception deepens — enemies glow with their true danger.');
+    player.sendMessage('§7Craft a §5Conspirer\'s Focus §7to access your upgraded fire abilities.');
+    player.playSound('mob.ghast.scream', { pitch: 0.6, volume: 1.0 });
+  }
+  if (itemId === 'lotm:red_priest_potion_seq5') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.RED_PRIEST, itemId)) return;
+    if (!_requireSequence(player, sequence, 6, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    SpiritSystem.initializePlayer(player, ReaperSequence.BASE_SPIRIT);
+    player.sendMessage('§4You have become a §c§lReaper§4!');
+    player.sendMessage('§7Death follows your blade — craft a §cReaper\'s Focus §7to wield your full power.');
+    player.playSound('mob.elder_guardian.curse', { pitch: 0.6, volume: 1.2 });
   }
 
   // ── SUN ───────────────────────────────────────────────────────────────────
@@ -819,6 +917,12 @@ world.afterEvents.itemUse.subscribe((event) => {
   if (!itemStack) return;
   const itemId = itemStack.typeId;
 
+  // ── DECOY / SCAPEGOAT ─────────────────────────────────────────────────────
+  if (itemId === 'lotm:decoy_item') {
+    ScapegoatSystem.activate(player);
+    return;
+  }
+
   // ── DARKNESS ──────────────────────────────────────────────────────────────
   if (itemId === 'lotm:poet_songs') {
     player.isSneaking ? DarknessPathwayMenus.showPoetSongMenu(player)
@@ -853,6 +957,81 @@ world.afterEvents.itemUse.subscribe((event) => {
       GravediggerSequence.handleWhistle(player, player.isSneaking);
     } else {
       player.sendMessage('§cYou must be a Gravedigger (Sequence 8) to use this!');
+    }
+    return;
+  }
+  if (itemId === 'lotm:spirit_medium_totem') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway === PathwayManager.PATHWAYS.DEATH && sequence <= 7) {
+      SpiritMediumSequence.handleAbilityUse(player, 'summon_spirit_wolves');
+    } else {
+      player.sendMessage('§cYou must be a Spirit Medium (Sequence 7) to use this!');
+    }
+    return;
+  }
+  if (itemId === 'lotm:spirit_channeler') {
+    if (player.isSneaking) {
+      const { pathway, sequence } = _getPS(player);
+      if (pathway === PathwayManager.PATHWAYS.DEATH && sequence <= 7) {
+        SpiritChannelerMenu.open(player);
+      } else {
+        player.sendMessage('§cYou must be a Spirit Medium (Sequence 7) to use this!');
+      }
+    }
+    return;
+  }
+  if (itemId === 'lotm:spirit_vanguard_charm') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway === PathwayManager.PATHWAYS.DEATH && sequence <= 7) {
+      EarthSpiritSystem.summonCombat(player);
+    } else {
+      player.sendMessage('§cYou must be a Spirit Medium (Sequence 7) to use this!');
+    }
+    return;
+  }
+
+// ── RED PRIEST ──────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:provoker_idol') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.RED_PRIEST || sequence > 8) {
+      player.sendMessage('§cOnly Provokers can use this!'); return;
+    }
+    ProvokerSequence.useProvocation(player);
+    return;
+  }
+  if (itemId === 'lotm:pyromaniac_focus') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.RED_PRIEST || sequence > 7) {
+      player.sendMessage('§cOnly Pyromaniac or higher can use this!'); return;
+    }
+    if (player.isSneaking) {
+      PyromancerSequence.openSpellMenu(player);
+    } else {
+      PyromancerSequence.castSpell(player);
+    }
+    return;
+  }
+  if (itemId === 'lotm:conspirer_focus') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.RED_PRIEST || sequence > 6) {
+      player.sendMessage('§cOnly Conspirers can use this!'); return;
+    }
+    if (player.isSneaking) {
+      ConspirierSequence.openSpellMenu(player);
+    } else {
+      ConspirierSequence.castSpell(player);
+    }
+    return;
+  }
+  if (itemId === 'lotm:reaper_focus') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway !== PathwayManager.PATHWAYS.RED_PRIEST || sequence > 5) {
+      player.sendMessage('§cOnly Reapers can use this!'); return;
+    }
+    if (player.isSneaking) {
+      ReaperSequence.openSpellMenu(player);
+    } else {
+      ReaperSequence.castSpell(player);
     }
     return;
   }
@@ -1377,8 +1556,16 @@ world.afterEvents.entityDie.subscribe((event) => {
     RampagerSystem.cleanup(event.deadEntity.id);
   }
 
+  if (event.deadEntity?.typeId === 'lotm:earth_spirit_combat') {
+    EarthSpiritSystem.onCombatDefeated(event.deadEntity.id);
+  }
+
   if (event.deadEntity?.typeId === 'lotm:voidwatcher') {
-    RampagerSystem.voidwatcherCooldowns.delete(entityId);
+    RampagerSystem.voidwatcherCooldowns.delete(event.deadEntity.id);
+  }
+
+  if (event.deadEntity?.typeId === 'lotm:rimewraith') {
+    RimewraithSystem.cleanup(event.deadEntity.id);
   }
 });
 
@@ -1401,6 +1588,21 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
     const inv = attacker.getComponent('minecraft:inventory');
     held = inv?.container?.getItem(attacker.selectedSlotIndex) ?? null;
   } catch (_) {}
+
+  // ── Red Priest — fire aspect on melee ────────────────────────────────────
+  if (pathway === PathwayManager.PATHWAYS.RED_PRIEST && sequence <= 7) {
+    if (sequence <= 5)      ReaperSequence.onMeleeHit(attacker, victim);
+    else if (sequence <= 6) ConspirierSequence.onMeleeHit(attacker, victim);
+    else                    PyromancerSequence.onMeleeHit(attacker, victim);
+  }
+
+  // ── Flame Sword — bonus fire damage on hit ────────────────────────────────
+  if (held?.typeId === 'lotm:flame_sword') {
+    try { victim.setOnFire(8, true); } catch (_) {}
+    try { victim.applyDamage(10, { damagingEntity: attacker }); } catch (_) {}
+    try { victim.dimension.spawnParticle('minecraft:basic_flame_particle', { x: victim.location.x, y: victim.location.y + 1, z: victim.location.z }); } catch (_) {}
+    try { victim.dimension.spawnParticle('minecraft:mobflame_single', { x: victim.location.x, y: victim.location.y + 1.5, z: victim.location.z }); } catch (_) {}
+  }
 
   // ── Twilight Giant — Pugilist+ weakness debuff ────────────────────────────
   if (pathway === PathwayManager.PATHWAYS.TWILIGHT_GIANT && sequence <= 8) {

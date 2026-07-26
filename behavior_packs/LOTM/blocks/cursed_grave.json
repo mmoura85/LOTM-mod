@@ -1,0 +1,66 @@
+{
+	"format_version": "1.21.100",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lotm:cursed_grave",
+			"menu_category": { "category": "construction" },
+			"traits": {
+				"minecraft:placement_direction": {
+					"enabled_states": ["minecraft:cardinal_direction"],
+					"y_rotation_offset": 180
+				}
+			}
+		},
+		"components": {
+			"minecraft:display_name": "§5Cursed Grave",
+			"minecraft:destructible_by_mining": { "seconds_to_destroy": 3.0 },
+			"minecraft:destructible_by_explosion": { "explosion_resistance": 6 },
+			"minecraft:geometry": "geometry.grave_headstone",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "cursed_grave",
+					"render_method": "alpha_test"
+				}
+			},
+			"minecraft:loot": "loot_tables/blocks/cursed_grave.json",
+			"minecraft:map_color": "#4a0080",
+			"tag:minecraft:is_pickaxe_item_destructible": {},
+			"minecraft:collision_box": { "origin": [-5, 0, -1], "size": [10, 16, 3] },
+			"minecraft:selection_box": { "origin": [-5, 0, -1], "size": [10, 16, 3] }
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'south'",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] },
+					"minecraft:collision_box": { "origin": [-5, 0, -1], "size": [10, 16, 3] },
+					"minecraft:selection_box": { "origin": [-5, 0, -1], "size": [10, 16, 3] }
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'west'",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] },
+					"minecraft:collision_box": { "origin": [-1, 0, -5], "size": [3, 16, 10] },
+					"minecraft:selection_box": { "origin": [-1, 0, -5], "size": [3, 16, 10] }
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] },
+					"minecraft:collision_box": { "origin": [-5, 0, -1], "size": [10, 16, 3] },
+					"minecraft:selection_box": { "origin": [-5, 0, -1], "size": [10, 16, 3] }
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:cardinal_direction') == 'east'",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] },
+					"minecraft:collision_box": { "origin": [-1, 0, -5], "size": [3, 16, 10] },
+					"minecraft:selection_box": { "origin": [-1, 0, -5], "size": [3, 16, 10] }
+				}
+			}
+		]
+	}
+}

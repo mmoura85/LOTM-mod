@@ -128,7 +128,7 @@ export class DawnPaladinSequence {
   }
 
   static applyGiantSize(player) {
-    try { player.addEffect('slow_falling', 40, { amplifier: 0, showParticles: false }); } catch (_) {}
+    // try { player.addEffect('slow_falling', 40, { amplifier: 0, showParticles: false }); } catch (_) {}
   }
 
   static applyWeaponEnchantments(player) {

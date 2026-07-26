@@ -120,6 +120,14 @@
               ]
             },
             "max_dist": 16
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "lotm_beast"
+            },
+            "max_dist": 16
           }
         ]
       },

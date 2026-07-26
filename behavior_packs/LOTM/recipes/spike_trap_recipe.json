@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:spike_trap_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "III",
+      " S "
+    ],
+    "key": {
+      "I": { "item": "minecraft:iron_ingot" },
+      "S": { "item": "minecraft:stick" }
+    },
+    "result": { "item": "lotm:spike_trap", "count": 1 },
+    "unlock": [{ "item": "minecraft:iron_ingot" }]
+  }
+}

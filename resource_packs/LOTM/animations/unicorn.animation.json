@@ -1,0 +1,35 @@
+{
+    "format_version": "1.8.0",
+    "animations": {
+        "animation.lotm_unicorn.walk": {
+            "loop": true,
+            "bones": {
+                "LegFL": { "rotation": ["Math.cos(query.modified_distance_moved * 38.17) * 45 * query.modified_move_speed", 0, 0] },
+                "LegFR": { "rotation": ["-Math.cos(query.modified_distance_moved * 38.17) * 45 * query.modified_move_speed", 0, 0] },
+                "LegBL": { "rotation": ["Math.cos(query.modified_distance_moved * 38.17 + 1.5) * 45 * query.modified_move_speed", 0, 0] },
+                "LegBR": { "rotation": ["-Math.cos(query.modified_distance_moved * 38.17 + 1.5) * 45 * query.modified_move_speed", 0, 0] },
+                "Tail":  { "rotation": ["Math.sin(query.modified_distance_moved * 25) * 12 * query.modified_move_speed", 0, 0] }
+            }
+        },
+        "animation.lotm_unicorn.idle": {
+            "loop": true,
+            "anim_time_update": "query.life_time",
+            "bones": {
+                "Tail": { "rotation": ["Math.sin(query.life_time * 90) * 4", 0, 0] }
+            }
+        },
+        "animation.lotm_unicorn.attack": {
+            "loop": false,
+            "animation_length": 0.5,
+            "bones": {
+                "Neck": {
+                    "rotation": {
+                        "0.0":  [0, 0, 0],
+                        "0.25": [35, 0, 0],
+                        "0.5":  [0, 0, 0]
+                    }
+                }
+            }
+        }
+    }
+}

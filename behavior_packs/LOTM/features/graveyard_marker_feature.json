@@ -1,0 +1,11 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:single_block_feature": {
+        "description": {
+            "identifier": "lotm:graveyard_marker_feature"
+        },
+        "places_block": "minecraft:ancient_debris",
+        "enforce_placement_rules": false,
+        "enforce_survivability_rules": false
+    }
+}

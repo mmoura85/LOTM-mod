@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:spirit_channeler_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " F ",
+      "GEG",
+      " F "
+    ],
+    "key": {
+      "F": { "item": "lotm:spirit_focus" },
+      "G": { "item": "minecraft:gold_ingot" },
+      "E": { "item": "minecraft:ender_pearl" }
+    },
+    "result": { "item": "lotm:spirit_channeler", "count": 1 },
+    "unlock": [{ "item": "lotm:death_potion_seq7" }]
+  }
+}

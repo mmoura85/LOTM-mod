@@ -126,6 +126,17 @@
         },
         {
           "type": "item",
+          "name": "lotm:darkness_characteristic_seq7",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
           "name": "lotm:death_characteristic_seq9",
           "weight": 10,
           "functions": [
@@ -154,6 +165,17 @@
         },
         {
           "type": "item",
+          "name": "lotm:death_characteristic_seq7",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
           "name": "lotm:door_characteristic_seq9",
           "weight": 10,
           "functions": [
@@ -166,6 +188,17 @@
         {
           "type": "item",
           "name": "lotm:door_characteristic_seq8",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:door_characteristic_seq7",
           "weight": 10,
           "functions": [
             {
@@ -198,7 +231,29 @@
         },
         {
           "type": "item",
+          "name": "lotm:twilight_giant_characteristic_seq7",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
           "name": "lotm:sun_characteristic_seq9",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:sun_characteristic_seq7",
           "weight": 10,
           "functions": [
             {
@@ -231,6 +286,17 @@
         },
         {
           "type": "item",
+          "name": "lotm:seer_characteristic_seq7",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
           "name": "lotm:justiciar_characteristic_seq9",
           "weight": 10,
           "functions": [
@@ -243,6 +309,17 @@
         {
           "type": "item",
           "name": "lotm:justiciar_characteristic_seq8",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:justiciar_characteristic_seq7",
           "weight": 10,
           "functions": [
             {
@@ -275,6 +352,17 @@
         },
         {
           "type": "item",
+          "name": "lotm:hanged_man_characteristic_seq7",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
           "name": "lotm:hermit_characteristic_seq9",
           "weight": 10,
           "functions": [
@@ -288,6 +376,50 @@
           "type": "item",
           "name": "lotm:hermit_characteristic_seq8",
           "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:hermit_characteristic_seq7",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:red_priest_characteristic_seq9",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:red_priest_characteristic_seq8",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": { "min": 1, "max": 1 }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:red_priest_characteristic_seq7",
+          "weight": 5,
           "functions": [
             {
               "function": "set_count",

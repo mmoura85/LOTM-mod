@@ -18,7 +18,7 @@
         "item": "minecraft:diamond"
       },
       "S": {
-        "item": "minecraft:nether_star"
+        "item": "minecraft:glistering_melon_slice"
       }
     },
     "result": {
@@ -27,7 +27,7 @@
     },
     "unlock": [
       {
-        "item": "minecraft:nether_star"
+        "item": "minecraft:glistering_melon_slice"
       }
     ]
   }

@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:slayers_kite_shield_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "SIS",
+      "SSS",
+      " S "
+    ],
+    "key": {
+      "S": { "item": "lotm:steel_ingot" },
+      "I": { "item": "minecraft:iron_ingot" }
+    },
+    "result": {
+      "item": "lotm:slayers_kite_shield",
+      "count": 1
+    },
+    "unlock": [
+      { "item": "lotm:steel_ingot" }
+    ]
+  }
+}

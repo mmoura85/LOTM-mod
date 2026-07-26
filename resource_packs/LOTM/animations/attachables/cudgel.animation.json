@@ -1,0 +1,23 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.cudgel.first_person_hold": {
+			"loop": true,
+			"bones": {
+				"root_item": {
+					"rotation": [66, 60, -60],
+					"position": [3, 23, 4]
+				}
+			}
+		},
+		"animation.cudgel.third_person_hold": {
+			"loop": true,
+			"bones": {
+				"root_item": {
+					"rotation": [90, 0, 0],
+					"position": [0, 4, 0]
+				}
+			}
+		}
+	}
+}

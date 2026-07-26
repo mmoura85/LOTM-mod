@@ -1,0 +1,33 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lotm:rimewraith",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/rimewraith"
+			},
+			"geometry": {
+				"default": "geometry.rimewraith"
+			},
+			"animations": {
+				"move": "animation.rimewraith.move",
+				"look_at_target": "animation.common.look_at_target",
+				"move_controller": "controller.animation.snowgolem.move.v1.8"
+			},
+			"scripts": {
+				"animate": [
+					"move_controller",
+					"look_at_target"
+				]
+			},
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#7a1414",
+				"overlay_color": "#d6cfc7"
+			}
+		}
+	}
+}

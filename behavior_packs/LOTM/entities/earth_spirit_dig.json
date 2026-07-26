@@ -1,0 +1,47 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:earth_spirit_dig",
+      "is_spawnable": false,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "component_groups": {
+      "lotm:despawn": {
+        "minecraft:instant_despawn": {}
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["earth_spirit", "spirit", "mob"] },
+      "minecraft:nameable": {},
+      "minecraft:fire_immune": true,
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:collision_box": { "width": 1.0, "height": 1.9 },
+      "minecraft:health": { "value": 40, "max": 40 },
+      "minecraft:damage_sensor": {
+        "triggers": [{ "cause": "all", "deals_damage": false }]
+      },
+      "minecraft:movement": { "value": 0.2 },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:breathable": { "total_supply": 15, "suffocate_time": 0 },
+      "minecraft:despawn": { "despawn_from_distance": { "max_distance": 128 } },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.random_stroll": { "priority": 6, "speed_multiplier": 0.4, "xz_dist": 3 },
+      "minecraft:behavior.look_at_player": { "priority": 7, "look_distance": 8 }
+    },
+    "events": {
+      "lotm:despawn": {
+        "add": { "component_groups": ["lotm:despawn"] }
+      }
+    }
+  }
+}

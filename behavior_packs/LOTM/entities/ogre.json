@@ -1,0 +1,108 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "lotm:ogre",
+      "runtime_identifier": "minecraft:zombie",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["ogre", "monster", "mob"] },
+      "minecraft:nameable": {},
+      "minecraft:fire_immune": true,
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:collision_box": { "width": 1.4, "height": 2.9 },
+      "minecraft:health": { "value": 100, "max": 100 },
+      "minecraft:attack": { "damage": 14 },
+      "minecraft:movement": { "value": 0.20 },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:can_climb": {},
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:follow_range": { "value": 48 },
+      "minecraft:equipment": {
+        "table": "loot_tables/entities/lotm/ogre_equipment.json",
+        "slot_drop_chance": [
+          { "slot": "slot.weapon.mainhand", "drop_chance": 0.15 }
+        ]
+      },
+      "minecraft:loot": { "table": "loot_tables/entities/lotm/ogre.json" },
+      "minecraft:experience_reward": { "on_death": "Math.Random(15, 30)" },
+      "minecraft:despawn": { "despawn_from_distance": { "max_distance": 128 } },
+      "minecraft:navigation.walk": {
+        "can_path_over_water": false,
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:hurt_on_condition": {
+        "damage_conditions": [
+          {
+            "filters": {
+              "test": "in_lava",
+              "subject": "self",
+              "operator": "==",
+              "value": true
+            },
+            "cause": "lava",
+            "damage_per_tick": 4
+          }
+        ]
+      },
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "fall",
+          "deals_damage": false
+        }
+      },
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.hurt_by_target": { "priority": 1 },
+      "minecraft:behavior.nearest_attackable_target": {
+        "priority": 2,
+        "within_radius": 24.0,
+        "must_see": true,
+        "entity_types": [
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "player" },
+            "max_dist": 24
+          },
+          {
+            "filters": { "test": "is_family", "subject": "other", "value": "decoy" },
+            "max_dist": 24
+          }
+        ]
+      },
+      "minecraft:behavior.melee_attack": {
+        "priority": 3,
+        "track_target": true,
+        "reach_multiplier": 1.5
+      },
+      "minecraft:behavior.move_towards_target": {
+        "priority": 4,
+        "speed_multiplier": 0.9,
+        "within_radius": 32
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 6,
+        "speed_multiplier": 0.6,
+        "xz_dist": 16
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 7,
+        "look_distance": 8,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": { "priority": 8 }
+    }
+  }
+}

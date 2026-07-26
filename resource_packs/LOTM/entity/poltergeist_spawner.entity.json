@@ -1,0 +1,18 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:poltergeist_spawner",
+      "materials": {
+        "default": "entity_emissive"
+      },
+      "textures": {
+        "default": "textures/entity/wisp"
+      },
+      "geometry": {
+        "default": "geometry.wisp"
+      },
+      "render_controllers": [ "controller.render.wisp_inner" ]
+    }
+  }
+}

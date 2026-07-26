@@ -285,6 +285,8 @@ export class SheriffSequence {
       return false;
     }
 
+    this._spawnSensePulse(player.dimension, player.location, 12);
+
     try {
       // Find nearest entity within 12 blocks (any type — Recognition works on anyone)
       const entities = player.dimension.getEntities({
@@ -375,6 +377,8 @@ export class SheriffSequence {
       return false;
     }
 
+    this._spawnSensePulse(player.dimension, player.location, 20);
+
     try {
       const entities = player.dimension.getEntities({
         location: player.location,
@@ -401,6 +405,25 @@ export class SheriffSequence {
       this._setCD(player, 'senseDisorder', this.SENSE_DISORDER_CD);
       return true;
     } catch (_) { return false; }
+  }
+
+  static _spawnSensePulse(dimension, location, maxRadius) {
+    for (let r = 2; r <= maxRadius; r += 2) {
+      const rCopy = r;
+      system.runTimeout(() => {
+        const count = Math.floor(rCopy * 3);
+        for (let i = 0; i < count; i++) {
+          const a = (i / count) * Math.PI * 2;
+          try {
+            dimension.spawnParticle('minecraft:villager_angry', {
+              x: location.x + Math.cos(a) * rCopy,
+              y: location.y + 0.2,
+              z: location.z + Math.sin(a) * rCopy
+            });
+          } catch (e) {}
+        }
+      }, r * 2);
+    }
   }
 
   // ── Item use dispatcher ───────────────────────────────────────────────────

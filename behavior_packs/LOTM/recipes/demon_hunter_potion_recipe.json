@@ -1,34 +1,21 @@
 {
   "format_version": "1.21.0",
-  "minecraft:recipe_shaped": {
+  "minecraft:recipe_shapeless": {
     "description": {
       "identifier": "lotm:demon_hunter_potion"
     },
     "tags": ["crafting_table"],
-    "pattern": [
-      " D ",
-      "DPD",
-      " T "
+    "ingredients": [
+      { "item": "lotm:twilight_giant_characteristic_seq4" },
+      { "item": "minecraft:diamond" },
+      { "item": "minecraft:totem_of_undying" }
     ],
-    "key": {
-      "D": {
-        "item": "minecraft:diamond"
-      },
-      "P": {
-        "item": "lotm:twilight_potion_seq5"
-      },
-      "T": {
-        "item": "minecraft:totem_of_undying"
-      }
-    },
     "result": {
       "item": "lotm:twilight_potion_seq4",
       "count": 1
     },
     "unlock": [
-      {
-        "item": "lotm:twilight_potion_seq5"
-      }
+      { "item": "lotm:twilight_giant_characteristic_seq4" }
     ]
   }
 }

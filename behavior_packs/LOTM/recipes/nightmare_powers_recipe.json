@@ -18,7 +18,7 @@
         "item": "minecraft:phantom_membrane"
       },
       "E": {
-        "item": "minecraft:ender_eye"
+        "item": "lotm:nightmare_fragment"
       }
     },
     "result": {

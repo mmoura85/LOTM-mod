@@ -1,0 +1,47 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:block": {
+        "description": {
+            "identifier": "lotm:fire_trap",
+            "menu_category": { "category": "construction" },
+            "traits": {
+                "minecraft:placement_direction": {
+                    "enabled_states": ["minecraft:cardinal_direction"],
+                    "y_rotation_offset": 0
+                },
+                "minecraft:placement_position": {
+                    "enabled_states": ["minecraft:block_face"]
+                }
+            },
+            "states": {
+                "lotm:fuel": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            }
+        },
+        "permutations": [
+            { "condition": "q.block_state('minecraft:block_face') == 'up' && q.block_state('minecraft:cardinal_direction') == 'south'", "components": { "minecraft:transformation": { "rotation": [0, 180, 0] } } },
+            { "condition": "q.block_state('minecraft:block_face') == 'up' && q.block_state('minecraft:cardinal_direction') == 'east'",  "components": { "minecraft:transformation": { "rotation": [0, 90, 0] } } },
+            { "condition": "q.block_state('minecraft:block_face') == 'up' && q.block_state('minecraft:cardinal_direction') == 'west'",  "components": { "minecraft:transformation": { "rotation": [0, -90, 0] } } },
+            { "condition": "q.block_state('minecraft:block_face') == 'down'",  "components": { "minecraft:transformation": { "rotation": [90, 0, 0] } } },
+            { "condition": "q.block_state('minecraft:block_face') == 'north'", "components": { "minecraft:transformation": { "rotation": [0, 180, 0] } } },
+            { "condition": "q.block_state('minecraft:block_face') == 'east'",  "components": { "minecraft:transformation": { "rotation": [0, -90, 0] } } },
+            { "condition": "q.block_state('minecraft:block_face') == 'west'",  "components": { "minecraft:transformation": { "rotation": [0, 90, 0] } } }
+        ],
+        "components": {
+            "minecraft:custom_components": ["lotm:fire_trap"],
+            "minecraft:geometry": "geometry.lotm.fire_trap",
+            "minecraft:material_instances": {
+                "*":         { "texture": "fire_trap_side",   "render_method": "opaque" },
+                "front":     { "texture": "fire_trap_top",    "render_method": "opaque" },
+                "side":      { "texture": "fire_trap_side",   "render_method": "opaque" },
+                "mat_top":   { "texture": "fire_trap_bottom", "render_method": "opaque" },
+                "mat_bottom":{ "texture": "fire_trap_bottom", "render_method": "opaque" }
+            },
+            "minecraft:collision_box": { "origin": [-8, 0, -8], "size": [16, 16, 16] },
+            "minecraft:selection_box": { "origin": [-8, 0, -8], "size": [16, 16, 16] },
+            "minecraft:destructible_by_mining": { "seconds_to_destroy": 2.5 },
+            "minecraft:destructible_by_explosion": { "explosion_resistance": 6 },
+            "minecraft:map_color": "#ff6600",
+            "minecraft:light_dampening": 0
+        }
+    }
+}

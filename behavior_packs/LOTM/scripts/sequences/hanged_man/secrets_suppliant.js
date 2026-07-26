@@ -179,6 +179,62 @@ export class SecretsSuppliantSequence {
   }
 
   // =============================================
+  // ABILITY: SPIRIT PERCEPTION (ACTIVE)
+  // Right-click triggered readout — chat-based since the action bar fades
+  // too fast to actually read a list of detected presences.
+  // =============================================
+  static useSpiritPerception(player) {
+    if (!this.hasSequence(player)) {
+      player.sendMessage('§cYou do not have access to this ability!');
+      return false;
+    }
+
+    player.sendMessage('§5§l👁 SPIRIT PERCEPTION');
+    player.sendMessage('§dYour spiritual perception sweeps the area...');
+    player.playSound('block.beacon.ambient', { pitch: 1.5, volume: 0.8 });
+
+    const results = [];
+    try {
+      const entities = player.dimension.getEntities({
+        location: player.location,
+        maxDistance: this.PERCEPTION_RANGE,
+        excludeTypes: ['minecraft:item', 'minecraft:xp_orb', 'minecraft:arrow',
+                       'minecraft:fireball', 'minecraft:snowball'],
+      });
+
+      for (const entity of entities) {
+        if (entity.id === player.id) continue;
+
+        if (entity.typeId === 'minecraft:player') {
+          const targetPathway = PathwayManager.getPathway(entity);
+          if (targetPathway && entity.name !== player.name) {
+            const dist = Math.floor(this._dist(player.location, entity.location));
+            results.push(`§d${entity.name}§7 — ${targetPathway} (${dist}m)`);
+            try { entity.addEffect('glowing', 80, { amplifier: 0, showParticles: false }); } catch (e) {}
+          }
+          continue;
+        }
+
+        if (this._isPowerfulEntity(entity)) {
+          const dist = Math.floor(this._dist(player.location, entity.location));
+          results.push(`§c${entity.typeId.replace('minecraft:', '').replace('lotm:', '[LOTM] ')} §7(${dist}m)`);
+          try { entity.addEffect('glowing', 80, { amplifier: 0, showParticles: false }); } catch (e) {}
+        }
+      }
+    } catch (e) {}
+
+    if (results.length > 0) {
+      player.sendMessage('§5── Presences Detected ──');
+      for (const r of results.slice(0, 8)) player.sendMessage(`  §7• ${r}`);
+      if (results.length > 8) player.sendMessage(`  §7...and ${results.length - 8} more.`);
+    } else {
+      player.sendMessage('§7No powerful presences detected nearby.');
+    }
+
+    return true;
+  }
+
+  // =============================================
   // COOLDOWN HELPERS
   // =============================================
   static tickCooldowns(player) {
@@ -276,14 +332,16 @@ export class SecretsSuppliantSequence {
   }
 
   static _divinationStructureScan(player) {
+    // Bedrock's /locate structure takes bare ids (no "minecraft:" namespace),
+    // and its success text is "... at [<x> ~ <z>] (<dist> blocks away)" — no commas.
     const structures = [
-      { id: 'minecraft:village',       label: '🏘 Village'       },
-      { id: 'minecraft:stronghold',    label: '🏰 Stronghold'    },
-      { id: 'minecraft:monument',      label: '🌊 Monument'      },
-      { id: 'minecraft:mansion',       label: '🏚 Mansion'       },
-      { id: 'minecraft:fortress',      label: '🔥 Fortress'      },
-      { id: 'minecraft:ruined_portal', label: '🌀 Ruined Portal'  },
-      { id: 'minecraft:outpost',       label: '🗼 Outpost'       },
+      { id: 'village',          label: '🏘 Village'       },
+      { id: 'stronghold',       label: '🏰 Stronghold'    },
+      { id: 'monument',         label: '🌊 Monument'      },
+      { id: 'mansion',          label: '🏚 Mansion'       },
+      { id: 'fortress',         label: '🔥 Fortress'      },
+      { id: 'ruined_portal',    label: '🌀 Ruined Portal'  },
+      { id: 'pillager_outpost', label: '🗼 Outpost'       },
     ];
 
     const foundStructures = [];
@@ -295,11 +353,11 @@ export class SecretsSuppliantSequence {
         const msg = result.statusMessage || '';
         if (!msg) continue;
 
-        const coordMatch = msg.match(/(-?\d+)\s*,\s*(~|-?\d+)\s*,\s*(-?\d+)/);
+        const coordMatch = msg.match(/\[\s*(-?\d+)\s*~\s*(-?\d+)\s*\]/);
         if (!coordMatch) continue;
 
         const sx   = parseInt(coordMatch[1]);
-        const sz   = parseInt(coordMatch[3]);
+        const sz   = parseInt(coordMatch[2]);
         const dx   = sx - Math.floor(player.location.x);
         const dz   = sz - Math.floor(player.location.z);
         const dist = Math.floor(Math.sqrt(dx * dx + dz * dz));
@@ -347,29 +405,21 @@ export class SecretsSuppliantSequence {
     const spiritRatio = currentSpirit / maxSpirit;
     const enchantment = this._pickEnchantment(spiritRatio);
 
-    // ── FIX: Use give command with stored_enchantments component (Bedrock 1.21+) ──
-    // The scripting ItemStack API does not expose a working enchantable component,
-    // so we use the /give command which correctly bakes the enchantment into the book.
+    // The scripting API's enchantable component does not reliably bake stored
+    // enchantments onto enchanted_book items (confirmed broken even after a
+    // container round-trip). Use the native loot system instead — this is the
+    // same "specific_enchants" function vanilla uses to generate pre-enchanted
+    // books in chest loot, so it's guaranteed to actually work.
     let success = false;
     try {
-      // Bedrock 1.21 item component syntax
-      const bedrockId = enchantment.id.includes(':') ? enchantment.id : `minecraft:${enchantment.id}`;
-      const cmd = `give @s minecraft:enchanted_book[minecraft:stored_enchantments={${bedrockId}:${enchantment.level}}] 1`;
-      player.runCommandAsync(cmd)
-        .then(() => { /* success handled below */ })
-        .catch(() => {
-          // Fallback: older give syntax with NBT-like data
-          try {
-            player.runCommand(`give @s enchanted_book 1 0 {"minecraft:stored_enchantments":{"enchantments":[{"id":"${bedrockId}","level":${enchantment.level}}]}}`);
-          } catch (_) {
-            // Last resort: plain enchanted_book
-            try { player.runCommand('give @s minecraft:enchanted_book 1'); } catch (_2) {}
-            player.sendMessage('§7(Enchantment may not have applied — check the book.)');
-          }
-        });
+      player.runCommand(`loot give @s loot "enchant_books/${enchantment.id}_${enchantment.level}"`);
       success = true;
     } catch (e) {
-      try { player.runCommand('give @s minecraft:enchanted_book 1'); } catch (_) {}
+      try {
+        player.runCommand('give @s minecraft:enchanted_book 1');
+        success = true;
+        player.sendMessage('§7(Enchantment may not have applied — check the book.)');
+      } catch (_) {}
     }
 
     if (success) {
@@ -646,9 +696,7 @@ export class SecretsSuppliantSequence {
       case this.ABILITIES.AURA_READING:
         return this.useAuraReading(player);
       case this.ABILITIES.SPIRIT_PERCEPTION:
-        player.sendMessage('§5Your spiritual perception sweeps the area...');
-        this.perceptionTicks.set(player.name, this.PERCEPTION_SCAN_INTERVAL - 1);
-        return true;
+        return this.useSpiritPerception(player);
       default:
         player.sendMessage('§cUnknown ability!');
         return false;

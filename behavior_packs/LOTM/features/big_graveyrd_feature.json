@@ -1,0 +1,12 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:structure_template_feature": {
+    "description": {
+      "identifier": "lotm:big_graveyrd_feature"
+    },
+    "structure_name": "lotm:big_graveyrd",
+    "adjustment_radius": 4,
+    "facing_direction": "random",
+    "constraints": {}
+  }
+}

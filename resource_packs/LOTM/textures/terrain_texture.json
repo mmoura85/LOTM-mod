@@ -13,6 +13,9 @@
     "grave_headstone": {
       "textures": "textures/blocks/grave_headstone"
     },
+    "cursed_grave": {
+      "textures": "textures/blocks/cursed_grave"
+    },
     "grave_slab": {
       "textures": "textures/blocks/grave_slab"
     },
@@ -34,9 +37,30 @@
     "tin_ore": {
       "textures": "textures/items/tin_ore"
     },
+    "rope_ladder": { "textures": "textures/blocks/rope_ladder" },
     "lotm_blast_furnace_front":     { "textures": "textures/items/lotm_blast_furnace_front"     },
     "lotm_blast_furnace_front_lit": { "textures": "textures/items/lotm_blast_furnace_front_lit" },
     "lotm_blast_furnace_side":      { "textures": "textures/items/lotm_blast_furnace_side"      },
-    "lotm_blast_furnace_top":       { "textures": "textures/items/lotm_blast_furnace_top"       }
+    "lotm_blast_furnace_top":       { "textures": "textures/items/lotm_blast_furnace_top"       },
+    "azurewort_stage2":      { "textures": "textures/blocks/azurewort_stage2"      },
+    "crimson_sage_stage2":   { "textures": "textures/blocks/crimson_sage_stage2"   },
+    "dewdrop_lotus_stage2":  { "textures": "textures/blocks/dewdrop_lotus_stage2"  },
+    "emberbud_stage2":       { "textures": "textures/blocks/emberbud_stage2"       },
+    "ghostweed_stage2":      { "textures": "textures/blocks/ghostweed_stage2"      },
+    "moonflower_stage2":     { "textures": "textures/blocks/moonflower_stage2"     },
+    "nightshade_herb_stage2":{ "textures": "textures/blocks/nightshade_herb_stage2"},
+    "silver_fern_stage2":    { "textures": "textures/blocks/silver_fern_stage2"    },
+    "stargrass_stage2":      { "textures": "textures/blocks/stargrass_stage2"      },
+    "verdant_thistle_stage2":{ "textures": "textures/blocks/verdant_thistle_stage2"},
+    "voidmoss_stage2":       { "textures": "textures/blocks/voidmoss_stage2"       },
+    "witchgrass_stage2":     { "textures": "textures/blocks/witchgrass_stage2"     },
+    "spike_trap":            { "textures": "textures/blocks/spike_trap"            },
+    "wooden_spike_trap":     { "textures": "textures/blocks/wooden_spike_trap"     },
+    "bear_trap":             { "textures": "textures/blocks/bear_trap"             },
+    "fire_trap_top":    { "textures": "textures/blocks/premium_fire_trap"        },
+    "fire_trap_side":   { "textures": "textures/blocks/premium_fire_trap_side"   },
+    "fire_trap_bottom": { "textures": "textures/blocks/premium_fire_trap_bottom" },
+    "beast_ward":            { "textures": "textures/blocks/beast_ward"            },
+    "soldier_spawner":       { "textures": "textures/blocks/soldier_spawner"       }
   }
 }

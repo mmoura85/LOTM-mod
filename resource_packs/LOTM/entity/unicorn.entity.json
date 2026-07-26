@@ -1,0 +1,31 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+        "description": {
+            "identifier": "lotm:unicorn",
+            "materials": {
+                "default": "entity"
+            },
+            "textures": {
+                "default": "textures/entity/unicorn"
+            },
+            "geometry": {
+                "default": "geometry.lotm_unicorn"
+            },
+            "animations": {
+                "walk":   "animation.lotm_unicorn.walk",
+                "idle":   "animation.lotm_unicorn.idle",
+                "attack": "animation.lotm_unicorn.attack",
+                "move":   "controller.animation.lotm_unicorn.move"
+            },
+            "scripts": {
+                "animate": ["move"]
+            },
+            "render_controllers": ["controller.render.lotm_unicorn"],
+            "spawn_egg": {
+                "base_color": "#c0c0c0",
+                "overlay_color": "#ffffff"
+            }
+        }
+    }
+}

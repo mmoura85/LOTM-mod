@@ -1,0 +1,30 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:throwing_knife",
+      "materials": {
+        "default": "arrow"
+      },
+      "textures": {
+        "default": "textures/items/throwing_knife"
+      },
+      "geometry": {
+        "default": "geometry.lotm.throwing_knife"
+      },
+      "animations": {
+        "spin": "animation.lotm.throwing_knife.spin",
+        "move": "animation.lotm.throwing_knife.move"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.shake = query.shake_time - query.frame_alpha;",
+          "variable.shake_power = variable.shake > 0.0 ? -Math.sin(variable.shake * 200.0) * variable.shake : 0.0;"
+        ],
+        "animate": ["spin", "move"],
+        "scale": "1.0"
+      },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}
