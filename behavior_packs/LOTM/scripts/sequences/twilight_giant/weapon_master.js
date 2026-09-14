@@ -1,4 +1,4 @@
-import { world, system } from '@minecraft/server';
+import { world, system, EnchantmentType } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { PugilistSequence } from './pugilist.js';
@@ -153,13 +153,13 @@ export class WeaponMasterSequence {
           // Sharpness III
           const currentSharpness = enchantments.getEnchantment('sharpness');
           if (!currentSharpness || currentSharpness.level < 3) {
-            enchantments.addEnchantment({ type: 'sharpness', level: 3 });
+            enchantments.addEnchantment({ type: new EnchantmentType('sharpness'), level: 3 });
           }
           
           // Knockback I
           const currentKnockback = enchantments.getEnchantment('knockback');
           if (!currentKnockback || currentKnockback.level < 1) {
-            enchantments.addEnchantment({ type: 'knockback', level: 1 });
+            enchantments.addEnchantment({ type: new EnchantmentType('knockback'), level: 1 });
           }
           
           inventory.container.setItem(heldSlot, heldItem);
@@ -193,25 +193,25 @@ export class WeaponMasterSequence {
           // Protection II
           const currentProtection = enchantments.getEnchantment('protection');
           if (!currentProtection || currentProtection.level < 2) {
-            enchantments.addEnchantment({ type: 'protection', level: 2 });
+            enchantments.addEnchantment({ type: new EnchantmentType('protection'), level: 2 });
           }
           
           // Fire Protection II
           const currentFireProt = enchantments.getEnchantment('fire_protection');
           if (!currentFireProt || currentFireProt.level < 2) {
-            enchantments.addEnchantment({ type: 'fire_protection', level: 2 });
+            enchantments.addEnchantment({ type: new EnchantmentType('fire_protection'), level: 2 });
           }
           
           // Blast Protection II
           const currentBlastProt = enchantments.getEnchantment('blast_protection');
           if (!currentBlastProt || currentBlastProt.level < 2) {
-            enchantments.addEnchantment({ type: 'blast_protection', level: 2 });
+            enchantments.addEnchantment({ type: new EnchantmentType('blast_protection'), level: 2 });
           }
           
           // Projectile Protection II
           const currentProjProt = enchantments.getEnchantment('projectile_protection');
           if (!currentProjProt || currentProjProt.level < 2) {
-            enchantments.addEnchantment({ type: 'projectile_protection', level: 2 });
+            enchantments.addEnchantment({ type: new EnchantmentType('projectile_protection'), level: 2 });
           }
           
           equipment.setEquipment(slot, armorItem);

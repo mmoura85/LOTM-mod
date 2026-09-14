@@ -124,23 +124,31 @@ export class SecretsSorcererSequence {
     
     // Spiritual Intuition (night vision + enhanced senses)
     this.applySpiritualIntuition(player);
-    
-    // Process active abilities
-    this.processActivePrisonPockets(player);
-    this.processTransfigurationPortals(player);
-    
-    // Process inherited Traveler abilities
-    TravelerSequence.processActiveDoors();
-    TravelerSequence.processInvisibleHand(player);
-    
-    // Tick down cooldowns
-    this.tickCooldowns(player);
-    TravelerSequence.tickCooldowns(player);
-    
-    // Check for Blink trigger
+
+    // Sneak-to-Blink convenience trigger (inherited Traveler perk) — stays
+    // real-pathway-gated here since it's an ambient trigger, not graze-
+    // relevant ability state. Blink's own cooldown, Invisible Hand's
+    // ongoing processing, and Spirit Fog's ongoing processing now tick
+    // unconditionally via TravelerSequence.tickAbilityState (called for
+    // every player from main.js) — no need to re-delegate to them here.
+    // Prison Pockets/Transfiguration Portals/Traveler's Doors are global,
+    // non-player-keyed systems now ticked once per loop from main.js (like
+    // TrapSystem.tick()) instead of per-player from here — see
+    // processActivePrisonPockets/processTransfigurationPortals below and
+    // TravelerSequence.processActiveDoors.
     if (TravelerSequence.shouldTriggerBlink(player)) {
       TravelerSequence.useBlink(player);
     }
+  }
+
+  /**
+   * Ability-state ticking (own Prison/Portal cooldowns). Called
+   * unconditionally every tick from main.js so a grazer of Imprison/
+   * Transfiguration Portal keeps working without needing to be a real
+   * Secrets Sorcerer. See grazeRegistry.js.
+   */
+  static tickAbilityState(player) {
+    this.tickCooldowns(player);
   }
   
   /**
@@ -441,29 +449,38 @@ export class SecretsSorcererSequence {
       return false;
     }
     
+    // Prison cell location (Nether coordinates) — computed once here and
+    // stored on prisonData below so release (processActivePrisonPockets)
+    // can find the mob later. Previously release searched a hardcoded
+    // debug coordinate {x: -484, y: 115, z: -38} instead of the actual
+    // cell, so imprisoned mobs (players used a different, working release
+    // path via world.getAllPlayers()) were never found and stayed stranded
+    // in the Nether forever.
+    const prisonLoc = {
+      x: Math.floor(target.location.x * 0.125), // Nether coordinates
+      y: 150, // High up in Nether (isolated)
+      z: Math.floor(target.location.z * 0.125)
+    };
+
     // Imprison target
     const prisonData = {
       creator: player.name,
       ticksRemaining: this.PRISON_DURATION,
       originalLocation: { ...target.location },
-      originalDimension: target.dimension.id
+      originalDimension: target.dimension.id,
+      prisonLocation: prisonLoc
     };
-    
+
     this.activePrisonPockets.set(target.id, prisonData);
-    
+
     // Debug: Show where they'll return to
     const returnCoords = `(${Math.floor(prisonData.originalLocation.x)}, ${Math.floor(prisonData.originalLocation.y)}, ${Math.floor(prisonData.originalLocation.z)})`;
     player.sendMessage(`§7Return location: ${returnCoords} in ${prisonData.originalDimension}`);
-    
+
     // Teleport target to prison dimension (Nether with small prison cell)
     try {
       const netherDim = world.getDimension('nether');
-      const prisonLoc = {
-        x: Math.floor(target.location.x * 0.125), // Nether coordinates
-        y: 150, // High up in Nether (isolated)
-        z: Math.floor(target.location.z * 0.125)
-      };
-      
+
       // Generate prison cell BEFORE teleporting
       this.generatePrisonCell(netherDim, prisonLoc);
       
@@ -549,9 +566,19 @@ export class SecretsSorcererSequence {
   }
   
   /**
-   * Process prison pockets
+   * Process prison pockets — GLOBAL, ticked once per loop from main.js
+   * (not per-player) since activePrisonPockets is keyed by target entity
+   * id, not player name; the body never actually used the player param
+   * (release logic already goes through world.getAllPlayers()/
+   * world.getDimension()). Previously invoked from inside a real
+   * Sequence-4 player's applyPassiveAbilities, which meant: (a) nothing
+   * ticked at all with zero real Sequence-4 players online — a prisoner
+   * imprisoned by a grazer would never be released, stuck indefinitely —
+   * and (b) with multiple real Sequence-4 players online simultaneously,
+   * this ticked once per such player, expiring prisoners faster than
+   * PRISON_DURATION implies.
    */
-  static processActivePrisonPockets(player) {
+  static processActivePrisonPockets() {
     const toRemove = [];
     
     for (const [entityId, prisonData] of this.activePrisonPockets) {
@@ -580,11 +607,16 @@ export class SecretsSorcererSequence {
             // It's a mob - search all dimensions for it
             let entity = null;
             
-            // Search Nether first (most likely)
+            // Search near the actual prison cell (stored on prisonData at
+            // imprison time — see imprisonEntity). Previously this used a
+            // hardcoded debug coordinate {x: -484, y: 115, z: -38} that had
+            // nothing to do with where any given mob's cell actually was,
+            // so this branch always fell through to the original-dimension
+            // search below, which also never finds it (the mob is still in
+            // the Nether cell, not back in its original dimension) — the
+            // mob was left stranded every time.
             const netherDim = world.getDimension('nether');
-            // NEW (just use the stored dimension ID + search with location filter):
-            // Store prison location when imprisoning, then search only near it:
-            const prisonLoc = { x: -484, y: 115, z: -38 };
+            const prisonLoc = prisonData.prisonLocation || { x: -484, y: 115, z: -38 };
             const nearPrison = netherDim.getEntities({
               location: prisonLoc,
               maxDistance: 20
@@ -720,59 +752,76 @@ export class SecretsSorcererSequence {
   }
   
   /**
-   * Process Transfiguration Portals
+   * Process Transfiguration Portals — GLOBAL, ticked once per loop from
+   * main.js (not per-player) since transfigurationPortals is keyed by
+   * portal id, not player name. Previously this used `player.dimension`
+   * for particle spawning, entity detection, and block removal — which
+   * meant a portal created in one dimension would be ticked against
+   * whichever player happened to trigger the (real-Sequence-4-gated) call,
+   * silently doing nothing (or worse, acting on the wrong location) if
+   * that player was in a different dimension. Now resolves each portal's
+   * own stored dimension directly. Same double-tick/never-ticks issue as
+   * processActivePrisonPockets applied here too before this fix.
    */
-  static processTransfigurationPortals(player) {
+  static processTransfigurationPortals() {
     const toRemove = [];
-    
+
     for (const [portalId, portalData] of this.transfigurationPortals) {
       portalData.ticksRemaining--;
-      
+
+      let dimension;
+      try {
+        dimension = world.getDimension(portalData.dimension);
+      } catch (e) {
+        toRemove.push(portalId);
+        continue;
+      }
+
       // Spawn particles
       if (portalData.ticksRemaining % 2 === 0) {
-        this.spawnPortalParticles(player.dimension, portalData.location);
+        this.spawnPortalParticles(dimension, portalData.location);
       }
-      
+
       // Check for entities touching portal
       try {
-        const nearbyEntities = player.dimension.getEntities({
+        const nearbyEntities = dimension.getEntities({
           location: portalData.location,
           maxDistance: 2
         });
-        
+
         for (const entity of nearbyEntities) {
           // Skip the portal creator temporarily
           if (entity.name === portalData.creator && portalData.ticksRemaining > this.PORTAL_DURATION - 20) {
             continue; // Grace period
           }
-          
+
           // Teleport entity randomly
           this.randomTeleportEntity(entity, portalData.location);
         }
       } catch (e) {}
-      
+
       // Remove expired portals
       if (portalData.ticksRemaining <= 0) {
         toRemove.push(portalId);
-        
+
         // Remove portal blocks (both bottom and top)
         if (portalData.blockLocation) {
           try {
             const x = portalData.blockLocation.x;
             const y = portalData.blockLocation.y;
             const z = portalData.blockLocation.z;
-            player.dimension.runCommand(`setblock ${x} ${y} ${z} air`);
-            player.dimension.runCommand(`setblock ${x} ${y + 1} ${z} air`);
+            dimension.runCommand(`setblock ${x} ${y} ${z} air`);
+            dimension.runCommand(`setblock ${x} ${y + 1} ${z} air`);
           } catch (e) {}
         }
-        
+
         // Set cooldown for creator
         if (portalData.creator) {
           this.portalCooldowns.set(portalData.creator, this.PORTAL_COOLDOWN);
         }
       }
     }
-    
+
     for (const id of toRemove) {
       this.transfigurationPortals.delete(id);
     }

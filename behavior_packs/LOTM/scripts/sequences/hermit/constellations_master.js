@@ -176,20 +176,21 @@ export class ConstellationsMasterSequence {
 
     // Passive spirit regen
     this._tickSpiritRegen(player);
+  }
 
-    // Tick all cooldowns
+  // =============================================
+  // ABILITY-STATE TICKING (Cage/Bridge/Lantern ongoing processing + all
+  // spell cooldowns). Called unconditionally every tick from main.js so a
+  // grazer keeps working without needing to be a real Constellations
+  // Master, and so a real higher-tier player still gets it ticked —
+  // previously only Constellations Master's own exact-sequence
+  // applyPassiveAbilities ticked this.
+  // =============================================
+  static tickAbilityState(player) {
     this._tickAllCooldowns(player);
-
-    // Process active states
     this._processCages(player);
     this._processBridge(player);
     this._processLantern(player);
-
-//     const spirit    = Math.floor(SpiritSystem.getSpirit(player));
-// const maxSpirit = SpiritSystem.getMaxSpirit(player);
-//     player.onScreenDisplay.setActionBar(
-//   `§bSpirit: §f${spirit}§7/§f${maxSpirit}  §7│  §eConstellations Master`
-// );
   }
 
   static _tickSpiritRegen(player) {

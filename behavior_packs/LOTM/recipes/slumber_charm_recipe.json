@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:slumber_charm_recipe" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:phantom_membrane" },
+      { "item": "minecraft:gold_nugget" },
+      { "item": "lotm:spiritual_essence" }
+    ],
+    "result": { "item": "lotm:slumber_charm", "count": 1 },
+    "unlock": [{ "item": "lotm:spiritual_essence" }]
+  }
+}

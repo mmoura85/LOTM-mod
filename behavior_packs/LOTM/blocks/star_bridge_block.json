@@ -6,7 +6,7 @@
       "menu_category": { "category": "none" }
     },
     "components": {
-      "minecraft:display_name": { "value": "Star Bridge" },
+      "minecraft:display_name": "Star Bridge",
       "minecraft:destructible_by_mining": { "seconds_to_destroy": 0.1 },
       "minecraft:destructible_by_explosion": { "explosion_resistance": 0 },
       "minecraft:light_emission": 10,

@@ -10,13 +10,13 @@
     "components": {
       "minecraft:max_stack_size": 1,
       "minecraft:icon": "slayers_kite_shield",
-      "minecraft:display_name": { "value": "§6Slayer's Kite Shield" },
+      "minecraft:display_name": {
+        "value": "\u00a76Slayer's Kite Shield"
+      },
       "minecraft:hand_equipped": true,
       "minecraft:use_animation": "block",
-      "minecraft:use_duration": 72000,
       "minecraft:damage": 3,
       "minecraft:wearable": {
-        "dispensable": true,
         "slot": "slot.weapon.offhand",
         "protection": 0
       },
@@ -30,7 +30,9 @@
       "minecraft:repairable": {
         "repair_items": [
           {
-            "items": [ "lotm:steel_ingot" ],
+            "items": [
+              "lotm:steel_ingot"
+            ],
             "repair_amount": 250
           }
         ]

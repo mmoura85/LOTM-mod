@@ -12,11 +12,11 @@
         "enchanted": "textures/misc/enchanted_item_glint"
       },
       "geometry": {
-        "default": "geometry.ghost"
+        "default": "geometry.vengeful_ghost"
       },
       "animations": {
-        "idle": "animation.ghost.idle",
-        "fly": "animation.ghost.fly",
+        "idle": "animation.vengeful_ghost.idle",
+        "fly": "animation.vengeful_ghost.fly",
         "general": "controller.animation.allay.general"
       },
       "scripts": {

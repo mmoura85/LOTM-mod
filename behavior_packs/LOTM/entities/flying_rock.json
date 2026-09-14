@@ -10,7 +10,7 @@
     "component_groups": {
       "lotm:ridden": {
         "minecraft:movement.basic": {},
-        "minecraft:navigation.flying": {
+        "minecraft:navigation.fly": {
           "can_pass_doors": false,
           "is_amphibious": false
         }
@@ -42,9 +42,6 @@
       },
       "minecraft:jump.static": {
         "jump_power": 0.0
-      },
-      "minecraft:fall_damage": {
-        "value": 0.0
       },
       "minecraft:fire_immune": true,
       "minecraft:damage_sensor": {
@@ -85,7 +82,7 @@
       "minecraft:behavior.float": {
         "priority": 0
       },
-      "minecraft:navigation.flying": {
+      "minecraft:navigation.fly": {
         "can_pass_doors": false,
         "is_amphibious": false
       },

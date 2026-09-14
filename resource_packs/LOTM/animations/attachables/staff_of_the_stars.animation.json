@@ -1,0 +1,37 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.staff_of_the_stars.first_person_hold": {
+			"loop": true,
+			"animation_length": 1.9167,
+			"bones": {
+				"root_item": {
+					"rotation": [66, 60, -60],
+					"position": [3, 23, 4]
+				},
+				"orbs": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"1.9167": [0, 422.5, 0]
+					}
+				}
+			}
+		},
+		"animation.staff_of_the_stars.third_person_hold": {
+			"loop": true,
+			"animation_length": 1.9167,
+			"bones": {
+				"root_item": {
+					"rotation": [90, 0, 0],
+					"position": [0.5, 22.5, -0.5]
+				},
+				"orbs": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"1.9167": [0, 422.5, 0]
+					}
+				}
+			}
+		}
+	}
+}

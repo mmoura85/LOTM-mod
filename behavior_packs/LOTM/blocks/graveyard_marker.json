@@ -7,6 +7,7 @@
         "components": {
             "minecraft:destructible_by_mining": false,
             "minecraft:destructible_by_explosion": { "explosion_resistance": 3600000 },
+            "minecraft:geometry": { "identifier": "minecraft:geometry.full_block" },
             "minecraft:material_instances": {
                 "*": { "texture": "stone", "render_method": "opaque" }
             }

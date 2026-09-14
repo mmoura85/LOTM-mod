@@ -3,15 +3,26 @@
   "minecraft:item": {
     "description": {
       "identifier": "lotm:silence_bomb",
-      "menu_category": { "category": "items" }
+      "menu_category": {
+        "category": "items"
+      }
     },
     "components": {
       "minecraft:max_stack_size": 16,
       "minecraft:icon": "silence_bomb",
-      "minecraft:display_name": { "value": "§8Silence Bomb" },
-      "minecraft:use_duration": 8,
+      "minecraft:display_name": {
+        "value": "\u00a78Silence Bomb"
+      },
       "minecraft:use_animation": "drink",
-      "minecraft:food": { "nutrition": 0, "saturation_modifier": 0, "can_always_eat": true }
+      "minecraft:food": {
+        "nutrition": 0,
+        "saturation_modifier": 0,
+        "can_always_eat": true
+      },
+      "minecraft:use_modifiers": {
+        "use_duration": 0.4,
+        "movement_modifier": 0.0
+      }
     }
   }
 }

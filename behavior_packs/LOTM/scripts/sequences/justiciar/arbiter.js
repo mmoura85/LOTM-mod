@@ -90,6 +90,14 @@ export class ArbiterSequence {
     // ── +2 hearts (4 HP) ────────────────────────────────────────────────────
     this._applyHealthBonus(player, 4);
 
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via its
+  // own Map.get(player.name) check. Called ONLY unconditionally from
+  // main.js for every player.
+  static tickAbilityState(player) {
     // ── Order's Presence — passive aura weakens nearby hostiles ────────────
     this._tickPresence(player);
 

@@ -1,0 +1,23 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:dire_werewolf",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/dire_werewolf" },
+      "geometry": { "default": "geometry.dire_werewolf" },
+      "animations": {
+        "look_at_target": "animation.common.look_at_target",
+        "walk": "animation.dire_werewolf.walk"
+      },
+      "scripts": {
+        "pre_animation": [
+          "v.walking = query.modified_move_speed > 0.01;"
+        ],
+        "animate": ["look_at_target", { "walk": "v.walking" }]
+      },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#4a4238", "overlay_color": "#2e2a24" }
+    }
+  }
+}

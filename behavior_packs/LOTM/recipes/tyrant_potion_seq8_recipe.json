@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:tyrant_potion_seq8_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " L ",
+      "LBL",
+      " T "
+    ],
+    "key": {
+      "L": { "item": "minecraft:lightning_rod" },
+      "B": { "item": "minecraft:glass_bottle" },
+      "T": { "item": "lotm:tyrant_characteristic_seq8" }
+    },
+    "result": { "item": "lotm:tyrant_potion_seq8", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_characteristic_seq8" }]
+  }
+}

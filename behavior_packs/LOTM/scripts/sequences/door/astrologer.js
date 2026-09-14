@@ -92,10 +92,19 @@ export class AstrologerSequence {
       });
     }
     
-    // Tick down cooldowns
+  }
+
+  /**
+   * Ability-state ticking (Crystal Ball cooldown + its ongoing tracking
+   * action-bar display). Called unconditionally every tick from main.js so
+   * a grazer of Crystal Ball Scrying keeps working without needing to be a
+   * real Astrologer, and so a real higher-tier player (e.g. a real Scribe)
+   * still gets their inherited Crystal Ball cooldown ticked — previously
+   * only Astrologer's own exact-sequence applyPassiveAbilities ticked
+   * this. See grazeRegistry.js.
+   */
+  static tickAbilityState(player) {
     this.tickCooldowns(player);
-    
-    // Update crystal ball tracking
     this.updateCrystalBallTracking(player);
   }
   
@@ -623,17 +632,18 @@ export class AstrologerSequence {
         return this.useDoorOpening(player, param);
       case this.ABILITIES.PEEK_DOOR:
         return this.usePeekDoor(player);
-      case this.ABILITIES.FLASHBANG:
-        return this.useFlashbang(player);
-      case this.ABILITIES.BURNING:
-        return this.useBurning(player);
-      case this.ABILITIES.LIGHTNING:
-        return this.useLightning(player);
-      case this.ABILITIES.FREEZE_RAY:
-      case this.ABILITIES.FREEZE_AOE:
-        return this.useFreeze(player);
       default:
-        return false;
+        // Inherit Trickmaster abilities (Flashbang/Burning/Lightning/
+        // Freeze). Previously this had explicit cases referencing
+        // this.ABILITIES.FLASHBANG etc, but those keys only exist on
+        // TrickmasterSequence.ABILITIES, not here — so those cases were
+        // `case undefined` and could never match, and even if they had,
+        // this.useFlashbang/etc aren't defined on this class either. Real
+        // gameplay was never affected (main.js's item-use handlers call
+        // TrickmasterSequence's methods directly, bypassing this switch
+        // entirely) — this fixes the dead code path for any future direct
+        // caller of this method.
+        return TrickmasterSequence.handleAbilityUse(player, abilityId);
     }
   }
   

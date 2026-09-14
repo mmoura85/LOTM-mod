@@ -1,18 +1,36 @@
 {
   "format_version": "1.21.0",
   "minecraft:recipe_shaped": {
-    "description": { "identifier": "lotm:constellations_tome_recipe" },
-    "tags": ["crafting_table"],
+    "description": {
+      "identifier": "lotm:constellations_tome_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
     "pattern": [
       "SES",
       "EBE",
       "SES"
     ],
     "key": {
-      "S": { "item": "lotm:sunflower_dust" },
-      "E": { "item": "minecraft:ender_pearl" },
-      "B": { "item": "minecraft:book" }
+      "S": {
+        "item": "lotm:sunflower_dust"
+      },
+      "E": {
+        "item": "minecraft:ender_pearl"
+      },
+      "B": {
+        "item": "minecraft:book"
+      }
     },
-    "result": { "item": "lotm:constellations_tome", "count": 1 }
+    "result": {
+      "item": "lotm:constellations_tome",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:hermit_potion_seq5"
+      }
+    ]
   }
 }

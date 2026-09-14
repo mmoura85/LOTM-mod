@@ -1,4 +1,4 @@
-import { world, system } from '@minecraft/server';
+import { world, system, EntityDamageCause } from '@minecraft/server';
 import { SpiritSystem } from './core/spiritSystem.js';
 import { PathwayManager } from './core/pathwayManager.js';
 import { SleeplessSequence } from './sequences/darkness/sleepless.js';
@@ -40,6 +40,9 @@ import { ListenerSequence } from './sequences/hanged_man/listener.js';
 import { ShadowAsceticSequence } from './sequences/hanged_man/shadow_ascetic.js';
 import { RoseBishopSequence }  from './sequences/hanged_man/rose_bishop.js';
 import { ShepherdSequence } from './sequences/hanged_man/shepherd.js';
+import { registerSequenceClasses as registerGrazeSequenceClasses } from './core/grazeRegistry.js';
+import { CreepingHungerSystem } from './core/creepingHungerSystem.js';
+import { CreepingHungerMenu } from './ui/creeping_hunger_menu.js';
 
 // Red Priest
 import { HunterSequence } from './sequences/red_priest/hunter.js';
@@ -47,6 +50,14 @@ import { ProvokerSequence } from './sequences/red_priest/provoker.js';
 import { PyromancerSequence } from './sequences/red_priest/pyromaniac.js';
 import { ConspirierSequence } from './sequences/red_priest/conspirer.js';
 import { ReaperSequence } from './sequences/red_priest/reaper.js';
+
+// Tyrant
+import { SailorSequence } from './sequences/tyrant/sailor.js';
+import { FolkOfRageSequence } from './sequences/tyrant/folk_of_rage.js';
+import { SeafarerSequence } from './sequences/tyrant/seafarer.js';
+import { WindBlessedSequence } from './sequences/tyrant/wind_blessed.js';
+import { OceanSongsterSequence } from './sequences/tyrant/ocean_songster.js';
+import { CataclysmicInterrerSequence } from './sequences/tyrant/cataclysmic_interrer.js';
 
 // Hermit
 import { MysteryPryerSequence } from './sequences/hermit/mystery_pryer.js';
@@ -59,7 +70,7 @@ import { MysticologistSequence } from './sequences/hermit/mysticologist.js';
 
 // UI
 import { SunPathwayMenus } from './ui/sun_pathway_menus.js';
-import { DarknessPathwayMenus } from './ui/darkness_pathway_menus.js';
+import { DarknessPathwayMenus, selectedSoulAssurerAbilities } from './ui/darkness_pathway_menus.js';
 import { DoorPathwayMenus } from './ui/door_pathway_menus.js';
 import { TwilightGiantMenus } from './ui/twilight_giant_menus.js';
 import { HangedManMenus }      from './ui/hanged_man_menus.js';
@@ -74,6 +85,8 @@ import { RangedWeaponBuffs } from './weapons/rangedWeaponBuffs.js';
 //RAMPAGER
 import { RampagerSystem } from './world/rampagerSystem.js';
 import { RimewraithSystem } from './world/rimewraithSystem.js';
+import { ZombieBruteSystem } from './world/zombieBruteSystem.js';
+import { DeathDropSystem } from './world/deathDropSystem.js';
 
 // Beyonder mobs
 import { ClownBeyonderSystem } from './beyonderMobs/clownBeyonderSystem.js';
@@ -84,11 +97,14 @@ import { ChairSystem } from './world/chairSystem.js';
 // Trap system
 import { TrapSystem } from './world/trapSystem.js';
 import { WardSystem } from './world/wardSystem.js';
+import { WaystoneSystem } from './world/waystoneSystem.js';
 import { ScapegoatSystem } from './world/scapegoatSystem.js';
 import { SoldierSpawnerSystem } from './world/soldierSpawnerSystem.js';
 import { PoltergeistSpawnerSystem } from './world/poltergeistSpawnerSystem.js';
 import { GraveyardSystem } from './world/graveyardSystem.js';
 import { ShieldSystem } from './world/shieldSystem.js';
+import { FireMoteSystem } from './world/fireMoteSystem.js';
+import { SunFlareSystem } from './world/sunFlareSystem.js';
 
 // Rope Ladder (disabled)
 // import { RopeLadderSystem } from './world/ropeLadderSystem.js';
@@ -106,9 +122,25 @@ import { WispSystem } from './entity/wispSystem.js';
 import { EarthSpiritSystem } from './entity/earthSpiritSystem.js';
 import { SpiritChannelerMenu } from './ui/spirit_channeler_menu.js';
 
+// banshee
+import { BansheeSystem } from './entity/bansheeSystem.js';
+
+// mystic items
+import { SlumberCharmSystem } from './items/slumberCharmSystem.js';
+import { YesterdayOnceMoreSystem } from './items/yesterdayOnceMoreSystem.js';
+import { SevenStoneBraceletSystem } from './items/sevenStoneBraceletSystem.js';
+import { FistsOfRageSystem } from './items/fistsOfRageSystem.js';
+import { TravelerBraceletSystem } from './items/travelerBraceletSystem.js';
+import { RecordSystem } from './items/recordSystem.js';
+import { SpiritMessengerSystem } from './entity/spiritMessengerSystem.js';
+import { SilverKnifeMenu } from './ui/silver_knife_menu.js';
+
 // ── Ability selection maps ─────────────────────────────────────────────────
-const selectedNightmareAbilities  = new Map();
-const selectedSoulAssurerAbilities = new Map();
+// selectedSoulAssurerAbilities lives in darkness_pathway_menus.js (imported
+// below) since that file also reads/writes it for the sneak+use menu — a
+// single shared Map, not two disconnected trackers. Nightmare no longer
+// needs a local Map at all; it uses NightmareSequence's own persisted
+// selection state instead (see cycleNightmareAbility/useNightmareAbility).
 const selectedDemonHunterAbilities = new Map();
 const selectedSecretsSorcererAbilities = new Map();
 
@@ -124,6 +156,17 @@ function initialize() {
       // Shield system runs for ALL players regardless of pathway
       try { ShieldSystem.tick(player); } catch (_) {}
 
+      // Fists of Rage — not pathway-gated, must also run before the
+      // beyonder-only continue below or its cooldown/action-bar freeze for
+      // any non-Beyonder holder (2026-09-09 bug: cooldown got permanently
+      // stuck for a player with no pathway assigned).
+      try { FistsOfRageSystem.tick(player); } catch (_) {}
+
+      // Record System (Leymano's Travels / Staff of the Stars) — sealed
+      // artifacts, not pathway-gated. Same reason as Fists of Rage above:
+      // must run before the beyonder-only continue below.
+      try { RecordSystem.tick(player); } catch (_) {}
+
       // Get pathway/sequence — skip if not a beyonder
       let pathway, sequence;
       try {
@@ -131,7 +174,14 @@ function initialize() {
         sequence = PathwayManager.getSequence(player);
         if (!pathway || sequence === undefined || sequence === -1) continue;
       } catch (_) { continue; }
- 
+
+      // Pathway/sequence label above the player's head — testing aid so
+      // the current sequence is visible at a glance without opening a menu.
+      try {
+        const wantedTag = `${player.name}\n§7${PathwayManager.getPathwayDisplayName(pathway)} §fSeq ${sequence}`;
+        if (player.nameTag !== wantedTag) player.nameTag = wantedTag;
+      } catch (_) {}
+
       // Spirit regen — isolated
       try { SpiritSystem.tickRegeneration(player, sequence); } catch (_) {}
  
@@ -153,10 +203,20 @@ function initialize() {
               player.onScreenDisplay.setActionBar(InterrogatorSequence.getStatusText(player));
             } else if (hid === 'lotm:judges_gavel') {
               player.onScreenDisplay.setActionBar(JudgeSequence.getStatusText(player));
+            } else if (hid === 'lotm:seafarer_focus') {
+              player.onScreenDisplay.setActionBar(SeafarerSequence.getStatusText(player));
+            } else if (hid === 'lotm:wind_blessed_focus') {
+              player.onScreenDisplay.setActionBar(WindBlessedSequence.getStatusText(player));
+            } else if (hid === 'lotm:ocean_songster_focus') {
+              player.onScreenDisplay.setActionBar(OceanSongsterSequence.getStatusText(player));
+            } else if (hid === 'lotm:cataclysmic_interrer_focus') {
+              player.onScreenDisplay.setActionBar(CataclysmicInterrerSequence.getStatusText(player));
             } else if (hid === 'lotm:paladins_seal') {
               player.onScreenDisplay.setActionBar(DisciplinaryPaladinSequence.getStatusText(player));
             } else if (hid === 'lotm:mages_codex') {
               player.onScreenDisplay.setActionBar(ImperativeMageSequence.getStatusText(player));
+            } else if (hid === 'lotm:bag_of_tricks') {
+              player.onScreenDisplay.setActionBar(TrickmasterSequence.getStatusText(player));
             } else if (hid === 'lotm:paper_figurine_item') {
               const cd        = MagicianSequence.figurineCooldowns.get(player.name) || 0;
               const hasSpirit = SpiritSystem.getSpirit(player) >= MagicianSequence.FIGURINE_SPIRIT_COST;
@@ -272,6 +332,17 @@ function initialize() {
         }
       } catch (_) {}
 
+      try {
+        if (pathway === PathwayManager.PATHWAYS.TYRANT) {
+          if (sequence === 9) SailorSequence.applyPassiveAbilities(player);
+          else if (sequence === 8) FolkOfRageSequence.applyPassiveAbilities(player);
+          else if (sequence === 7) SeafarerSequence.applyPassiveAbilities(player);
+          else if (sequence === 6) WindBlessedSequence.applyPassiveAbilities(player);
+          else if (sequence === 5) OceanSongsterSequence.applyPassiveAbilities(player);
+          else if (sequence === 4) CataclysmicInterrerSequence.applyPassiveAbilities(player);
+        }
+      } catch (_) {}
+
       // Heavy armour — Resistance I + knockback resistance while worn
       try {
         const equipment = player.getComponent('minecraft:equippable');
@@ -287,8 +358,68 @@ function initialize() {
         }
       } catch (_) {}
 
+      try { FireMoteSystem.tick(player); } catch (_) {}
+      try { SunFlareSystem.tick(player); } catch (_) {}
       try { WispSystem.tick(player); } catch (_) {}
       try { EarthSpiritSystem.tick(player); } catch (_) {}
+      try { BansheeSystem.tick(player); } catch (_) {}
+      try { SevenStoneBraceletSystem.tick(player); } catch (_) {}
+      try { SpiritMessengerSystem.tick(player); } catch (_) {}
+      try { CreepingHungerSystem.tick(player); } catch (_) {}
+
+      // ── Ability-state ticking, decoupled from real pathway ownership ──────
+      // Runs for every player unconditionally so grazed/Creeping-Hunger-
+      // borrowed abilities keep working — each method self-gates via its own
+      // per-player Map, see grazeRegistry.js / the plan this came from.
+      // Sun + Darkness + Twilight Giant + Seer + Death + Justiciar + Red
+      // Priest + Hanged Man pathways migrated; more pathways migrate here
+      // over time. Hanged Man note: Madness/Listen-ambient/Flesh-Hunger are
+      // background systems tied to real pathway membership, not opt-in
+      // abilities — they deliberately stay inside each class's
+      // applyPassiveAbilities (real-pathway-gated) rather than moving here,
+      // so a non-Hanged-Man player never starts accumulating madness just
+      // because they grazed one unrelated ability.
+      try { BardSequence.tickAbilityState(player); } catch (_) {}
+      try { LightSuppliantSequence.tickAbilityState(player); } catch (_) {}
+      try { MidnightPoetSequence.tickAbilityState(player); } catch (_) {}
+      try { NightmareSequence.tickAbilityState(player); } catch (_) {}
+      try { SoulAssurerSequence.tickAbilityState(player); } catch (_) {}
+      try { DawnPaladinSequence.tickAbilityState(player); } catch (_) {}
+      try { GuardianSequence.tickAbilityState(player); } catch (_) {}
+      try { DemonHunterSequence.tickAbilityState(player); } catch (_) {}
+      try { SeerSequence.tickAbilityState(player); } catch (_) {}
+      try { ClownSequence.tickAbilityState(player); } catch (_) {}
+      try { MagicianSequence.tickAbilityState(player); } catch (_) {}
+      try { GravediggerSequence.tickAbilityState(player); } catch (_) {}
+      try { SpiritMediumSequence.tickAbilityState(player); } catch (_) {}
+      try { ArbiterSequence.tickAbilityState(player); } catch (_) {}
+      try { SheriffSequence.tickAbilityState(player); } catch (_) {}
+      try { InterrogatorSequence.tickAbilityState(player); } catch (_) {}
+      try { JudgeSequence.tickAbilityState(player); } catch (_) {}
+      try { DisciplinaryPaladinSequence.tickAbilityState(player); } catch (_) {}
+      try { ImperativeMageSequence.tickAbilityState(player); } catch (_) {}
+      try { SecretsSuppliantSequence.tickAbilityState(player); } catch (_) {}
+      try { ListenerSequence.tickAbilityState(player); } catch (_) {}
+      try { ShadowAsceticSequence.tickAbilityState(player); } catch (_) {}
+      try { RoseBishopSequence.tickAbilityState(player); } catch (_) {}
+      try { ShepherdSequence.tickAbilityState(player); } catch (_) {}
+      try { ApprenticeSequence.tickAbilityState(player); } catch (_) {}
+      try { TrickmasterSequence.tickAbilityState(player); } catch (_) {}
+      try { AstrologerSequence.tickAbilityState(player); } catch (_) {}
+      try { ScribeSequence.tickAbilityState(player); } catch (_) {}
+      try { TravelerSequence.tickAbilityState(player); } catch (_) {}
+      try { SecretsSorcererSequence.tickAbilityState(player); } catch (_) {}
+      try { MysteryPryerSequence.tickAbilityState(player); } catch (_) {}
+      try { MeleeScholarSequence.tickAbilityState(player); } catch (_) {}
+      try { WarlockSequence.tickAbilityState(player); } catch (_) {}
+      try { ScrollProfessorSequence.tickAbilityState(player); } catch (_) {}
+      try { ConstellationsMasterSequence.tickAbilityState(player); } catch (_) {}
+      try { MysticologistSequence.tickAbilityState(player); } catch (_) {}
+      try { FolkOfRageSequence.tickAbilityState(player); } catch (_) {}
+      try { SeafarerSequence.tickAbilityState(player); } catch (_) {}
+      try { WindBlessedSequence.tickAbilityState(player); } catch (_) {}
+      try { OceanSongsterSequence.tickAbilityState(player); } catch (_) {}
+      try { CataclysmicInterrerSequence.tickAbilityState(player); } catch (_) {}
 
     } // end player loop
 
@@ -301,6 +432,8 @@ function initialize() {
           for (const v of dim.getEntities({ type: 'lotm:voidwatcher' })) RampagerSystem.tickVoidwatcher(v);
           for (const c of dim.getEntities({ type: 'lotm:clown' }))       ClownBeyonderSystem.tick(c);
           for (const w of dim.getEntities({ type: 'lotm:rimewraith' }))  RimewraithSystem.tick(w);
+          for (const b of dim.getEntities({ type: 'lotm:banshee' }))     BansheeSystem.tickWild(b);
+          for (const z of dim.getEntities({ type: 'lotm:zombie_brute' })) ZombieBruteSystem.tick(z);
         } catch (_) {}
       }
     } catch (_) {}
@@ -311,6 +444,13 @@ function initialize() {
 
     try { TrapSystem.tick(); } catch (_) {}
     try { WardSystem.tick(); } catch (_) {}
+    // Door pathway — global, non-player-keyed systems (doors/prison
+    // pockets/portals are keyed by door/entity/portal id, not player name)
+    // ticked once per loop here, not per-player — see the comments on
+    // each method for why (double-ticking / never-ticking otherwise).
+    try { TravelerSequence.processActiveDoors(); } catch (_) {}
+    try { SecretsSorcererSequence.processActivePrisonPockets(); } catch (_) {}
+    try { SecretsSorcererSequence.processTransfigurationPortals(); } catch (_) {}
     try { SoldierSpawnerSystem.tick(); } catch (_) {}
         try { PoltergeistSpawnerSystem.tick(); } catch (_) {}
     try { GraveyardSystem.tick(); } catch (_) {}
@@ -318,7 +458,7 @@ function initialize() {
     try { ConspirierSequence.tickEffects(); } catch (_) {}
     try { ReaperSequence.tickEffects(); } catch (_) {}
 
-    ShepherdSequence.registerSequenceClasses({
+    registerGrazeSequenceClasses({
     // Darkness
     SleeplessSequence,
     MidnightPoetSequence,
@@ -327,6 +467,7 @@ function initialize() {
     // Death
     CorpseCollectorSequence,
     GravediggerSequence,
+    SpiritMediumSequence,
     // Door
     ApprenticeSequence,
     TrickmasterSequence,
@@ -334,6 +475,9 @@ function initialize() {
     ScribeSequence,
     TravelerSequence,
     SecretsSorcererSequence,
+    // Door — grazed Traveler's Log menu resolves this too (see
+    // dispatchGrazedMenu in grazeRegistry.js)
+    DoorPathwayMenus,
     // Twilight Giant
     WarriorSequence,
     PugilistSequence,
@@ -355,6 +499,7 @@ function initialize() {
     MeleeScholarSequence,
     WarlockSequence,
     ScrollProfessorSequence,
+    ConstellationsMasterSequence,
     MysticologistSequence,
     // Seer
     SeerSequence,
@@ -373,12 +518,20 @@ function initialize() {
     PyromancerSequence,
     ConspirierSequence,
     ReaperSequence,
+    // Tyrant
+    SailorSequence,
+    FolkOfRageSequence,
+    SeafarerSequence,
+    WindBlessedSequence,
+    OceanSongsterSequence,
+    CataclysmicInterrerSequence,
   });
 
 
   }, 4);
 
   ChairSystem.registerEvents();
+  WaystoneSystem.registerEvents();
   ShieldSystem.registerEvents();
   TrapSystem.registerEvents();
   WardSystem.registerEvents();
@@ -399,6 +552,10 @@ function initialize() {
   });
 
 
+  world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
+    SpiritMessengerSystem.onInteractBefore(event);
+  });
+
   world.afterEvents.playerInteractWithEntity.subscribe((event) => {
     const { player, target } = event;
     if (target.typeId === 'lotm:wisp') {
@@ -406,6 +563,12 @@ function initialize() {
     }
     if (target.typeId === 'lotm:earth_spirit') {
       EarthSpiritSystem.onInteract(player, target);
+    }
+    if (target.typeId === 'lotm:banshee') {
+      BansheeSystem.onInteract(player, target);
+    }
+    if (target.typeId === 'lotm:spirit_messenger') {
+      SpiritMessengerSystem.onInteract(player, target);
     }
   });
 
@@ -605,6 +768,54 @@ world.afterEvents.itemCompleteUse.subscribe((event) => {
     PathwayManager.assignPathway(player, PathwayManager.PATHWAYS.RED_PRIEST);
     player.sendMessage('§cYou have become a §4Hunter§c!');
     player.sendMessage('§7Your senses sharpen — you can feel the danger around you');
+  }
+
+  // ── TYRANT ────────────────────────────────────────────────────────────────
+  if (itemId === 'lotm:tyrant_potion_seq9') {
+    PathwayManager.assignPathway(player, PathwayManager.PATHWAYS.TYRANT);
+    player.sendMessage('§bYou have become a §3Sailor§b!');
+    player.sendMessage('§7The sea calls to you — water no longer holds you back');
+  }
+  if (itemId === 'lotm:tyrant_potion_seq8') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.TYRANT, itemId)) return;
+    if (!_requireSequence(player, sequence, 9, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    SpiritSystem.initializePlayer(player, FolkOfRageSequence.BASE_SPIRIT);
+    player.sendMessage('§cYou have become one of the §4Folk of Rage§c!');
+    player.sendMessage('§7Fury churns like a storm inside you — craft Folk of Rage\'s Fury to unleash it.');
+  }
+  if (itemId === 'lotm:tyrant_potion_seq7') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.TYRANT, itemId)) return;
+    if (!_requireSequence(player, sequence, 8, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§bYou have become a §3Seafarer§b!');
+    player.sendMessage('§7The deep answers your call — craft Seafarer\'s Tide to command the tide and the storm.');
+  }
+  if (itemId === 'lotm:tyrant_potion_seq6') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.TYRANT, itemId)) return;
+    if (!_requireSequence(player, sequence, 7, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§fYou have become §7Wind Blessed§f!');
+    player.sendMessage('§7The gale bends to your will — craft Wind Blessed\'s Gale to command it.');
+  }
+  if (itemId === 'lotm:tyrant_potion_seq5') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.TYRANT, itemId)) return;
+    if (!_requireSequence(player, sequence, 6, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§bYou have become an §3Ocean Songster§b!');
+    player.sendMessage('§7The deep sings through you — craft Ocean Songster\'s Chorus to answer it.');
+  }
+  if (itemId === 'lotm:tyrant_potion_seq4') {
+    const { pathway, sequence } = _getPS(player);
+    if (!_requirePathway(player, pathway, PathwayManager.PATHWAYS.TYRANT, itemId)) return;
+    if (!_requireSequence(player, sequence, 5, itemId)) return;
+    PathwayManager.advanceSequence(player);
+    player.sendMessage('§6You have become a §4Cataclysmic Interrer§6!');
+    player.sendMessage('§7Storm and tide obey you now — craft Cataclysmic Interrer\'s Wrath to unleash them.');
   }
   if (itemId === 'lotm:red_priest_potion_seq8') {
     const { pathway, sequence } = _getPS(player);
@@ -917,6 +1128,52 @@ world.afterEvents.itemUse.subscribe((event) => {
   if (!itemStack) return;
   const itemId = itemStack.typeId;
 
+  // ── FIRE MOTE CHARM ──────────────────────────────────────────────────────
+  if (itemId === 'lotm:fire_mote_charm') {
+    FireMoteSystem.toggle(player);
+    return;
+  }
+
+  // ── SUN FLARE CHARM ───────────────────────────────────────────────────────
+  if (itemId === 'lotm:sun_flare_charm') {
+    SunFlareSystem.use(player);
+    return;
+  }
+
+  // ── FOLK OF RAGE'S FURY — single ability, plain use casts directly ────────
+  if (itemId === 'lotm:folk_of_rage_focus') {
+    FolkOfRageSequence.useRagingBlows(player);
+    return;
+  }
+
+  // ── SEAFARER'S TIDE — sneak+use cycles mode, plain use casts selected ────
+  if (itemId === 'lotm:seafarer_focus') {
+    if (!_requirePathwayMsg(player, PathwayManager.PATHWAYS.TYRANT)) return;
+    SeafarerSequence.useFocus(player, player.isSneaking);
+    return;
+  }
+
+  // ── WIND BLESSED'S GALE — sneak+use cycles mode, plain use casts selected ─
+  if (itemId === 'lotm:wind_blessed_focus') {
+    if (!_requirePathwayMsg(player, PathwayManager.PATHWAYS.TYRANT)) return;
+    WindBlessedSequence.useFocus(player, player.isSneaking);
+    return;
+  }
+
+  // ── OCEAN SONGSTER'S CHORUS — sneak+use cycles mode, plain use casts selected
+  if (itemId === 'lotm:ocean_songster_focus') {
+    if (!_requirePathwayMsg(player, PathwayManager.PATHWAYS.TYRANT)) return;
+    OceanSongsterSequence.useFocus(player, player.isSneaking);
+    return;
+  }
+
+  // ── CATACLYSMIC INTERRER'S WRATH — sneak+use cycles mode, plain use casts selected
+  if (itemId === 'lotm:cataclysmic_interrer_focus') {
+    if (!_requirePathwayMsg(player, PathwayManager.PATHWAYS.TYRANT)) return;
+    CataclysmicInterrerSequence.useFocus(player, player.isSneaking);
+    return;
+  }
+
   // ── DECOY / SCAPEGOAT ─────────────────────────────────────────────────────
   if (itemId === 'lotm:decoy_item') {
     ScapegoatSystem.activate(player);
@@ -989,6 +1246,51 @@ world.afterEvents.itemUse.subscribe((event) => {
     }
     return;
   }
+  if (itemId === 'lotm:banshee_charm') {
+    const { pathway, sequence } = _getPS(player);
+    if (pathway === PathwayManager.PATHWAYS.DEATH && sequence <= 7) {
+      BansheeSystem.summonChoir(player);
+    } else {
+      player.sendMessage('§cYou must be a Spirit Medium (Sequence 7) to use this!');
+    }
+    return;
+  }
+  if (itemId === 'lotm:slumber_charm') {
+    SlumberCharmSystem.useSlumberCharm(player);
+    return;
+  }
+  if (itemId === 'lotm:yesterday_once_more_charm') {
+    YesterdayOnceMoreSystem.useCharm(player);
+    return;
+  }
+  if (itemId === 'lotm:seven_stone_bracelet') {
+    SevenStoneBraceletSystem.useBracelet(player);
+    return;
+  }
+  if (itemId === 'lotm:traveler_bracelet') {
+    TravelerBraceletSystem.useBracelet(player, player.isSneaking);
+    return;
+  }
+  if (itemId === 'lotm:fists_of_rage') {
+    FistsOfRageSystem.useRagingCharge(player);
+    return;
+  }
+  if (itemId === 'lotm:leymano_travels' || itemId === 'lotm:staff_of_the_stars') {
+    RecordSystem.useItem(player, itemId, player.isSneaking);
+    return;
+  }
+  if (itemId === 'lotm:door_characteristic_seq5') {
+    TravelerBraceletSystem.useCharacteristic(player);
+    return;
+  }
+
+  // ── GENERAL / SILVER RITUALISTIC KNIFE ──────────────────────────────────
+  if (itemId === 'lotm:silver_ritualistic_knife') {
+    if (player.isSneaking) {
+      SilverKnifeMenu.open(player);
+    }
+    return;
+  }
 
 // ── RED PRIEST ──────────────────────────────────────────────────────────────
   if (itemId === 'lotm:provoker_idol') {
@@ -1045,33 +1347,19 @@ world.afterEvents.itemUse.subscribe((event) => {
     }
     return;
   }
-  if (itemId === 'lotm:flashbang') {
-    const { pathway, sequence } = _getPS(player);
-    if (pathway === PathwayManager.PATHWAYS.DOOR && sequence <= 8) TrickmasterSequence.useFlashbang(player);
-    return;
-  }
-  if (itemId === 'lotm:flame_fingers') {
-    const { pathway, sequence } = _getPS(player);
-    if (pathway === PathwayManager.PATHWAYS.DOOR && sequence <= 8) TrickmasterSequence.useBurning(player);
-    return;
-  }
-  if (itemId === 'lotm:spark_crystal') {
-    const { pathway, sequence } = _getPS(player);
-    if (pathway === PathwayManager.PATHWAYS.DOOR && sequence <= 8) TrickmasterSequence.useLightning(player);
-    return;
-  }
-  if (itemId === 'lotm:frost_stone') {
+  if (itemId === 'lotm:bag_of_tricks') {
     const { pathway, sequence } = _getPS(player);
     if (pathway === PathwayManager.PATHWAYS.DOOR && sequence <= 8) {
-      player.isSneaking ? TrickmasterSequence.toggleFreezeMode(player)
-                        : TrickmasterSequence.useFreeze(player);
+      TrickmasterSequence.useBag(player, player.isSneaking);
+    } else {
+      player.sendMessage('§cYou must be a Trickmaster (Sequence 8) or higher to use this!');
     }
     return;
   }
   if (itemId === 'lotm:recording_tome') {
     const { pathway, sequence } = _getPS(player);
     if (pathway === PathwayManager.PATHWAYS.DOOR && sequence <= 6)
-      DoorPathwayMenus.showRecordingMenu(player, ScribeSequence);
+      RecordSystem.useItem(player, itemId, player.isSneaking);
     else player.sendMessage('§cYou must be a Scribe (Sequence 6) or higher to use this!');
     return;
   }
@@ -1276,7 +1564,7 @@ world.afterEvents.itemUse.subscribe((event) => {
     const { pathway, sequence } = _getPS(player);
     if (pathway === PathwayManager.PATHWAYS.SUN && sequence === 8) {
       player.isSneaking ? SunPathwayMenus.showSolarOrbMenu(player)
-                        : LightSuppliantSequence.useSunshine(player);
+                        : LightSuppliantSequence.useSelectedOrbAbility(player);
     }
     return;
   }
@@ -1396,6 +1684,20 @@ world.afterEvents.itemUse.subscribe((event) => {
     return;
   }
 
+  if (itemId === 'lotm:spirit_messenger_pouch') {
+    SpiritMessengerSystem.openPouch(player);
+    return;
+  }
+
+  if (itemId === 'lotm:creeping_hunger') {
+    if (player.isSneaking) {
+      CreepingHungerMenu.open(player);
+    } else {
+      CreepingHungerSystem.useActiveGrazedAbility(player);
+    }
+    return;
+  }
+
   const scrollIds = [
     'lotm:scroll_burning', 'lotm:scroll_sun', 'lotm:scroll_healing',
     'lotm:scroll_freeze', 'lotm:scroll_storm', 'lotm:scroll_force_field',
@@ -1497,12 +1799,51 @@ world.afterEvents.entityHurt.subscribe((event) => {
     return;
   }
 
+  // ── Wild banshee retaliation — passive unless attacked ────────────────────
+  if (hurtEntity?.typeId === 'lotm:banshee') {
+    if (attacker) BansheeSystem.onHurt(hurtEntity, attacker);
+    return;
+  }
+
+  // ── Zombie Brute — roar reaction (overwhelm nearby players + alert allies)
+  if (hurtEntity?.typeId === 'lotm:zombie_brute') {
+    ZombieBruteSystem.onHurt(hurtEntity, attacker);
+    return;
+  }
+
   // ── Everything below here is player-only ─────────────────────────────────
   const player = hurtEntity;
   if (!player || player.typeId !== 'minecraft:player') return;
 
   const pathway  = PathwayManager.getPathway(player);
   const sequence = PathwayManager.getSequence(player);
+
+  // Tyrant / Folk of Rage — Anger (any hit) + Projectile Control defense
+  // (projectile hits only, give-back-health technique — see
+  // FolkOfRageSequence.onProjectileDamageTaken for why this can't just
+  // reduce the damage directly, same limitation Damage Transfer below has).
+  if (pathway === PathwayManager.PATHWAYS.TYRANT && sequence <= 8) {
+    FolkOfRageSequence.onHurt(player);
+    if (event.damageSource?.cause === EntityDamageCause.projectile) {
+      FolkOfRageSequence.onProjectileDamageTaken(player, event.damage);
+    }
+  }
+
+  // Tyrant / Folk of Rage — Projectile Control offense (attacker's own
+  // projectile hit landing on someone else)
+  if (attacker && attacker.typeId === 'minecraft:player' && event.damageSource?.cause === EntityDamageCause.projectile) {
+    const atkPathway  = PathwayManager.getPathway(attacker);
+    const atkSequence = PathwayManager.getSequence(attacker);
+    if (atkPathway === PathwayManager.PATHWAYS.TYRANT && atkSequence <= 8) {
+      FolkOfRageSequence.onProjectileDamageDealt(attacker, player);
+    }
+    // Ocean Songster — Lightning Arrow, an additional bonus layered on top
+    // of Folk of Rage's (that one's gate is <=8 so it already applies here
+    // too; this is a separate, stronger-tier bonus, not a replacement).
+    if (atkPathway === PathwayManager.PATHWAYS.TYRANT && atkSequence <= 5) {
+      OceanSongsterSequence.onProjectileDamageDealt(attacker, player);
+    }
+  }
 
   // Seer / Magician — Damage Transfer
   if (pathway === PathwayManager.PATHWAYS.SEER && sequence <= 7) {
@@ -1549,6 +1890,23 @@ world.afterEvents.entityHurt.subscribe((event) => {
 
 
 // ============================================================================
+// PLAYER LEAVE
+// ============================================================================
+world.afterEvents.playerLeave.subscribe((event) => {
+  FireMoteSystem.cleanup(event.playerName);
+  LightSuppliantSequence.cleanupSunshineLight(event.playerName);
+  SunFlareSystem.cleanup(event.playerName);
+  WindBlessedSequence.cleanupGlide(event.playerName);
+  BansheeSystem.cleanup({ id: event.playerId, name: event.playerName });
+  SlumberCharmSystem.cleanup({ id: event.playerId, name: event.playerName });
+  YesterdayOnceMoreSystem.cleanup({ id: event.playerId, name: event.playerName });
+  SevenStoneBraceletSystem.cleanup({ id: event.playerId, name: event.playerName });
+  FistsOfRageSystem.cleanup({ id: event.playerId, name: event.playerName });
+  TravelerBraceletSystem.cleanup({ id: event.playerId, name: event.playerName });
+  RecordSystem.cleanup({ id: event.playerId, name: event.playerName });
+});
+
+// ============================================================================
 // ENTITY die
 // ============================================================================
 world.afterEvents.entityDie.subscribe((event) => {
@@ -1567,6 +1925,28 @@ world.afterEvents.entityDie.subscribe((event) => {
   if (event.deadEntity?.typeId === 'lotm:rimewraith') {
     RimewraithSystem.cleanup(event.deadEntity.id);
   }
+
+  if (event.deadEntity?.typeId === 'lotm:zombie_brute') {
+    ZombieBruteSystem.cleanup(event.deadEntity.id);
+  }
+
+  if (event.deadEntity?.typeId === 'lotm:banshee') {
+    BansheeSystem.onWildDefeated(event.deadEntity.id);
+  }
+
+  if (event.deadEntity?.typeId === 'minecraft:player') {
+    try { DeathDropSystem.onPlayerDeath(event.deadEntity); } catch (_) {}
+  }
+
+  // ── Fists of Rage — bank a kill charge if the killer had it equipped ─────
+  const killer = event.damageSource?.damagingEntity;
+  if (killer?.typeId === 'minecraft:player') {
+    try {
+      const inv = killer.getComponent('minecraft:inventory');
+      const held = inv?.container?.getItem(killer.selectedSlotIndex);
+      if (held?.typeId === 'lotm:fists_of_rage') FistsOfRageSystem.onKill(killer);
+    } catch (_) {}
+  }
 });
 
 // ============================================================================
@@ -1576,6 +1956,26 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
   // Declare ALL variables at the top — no duplicate declarations below
   const attacker = event.damagingEntity;
   const victim   = event.hitEntity;
+
+  // ── Scorpid — minor chance to poison on sting ─────────────────────────────
+  if (attacker?.typeId === 'lotm:scorpid') {
+    if (Math.random() < 0.35) {
+      try { victim.addEffect('poison', 60, { amplifier: 0, showParticles: true }); } catch (_) {}
+    }
+    return;
+  }
+
+  // ── Banshee swarm — sonic particle/sound flavor on real melee AI hits ────
+  if (attacker?.typeId === 'lotm:banshee') {
+    BansheeSystem.onSwarmHit(attacker, victim);
+    return;
+  }
+
+  // ── Zombie Brute — bonus knockback on its own melee hits ──────────────────
+  if (attacker?.typeId === 'lotm:zombie_brute') {
+    ZombieBruteSystem.onMeleeHit(attacker, victim);
+    return;
+  }
 
   if (!attacker || attacker.typeId !== 'minecraft:player') return;
 
@@ -1595,6 +1995,15 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
     else if (sequence <= 6) ConspirierSequence.onMeleeHit(attacker, victim);
     else                    PyromancerSequence.onMeleeHit(attacker, victim);
   }
+  // Cull's escalation is self-gated (cullActiveUntil) and must fire for a
+  // grazer too, not just a real seq5 Reaper — the block above only reaches
+  // real Reapers, so this runs unconditionally alongside it.
+  try { ReaperSequence.processCullHit(attacker, victim); } catch (_) {}
+
+  // ── Tyrant / Cataclysmic Interrer — Lightning Branching (melee proc) ──────
+  if (pathway === PathwayManager.PATHWAYS.TYRANT && sequence <= 4) {
+    CataclysmicInterrerSequence.onMeleeHit(attacker, victim);
+  }
 
   // ── Flame Sword — bonus fire damage on hit ────────────────────────────────
   if (held?.typeId === 'lotm:flame_sword') {
@@ -1602,6 +2011,18 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
     try { victim.applyDamage(10, { damagingEntity: attacker }); } catch (_) {}
     try { victim.dimension.spawnParticle('minecraft:basic_flame_particle', { x: victim.location.x, y: victim.location.y + 1, z: victim.location.z }); } catch (_) {}
     try { victim.dimension.spawnParticle('minecraft:mobflame_single', { x: victim.location.x, y: victim.location.y + 1.5, z: victim.location.z }); } catch (_) {}
+  }
+
+  // ── Inscribed Steel Sword — Purifying (Smite-like vs undead/evil) + Warding
+  // (Fire-Aspect-like ignite on every hit; passive defense handled separately
+  // in shieldSystem.js's tick()) ────────────────────────────────────────────
+  if (held?.typeId === 'lotm:inscribed_steel_sword') {
+    try { victim.setOnFire(4, true); } catch (_) {}
+    if (LightSuppliantSequence.isUndeadOrEvil(victim)) {
+      try { victim.applyDamage(6, { damagingEntity: attacker }); } catch (_) {}
+      try { victim.dimension.spawnParticle('minecraft:endrod', { x: victim.location.x, y: victim.location.y + 1, z: victim.location.z }); } catch (_) {}
+      try { victim.dimension.spawnParticle('minecraft:soul_particle', { x: victim.location.x, y: victim.location.y + 1.3, z: victim.location.z }); } catch (_) {}
+    }
   }
 
   // ── Twilight Giant — Pugilist+ weakness debuff ────────────────────────────
@@ -1635,6 +2056,12 @@ world.afterEvents.entityHitEntity.subscribe((event) => {
         }
       } catch (_) {}
     }
+  }
+
+  // ── Door / Trickmaster — Electric Shock proc (only fires while the
+  // player has toggled it on via Bag of Tricks) ─────────────────────────────
+  if (pathway === PathwayManager.PATHWAYS.DOOR && sequence <= 8) {
+    try { TrickmasterSequence.onMeleeHit(attacker, victim); } catch (_) {}
   }
 
   // ── Justiciar — melee proficiency bonuses ─────────────────────────────────
@@ -1745,11 +2172,16 @@ function _requirePathwayMsg(player, required) {
 }
 
 // ── Nightmare helpers ──────────────────────────────────────────────────────
+// Uses NightmareSequence's own persisted selectedAbilities/getSelectedAbility/
+// setSelectedAbility (dynamic-property backed) — the SAME state
+// DarknessPathwayMenus.showNightmarePowersMenu already reads/writes, so a
+// selection made in the menu (sneak+use) is respected by a plain right-click
+// too, instead of two disconnected trackers disagreeing with each other.
 function cycleNightmareAbility(player) {
   const abilities = Object.values(NightmareSequence.ABILITIES);
-  const current   = selectedNightmareAbilities.get(player.name) || abilities[0];
+  const current   = NightmareSequence.getSelectedAbility(player);
   const next      = abilities[(abilities.indexOf(current) + 1) % abilities.length];
-  selectedNightmareAbilities.set(player.name, next);
+  NightmareSequence.setSelectedAbility(player, next);
 
   // Show NAME and cost, not the full description
   const names = {
@@ -1758,6 +2190,9 @@ function cycleNightmareAbility(player) {
     'nightmare_limbs':  '§cNightmare Limbs §8| §b30 Spirit'
   };
   player.sendMessage(`§7Selected: ${names[next] || next}`);
+}
+function useNightmareAbility(player) {
+  NightmareSequence.useSelectedAbility(player);
 }
 
 // ── Soul Assurer helpers ───────────────────────────────────────────────────

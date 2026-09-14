@@ -26,7 +26,7 @@
             "z": { "distribution": "uniform", "extent": [0, 16] },
             "scatter_chance": {
                 "numerator": 1,
-                "denominator": 500
+                "denominator": 350
             }
         }
     }

@@ -7,14 +7,20 @@ import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { MidnightPoetSequence } from './midnight_poet.js';
 import { NightmareSequence } from './nightmare.js';
+import { SleeplessSequence } from './sleepless.js';
 
 export class SoulAssurerSequence {
   static SEQUENCE_NUMBER = 6;
   static PATHWAY = PathwayManager.PATHWAYS.DARKNESS;
   
-  // Passive constants - NO PHYSICAL ENHANCEMENTS (spiritual focus)
+  // Passive constants — rebalanced 2026-08-05, see midnight_poet.js. Was
+  // hardcoding literal amplifier values inline in applyPhysicalEnhancements
+  // instead of named constants like every other Darkness class — fixed
+  // alongside the rebalance so it can't silently drift out of sync again.
   static NIGHT_VISION_DURATION = 999999;
-  static NOCTURNALITY_REST = 2; // Only need 2 hours rest per day (gameplay: saturation effect?)
+  static SPEED_AMPLIFIER = 1; // Speed II
+  static STRENGTH_AMPLIFIER = 2; // Strength III
+  static JUMP_AMPLIFIER = 1; // Jump Boost II
   
   // Enhanced spirituality
   static MAX_SPIRIT_BONUS = 50; // +50 max spirit over Nightmare
@@ -80,60 +86,60 @@ export class SoulAssurerSequence {
     // INHERIT PHYSICAL BUFFS FROM NIGHTMARE
     // Soul Assurer still gets Speed III, Strength III, Jump III
     this.applyPhysicalEnhancements(player);
-    
-    // Apply saturation for nocturnality (less hunger/need for rest)
-    const saturation = player.getEffect('saturation');
-    if (!saturation || saturation.duration < 200) {
-      player.addEffect('saturation', 400, {
-        amplifier: 0,
-        showParticles: false
-      });
-    }
-    
+
     // Health bonus (3.5 extra hearts for Sequence 6)
     this.applyHealthBonus(player, 7);
-    
-    // Process active abilities
+
+    // Phantom immunity (inherited from Sleepless) — Soul Assurer never
+    // delegates to Nightmare's/Midnight Poet's own applyPassiveAbilities
+    // (unlike Nightmare, which calls Midnight Poet's wholesale), so this
+    // has to be called explicitly here too or it's silently missing.
+    SleeplessSequence.preventPhantomSpawns(player);
+
+    // Deliberately NOT calling tickAbilityState/NightmareSequence.
+    // tickAbilityState here — main.js calls both unconditionally for every
+    // player already (that's also what covers Nightmare's abilities
+    // inherited here, including the enhanced Dream Invasion override, since
+    // it reuses Nightmare's own tracking Maps directly), so calling them
+    // again here would double-tick duration/cooldowns for a real Soul
+    // Assurer specifically.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
     this.processRequiem(player);
     this.processAgitate(player);
-    
-    // IMPORTANT: Process inherited Nightmare abilities too
-    NightmareSequence.processNightmareState(player);
-    NightmareSequence.processDreamInvasion(player);
-    NightmareSequence.processNightmareLimbs(player);
-    
-    // Tick down cooldowns
-    this.tickCooldowns(player);
-    NightmareSequence.tickCooldowns(player);
   }
-  
+
   /**
    * Apply physical enhancements (inherited from Nightmare)
    */
   static applyPhysicalEnhancements(player) {
-    // Speed III
+    // Speed
     const speed = player.getEffect('speed');
-    if (!speed || speed.amplifier !== 2 || speed.duration < 200) {
-      player.addEffect('speed', 400, {
-        amplifier: 2,
+    if (!speed || speed.amplifier !== this.SPEED_AMPLIFIER || speed.duration < 200) {
+      player.addEffect('speed', this.NIGHT_VISION_DURATION, {
+        amplifier: this.SPEED_AMPLIFIER,
         showParticles: false
       });
     }
-    
-    // Strength III
+
+    // Strength
     const strength = player.getEffect('strength');
-    if (!strength || strength.amplifier !== 2 || strength.duration < 200) {
-      player.addEffect('strength', 400, {
-        amplifier: 2,
+    if (!strength || strength.amplifier !== this.STRENGTH_AMPLIFIER || strength.duration < 200) {
+      player.addEffect('strength', this.NIGHT_VISION_DURATION, {
+        amplifier: this.STRENGTH_AMPLIFIER,
         showParticles: false
       });
     }
-    
-    // Jump Boost III
+
+    // Jump Boost
     const jump = player.getEffect('jump_boost');
-    if (!jump || jump.amplifier !== 2 || jump.duration < 200) {
-      player.addEffect('jump_boost', 400, {
-        amplifier: 2,
+    if (!jump || jump.amplifier !== this.JUMP_AMPLIFIER || jump.duration < 200) {
+      player.addEffect('jump_boost', this.NIGHT_VISION_DURATION, {
+        amplifier: this.JUMP_AMPLIFIER,
         showParticles: false
       });
     }
@@ -145,7 +151,7 @@ export class SoulAssurerSequence {
   static applyHealthBonus(player, bonusHearts) {
     const health = player.getEffect('health_boost');
     if (!health || health.amplifier !== Math.floor(bonusHearts / 2) - 1 || health.duration < 200) {
-      player.addEffect('health_boost', 400, {
+      player.addEffect('health_boost', this.NIGHT_VISION_DURATION, {
         amplifier: Math.floor(bonusHearts / 2) - 1,
         showParticles: false
       });

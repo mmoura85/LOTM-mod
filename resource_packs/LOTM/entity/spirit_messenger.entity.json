@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:spirit_messenger",
+      "materials": { "default": "allay" },
+      "textures": { "default": "textures/entity/spirit_messenger" },
+      "geometry": { "default": "geometry.spirit_messenger" },
+      "spawn_egg": { "base_color": "#71b875", "overlay_color": "#ed9de9" },
+      "animations": {
+        "idle": "animation.spirit_messenger.idle",
+        "fly": "animation.spirit_messenger.fly",
+        "hold_item": "animation.spirit_messenger.hold_item",
+        "general": "controller.animation.allay.general",
+        "holding": "controller.animation.allay.holding"
+      },
+      "scripts": {
+        "animate": ["general", "holding"]
+      },
+      "render_controllers": ["controller.render.allay"],
+      "enable_attachables": true
+    }
+  }
+}

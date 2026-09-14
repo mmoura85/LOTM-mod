@@ -34,7 +34,7 @@
                 "value": 0.5
             },
             "minecraft:collision_box": {
-                "width": 1.4,
+                "width": 1.0,
                 "height": 1.6
             },
             "minecraft:movement": {
@@ -126,7 +126,7 @@
                 "priority": 3,
                 "speed_multiplier": 1.2,
                 "track_target": true,
-                "require_complete_path": false
+                "require_complete_path": true
             },
             "minecraft:behavior.random_stroll": {
                 "priority": 6,

@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:fists_of_rage_recipe" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:iron_ingot", "count": 4 },
+      { "item": "lotm:tyrant_characteristic_seq8" },
+      { "item": "lotm:spiritual_essence", "count": 2 },
+      { "item": "lotm:spirit_shard" }
+    ],
+    "result": { "item": "lotm:fists_of_rage", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_characteristic_seq8" }]
+  }
+}

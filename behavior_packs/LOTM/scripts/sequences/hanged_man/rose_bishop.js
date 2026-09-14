@@ -8,7 +8,7 @@
 //   - Rotten flesh poison/nausea/hunger stripped after consumption
 //   - onFleshItemEaten also strips rotten flesh debuffs
 
-import { world, system } from '@minecraft/server';
+import { system } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { ShadowAsceticSequence } from './shadow_ascetic.js';
@@ -217,18 +217,6 @@ export class RoseBishopSequence {
 
     SecretsSuppliantSequence.runSpiritPerceptionPassive(player);
 
-    if (ShadowAsceticSequence.lurkActive.has(player.name)) {
-      ShadowAsceticSequence._processLurking(player);
-    }
-
-    this._processActiveCurses(player);
-    ShadowAsceticSequence._processActiveManipulations(player);
-    ListenerSequence._processFocusedListen(player);
-    ListenerSequence._processSuppressVoices(player);
-    ShadowAsceticSequence._processShadowSword(player);
-
-    this._tickCooldowns(player);
-
     // Action bar
     const madness    = Math.floor(ListenerSequence.getMadness(player));
     const mStage     = ListenerSequence.getMadnessStage(player);
@@ -245,6 +233,19 @@ export class RoseBishopSequence {
       `§bSpirit: §f${spirit}§7/§f${maxSpirit}  ${listenStr}  §cFlesh: §f${Math.floor(hunger)}§7/§f100 ${hungerStr}` +
       `\n§7Mind: ${mLabel} §7(${madness}/100)${lurkStr}  §eSelected: ${selectedName}`
     );
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (own Flesh Curse processing + cooldowns for
+  // Flesh Bomb/Flesh Curse/Consume Flesh). Called unconditionally every
+  // tick from main.js so a grazer of any of these keeps working without
+  // needing to be a real Rose Bishop. Shadow Ascetic/Listener/Suppliant's
+  // own active abilities tick independently via their own tickAbilityState
+  // calls (also unconditional) — see grazeRegistry.js.
+  // =============================================
+  static tickAbilityState(player) {
+    this._processActiveCurses(player);
+    this._tickCooldowns(player);
   }
 
   // =============================================
@@ -423,7 +424,7 @@ export class RoseBishopSequence {
       return false;
     }
 
-    const currentTick = world.currentTick || 0;
+    const currentTick = system.currentTick || 0;
     const lastUsed    = this.bombLastUsed.get(player.name) || 0;
     const ticksLeft   = this.BOMB_COOLDOWN_TICKS - (currentTick - lastUsed);
     if (ticksLeft > 0) {
@@ -708,7 +709,9 @@ export class RoseBishopSequence {
     const tick = v => (v > 0 ? v - 1 : 0);
     const cc   = this.curseCooldowns.get(n); if (cc)  this.curseCooldowns.set(n, tick(cc));
     const rc   = this.regenCooldowns.get(n); if (rc)  this.regenCooldowns.set(n, tick(rc));
-    ShadowAsceticSequence._tickCooldowns(player);
+    // Shadow Ascetic's own cooldowns now tick independently via
+    // ShadowAsceticSequence.tickAbilityState (called unconditionally from
+    // main.js) — no longer delegated from here.
   }
 
   static _cdRemaining(map, player) {

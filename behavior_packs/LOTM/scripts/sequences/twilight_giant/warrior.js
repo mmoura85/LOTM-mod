@@ -1,4 +1,4 @@
-import { world, system, EffectTypes, ItemStack, Enchantment } from '@minecraft/server';
+import { world, system, EffectTypes, ItemStack, EnchantmentType } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 
@@ -120,7 +120,7 @@ export class WarriorSequence {
           // Add Sharpness II if not present or lower
           const currentSharpness = enchantments.getEnchantment('sharpness');
           if (!currentSharpness || currentSharpness.level < 2) {
-            enchantments.addEnchantment({ type: 'sharpness', level: 2 });
+            enchantments.addEnchantment({ type: new EnchantmentType('sharpness'), level: 2 });
             inventory.container.setItem(heldSlot, heldItem);
           }
         }

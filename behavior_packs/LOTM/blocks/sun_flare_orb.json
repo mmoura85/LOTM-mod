@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "lotm:sun_flare_orb"
+    },
+    "components": {
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "sunshine_orb",
+          "render_method": "blend",
+          "ambient_occlusion": false,
+          "face_dimming": false
+        }
+      },
+      "minecraft:transformation": {
+        "scale": [0.6, 0.6, 0.6]
+      },
+      "minecraft:collision_box": false,
+      "minecraft:selection_box": false,
+      "minecraft:light_emission": 12,
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.1
+      },
+      "minecraft:map_color": "#FFD700"
+    }
+  }
+}

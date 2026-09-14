@@ -17,7 +17,8 @@ export class PathwayManager {
     JUSTICIAR: 'justiciar',
     HANGED_MAN: 'hanged_man',
     HERMIT: 'hermit',
-    RED_PRIEST: 'red_priest'
+    RED_PRIEST: 'red_priest',
+    TYRANT: 'tyrant'
   };
   
   // Spirit growth rates (spirit added per sequence advancement)
@@ -33,6 +34,7 @@ export class PathwayManager {
     [this.PATHWAYS.HANGED_MAN]: 30,
     [this.PATHWAYS.HERMIT]: 40,   // Mystical focus — solid spirit growth
     [this.PATHWAYS.RED_PRIEST]: 12, // Physical hunter — same low rate as twilight_giant
+    [this.PATHWAYS.TYRANT]: 20,     // Physical + elemental hybrid — moderate growth
   };
   
   /**
@@ -82,7 +84,9 @@ export class PathwayManager {
       baseSpirit = 60; // Physical hunter pathway, low spirit
     } else if (pathway === this.PATHWAYS.HANGED_MAN) {
       baseSpirit = 140; // High spirituality pathway
-    } 
+    } else if (pathway === this.PATHWAYS.TYRANT) {
+      baseSpirit = 60; // Physical entry tier, same as Red Priest's Hunter — Sailor (Seq9) is passive-only
+    }
     
     SpiritSystem.initializePlayer(player, baseSpirit);
     
@@ -126,7 +130,8 @@ export class PathwayManager {
   static clearPathway(player) {
     player.setDynamicProperty(this.PATHWAY_PROPERTY, undefined);
     player.setDynamicProperty(this.SEQUENCE_PROPERTY, undefined);
-    
+    try { player.nameTag = player.name; } catch (_) {}
+
     // Remove all effects that might be active
     player.removeEffect('night_vision');
     player.removeEffect('speed');
@@ -146,7 +151,11 @@ export class PathwayManager {
       [this.PATHWAYS.APPRENTICE]: 'Apprentice',
       [this.PATHWAYS.SUN]: 'Sun',
       [this.PATHWAYS.TWILIGHT_GIANT]: 'Twilight Giant',
-      [this.PATHWAYS.HANGED_MAN]: 'Hanged Man'
+      [this.PATHWAYS.JUSTICIAR]: 'Justiciar',
+      [this.PATHWAYS.HANGED_MAN]: 'Hanged Man',
+      [this.PATHWAYS.HERMIT]: 'Hermit',
+      [this.PATHWAYS.RED_PRIEST]: 'Red Priest',
+      [this.PATHWAYS.TYRANT]: 'Tyrant'
     };
     return names[pathway] || 'Unknown';
   }

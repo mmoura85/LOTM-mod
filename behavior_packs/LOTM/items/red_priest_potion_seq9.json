@@ -12,14 +12,17 @@
       "minecraft:max_stack_size": 1,
       "minecraft:icon": "red_priest_potion_seq9",
       "minecraft:display_name": {
-        "value": "§cHunter Potion"
+        "value": "\u00a7cHunter Potion"
       },
-      "minecraft:use_duration": 32,
       "minecraft:use_animation": "drink",
       "minecraft:food": {
         "nutrition": 0,
         "saturation_modifier": 0,
         "can_always_eat": true
+      },
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.0
       }
     }
   }

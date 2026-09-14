@@ -342,7 +342,6 @@ if (chosenAbility.id === 'graze') {
       if (detailResp.selection === btnIdx) {
         ShepherdSequence.setActiveGrazedId(player, chosen.id);
         player.sendMessage(`§a${chosen.name} §7is now your active grazed ability.`);
-        await this.showGrazeManagementMenu(player);
         return;
       }
       btnIdx++;

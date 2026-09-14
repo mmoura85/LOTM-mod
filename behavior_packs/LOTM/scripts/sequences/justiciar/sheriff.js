@@ -109,6 +109,14 @@ export class SheriffSequence {
     // ── +4 hearts ────────────────────────────────────────────────────────────
     this._applyHealthBonus(player, 8); // 8 HP = 4 hearts
 
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via its
+  // own Map.get(player.name) check. Called ONLY unconditionally from
+  // main.js for every player.
+  static tickAbilityState(player) {
     // ── Jurisdiction bonus (if inside) ───────────────────────────────────────
     this._tickJurisdiction(player);
 

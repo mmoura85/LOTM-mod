@@ -14,7 +14,7 @@ export class ApprenticeSequence {
   // Door Opening ability constants
   static DOOR_OPENING_SPIRIT_COST = 15;
   static MAX_WALL_THICKNESS = 6; // Maximum blocks to phase through
-  static TELEPORT_COOLDOWN = 60; // 3 seconds between uses
+  static TELEPORT_COOLDOWN = 20; // 1 second between uses (re-enabled 2026-08-08, shortened from the original disabled 3s)
   
   // Track teleport cooldowns (player name -> ticks remaining)
   static teleportCooldowns = new Map();
@@ -43,8 +43,18 @@ export class ApprenticeSequence {
     
     // Small health bonus (1 extra heart for Sequence 9)
     this.applyHealthBonus(player, 2);
-    
-    // Tick down cooldowns
+  }
+
+  /**
+   * Ability-state ticking (Door Opening cooldown). Called unconditionally
+   * every tick from main.js so a grazer keeps working without needing to
+   * be a real Apprentice, and so a real higher-tier player (who inherits
+   * this ability, e.g. a real Trickmaster) still gets it ticked —
+   * previously only Apprentice's own exact-sequence applyPassiveAbilities
+   * ticked this, so a real Trickmaster's Door Opening cooldown (set once
+   * used) never decremented again. See grazeRegistry.js.
+   */
+  static tickAbilityState(player) {
     this.tickCooldowns(player);
   }
   
@@ -110,19 +120,31 @@ export class ApprenticeSequence {
   static useDoorOpening(player) {
     const pathway = PathwayManager.getPathway(player);
     const sequence = PathwayManager.getSequence(player);
-    
+
     // Allow both Apprentice (Seq 9) and Trickmaster (Seq 8) to use this
     if (pathway !== this.PATHWAY || (sequence !== 9 && sequence !== 8)) {
       player.sendMessage('§cYou do not have access to this ability!');
       return false;
     }
-    
+
+    return this.performDoorOpening(player);
+  }
+
+  /**
+   * Core wall-raycast + teleport-through-cavity logic, no pathway gate —
+   * shared with lotm:seven_stone_bracelet (sevenStoneBraceletSystem.js),
+   * which grants this same ability to any player regardless of pathway.
+   * Same cooldown Map / spirit cost as useDoorOpening, so a real
+   * Apprentice/Trickmaster and a bracelet-wearer share one economy rather
+   * than double-dipping.
+   */
+  static performDoorOpening(player) {
     // Check cooldown
-    // if (this.isOnCooldown(player)) {
+    if (this.isOnCooldown(player)) {
       const remaining = Math.ceil(this.teleportCooldowns.get(player.name) / 20);
-    //   player.sendMessage(`§cDoor Opening on cooldown: ${remaining}s`);
-    //   return false;
-    // }
+      player.sendMessage(`§cDoor Opening on cooldown: ${remaining}s`);
+      return false;
+    }
     
     // Consume spirit
     if (!SpiritSystem.consumeSpirit(player, this.DOOR_OPENING_SPIRIT_COST)) {
@@ -375,6 +397,7 @@ export class ApprenticeSequence {
     player.removeEffect('speed');
     player.removeEffect('jump_boost');
     player.removeEffect('health_boost');
+    player.removeEffect('strength'); // Trickmaster now applies this too (2026-09-08 rebalance)
     this.teleportCooldowns.delete(player.name);
   }
 }

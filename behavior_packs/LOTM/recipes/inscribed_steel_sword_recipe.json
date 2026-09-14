@@ -1,0 +1,15 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:recipe_shapeless": {
+        "description": { "identifier": "lotm:inscribed_steel_sword_recipe" },
+        "tags": ["crafting_table"],
+        "ingredients": [
+            { "item": "lotm:steel_sword" },
+            { "item": "minecraft:glow_ink_sac" },
+            { "item": "minecraft:blaze_powder" },
+            { "item": "minecraft:iron_ingot" }
+        ],
+        "result": { "item": "lotm:inscribed_steel_sword", "count": 1 },
+        "unlock": [{ "item": "lotm:steel_sword" }]
+    }
+}

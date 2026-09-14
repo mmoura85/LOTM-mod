@@ -1,0 +1,23 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:block": {
+        "description": {
+            "identifier": "lotm:ritual_altar",
+            "menu_category": { "category": "construction" }
+        },
+        "components": {
+            "minecraft:geometry": "geometry.ritual_altar",
+            "minecraft:material_instances": {
+                "*": { "texture": "ritual_altar_side", "render_method": "opaque" },
+                "up": { "texture": "ritual_altar_top", "render_method": "opaque" }
+            },
+            "minecraft:destructible_by_mining": { "seconds_to_destroy": 5.0 },
+            "minecraft:destructible_by_explosion": { "explosion_resistance": 12.0 },
+            "minecraft:map_color": "#3A1F3D",
+            "minecraft:crafting_table": {
+                "crafting_tags": ["lotm:ritual_altar"],
+                "table_name": "Ritual Altar"
+            }
+        }
+    }
+}

@@ -8,6 +8,6 @@
       { "item": "minecraft:lava_bucket" }
     ],
     "result": { "item": "lotm:pyromaniac_focus", "count": 1 },
-    "unlock": [{ "item": "lotm:red_priest_characteristic_seq7" }]
+    "unlock": [{ "item": "lotm:red_priest_potion_seq7" }]
   }
 }

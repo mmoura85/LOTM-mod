@@ -1,6 +1,6 @@
 import { world } from '@minecraft/server';
 
-const SPAWNER_BLOCK = 'lotm:cursed_grave';
+const SPAWNER_BLOCKS = ['lotm:cursed_item'];
 const POLTERGEIST   = 'lotm:poltergeist';
 const PLAYER_RADIUS = 24;
 const MOB_RADIUS    = 20;
@@ -15,7 +15,7 @@ let tick = 0;
 export class PoltergeistSpawnerSystem {
     static registerEvents() {
         world.afterEvents.playerPlaceBlock.subscribe(({ block, player }) => {
-            if (block.typeId !== SPAWNER_BLOCK) return;
+            if (!SPAWNER_BLOCKS.includes(block.typeId)) return;
             const loc = _floor(block.location);
             const key = _key(loc, player.dimension.id);
             spawners.set(key, { location: loc, dimId: player.dimension.id, cap: _randCap() });
@@ -58,7 +58,7 @@ export class PoltergeistSpawnerSystem {
 
                 const block = dim.getBlock(location);
                 if (!block) continue;
-                if (block.typeId !== SPAWNER_BLOCK) { spawners.delete(key); continue; }
+                if (!SPAWNER_BLOCKS.includes(block.typeId)) { spawners.delete(key); continue; }
 
                 const r2 = PLAYER_RADIUS * PLAYER_RADIUS;
                 const nearby = (playersByDim[dimId] || []).some(p => {
@@ -82,12 +82,12 @@ function _discoverNear(player) {
     const fx = Math.floor(x), fy = Math.floor(y), fz = Math.floor(z);
     const dim = player.dimension;
     const dimId = dim.id;
-    for (let dx = -24; dx <= 24; dx += 2) {
-        for (let dz = -24; dz <= 24; dz += 2) {
+    for (let dx = -24; dx <= 24; dx += 1) {
+        for (let dz = -24; dz <= 24; dz += 1) {
             for (let dy = -4; dy <= 4; dy++) {
                 try {
                     const loc = { x: fx+dx, y: fy+dy, z: fz+dz };
-                    if (dim.getBlock(loc)?.typeId === SPAWNER_BLOCK) {
+                    if (SPAWNER_BLOCKS.includes(dim.getBlock(loc)?.typeId)) {
                         const key = _key(loc, dimId);
                         if (!spawners.has(key)) {
                             spawners.set(key, { location: loc, dimId, cap: _randCap() });

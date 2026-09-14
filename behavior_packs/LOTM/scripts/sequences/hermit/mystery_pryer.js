@@ -60,12 +60,6 @@ export class MysteryPryerSequence {
   // PASSIVE ABILITIES
   // =============================================
   static applyPassiveAbilities(player) {
-    // Night Vision — spiritual perception grants sight in darkness
-    const nv = player.getEffect('night_vision');
-    if (!nv || nv.duration < 200) {
-      player.addEffect('night_vision', this.EFFECT_DURATION, { amplifier: 0, showParticles: false });
-    }
-
     // Minor health bonus (+1 heart — spirituality bolsters constitution slightly)
     const hb = player.getEffect('health_boost');
     if (!hb || hb.amplifier !== 0 || hb.duration < 200) {
@@ -74,8 +68,17 @@ export class MysteryPryerSequence {
 
     // Passive aura detection — scan for nearby Beyonders / dangerous mobs
     this._tickAuraScan(player);
+  }
 
-    // Tick cooldowns
+  // =============================================
+  // ABILITY-STATE TICKING (Divination/Divine Insight/Detect Hostiles
+  // cooldowns). Called unconditionally every tick from main.js so a grazer
+  // keeps working without needing to be a real Mystery Pryer, and so a
+  // real higher-tier player (who inherits this ability, e.g. a real Melee
+  // Scholar) still gets it ticked — previously only Mystery Pryer's own
+  // exact-sequence applyPassiveAbilities ticked this. See grazeRegistry.js.
+  // =============================================
+  static tickAbilityState(player) {
     this._tickCooldowns(player);
   }
 

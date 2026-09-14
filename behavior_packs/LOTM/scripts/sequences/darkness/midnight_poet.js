@@ -7,11 +7,13 @@ export class MidnightPoetSequence {
   static SEQUENCE_NUMBER = 8;
   static PATHWAY = PathwayManager.PATHWAYS.DARKNESS;
   
-  // Passive ability constants - STRONGER than Sleepless
+  // Passive ability constants — rebalanced 2026-08-05 so Twilight Giant
+  // (the intended "most physically strong" pathway) leads Darkness on
+  // Speed/Jump at matching tiers, not the other way around.
   static NIGHT_VISION_DURATION = 999999;
-  static SPEED_AMPLIFIER = 2; // Speed II (upgraded from Sleepless)
-  static STRENGTH_AMPLIFIER = 2; // Strength II (upgraded from Sleepless)
-  static JUMP_AMPLIFIER = 2; // Jump Boost II (upgraded from Sleepless)
+  static SPEED_AMPLIFIER = 0; // Speed I
+  static STRENGTH_AMPLIFIER = 1; // Strength II
+  static JUMP_AMPLIFIER = 0; // Jump Boost I
   
   // Poet ability constants
   static SONG_DURATION = 240; // 12 seconds (20 ticks per second)
@@ -108,11 +110,23 @@ export class MidnightPoetSequence {
     
     // Phantom immunity (inherited from Sleepless)
     SleeplessSequence.preventPhantomSpawns(player);
-    
-    // Process active songs
+
+    // Deliberately NOT calling tickAbilityState/processSongs here —
+    // main.js calls tickAbilityState unconditionally for every player
+    // (real Midnight Poet, grazer, or inherited via Nightmare/Soul Assurer
+    // alike), so calling it again here would double-tick song duration for
+    // a real Midnight Poet specifically.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via
+  // processSongs' own Map.get(player.name) check. Called ONLY unconditionally
+  // from main.js for every player, so Nightmare/Soul Assurer members (who can
+  // also cast these songs) and grazers all get identical song processing
+  // with no double-ticking and no per-pathway plumbing needed.
+  static tickAbilityState(player) {
     this.processSongs(player);
   }
-  
+
   /**
    * Apply physical enhancements - STRONGER than Sleepless
    */

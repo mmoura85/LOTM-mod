@@ -108,6 +108,15 @@ export class MysticologistSequence {
     const hb = player.getEffect('health_boost');
     if (!hb || hb.amplifier < 3 || hb.duration < 200)
       player.addEffect('health_boost', this.EFFECT_DURATION, { amplifier: 3, showParticles: false });
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (Force Field/Armour/Bridge/Hand of Force ongoing
+  // processing + all spell cooldowns). Called unconditionally every tick
+  // from main.js so a grazer keeps working without needing to be a real
+  // Mysticologist.
+  // =============================================
+  static tickAbilityState(player) {
     this._tickCooldowns(player);
     this._tickForceField(player);
     this._tickArmourBuff(player);
@@ -210,6 +219,29 @@ export class MysticologistSequence {
     if (type==='attack')  return this._castAttack(spell, player);
     if (type==='defense') return this._castDefense(spell, player);
     return this._castBuff(spell, player);
+  }
+
+  /**
+   * Cast a specific spell directly, bypassing the "currently selected
+   * index" model _cast(type, player) uses (which reads
+   * attackIndex/defenseIndex/buffIndex/utilityIndex — state a grazer has
+   * no way to set via the item's sneak+cycle flow). Used by the graze
+   * dispatch layer (grazeRegistry.js). Mirrors _cast(type, player)'s
+   * cooldown/spirit gating exactly, just takes spell directly instead of
+   * looking up the selected one.
+   */
+  static castSpecificSpell(player, type, spell) {
+    if (!this._hasAccess(player)) { player.sendMessage('§cNo access!'); return false; }
+    const cd = this._cdRemaining(player, spell);
+    if (cd > 0) { player.sendMessage(`§c${this.SPELL_NAMES[spell]} CD: §e${cd}s`); return false; }
+    if (!SpiritSystem.consumeSpirit(player, this.COSTS[spell])) {
+      player.sendMessage(`§cNeed §e${this.COSTS[spell]} §cspirit`); return false;
+    }
+    this._setCooldown(player, spell, this.CD[spell]);
+    if (type === 'attack')  return this._castAttack(spell, player);
+    if (type === 'defense') return this._castDefense(spell, player);
+    if (type === 'buff')    return this._castBuff(spell, player);
+    return this._castUtility(spell, player);
   }
 
   static _typeData(type) {

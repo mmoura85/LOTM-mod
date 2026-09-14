@@ -4,6 +4,9 @@ export class SpiritSystem {
   static SPIRIT_PROPERTY = 'lotm:spirit';
   static MAX_SPIRIT_PROPERTY = 'lotm:max_spirit';
   static REGEN_TICK_PROPERTY = 'lotm:spirit_regen_tick';
+  // Matches knifeReserveSystem.js's RESERVE_PROP — duplicated here (not imported) to avoid a
+  // circular import between the two modules, same pattern spiritVialSystem.js already uses.
+  static RESERVE_PROPERTY = 'lotm:knife_spirit_reserve';
   
   // Spirit regeneration constants
   static REGEN_INTERVAL = 40; // Ticks between regen (2 seconds)
@@ -44,7 +47,8 @@ export class SpiritSystem {
   }
   
   /**
-   * Consume spirit for ability use
+   * Consume spirit for ability use. Falls back to the Silver Ritualistic Knife's
+   * stored reserve (if the player has one) when live spirit falls short.
    */
   static consumeSpirit(player, amount) {
     const current = this.getSpirit(player);
@@ -52,7 +56,47 @@ export class SpiritSystem {
       player.setDynamicProperty(this.SPIRIT_PROPERTY, current - amount);
       return true;
     }
+
+    if (this._hasKnife(player)) {
+      const reserve = this._getReserve(player);
+      const shortfall = amount - current;
+      if (reserve >= shortfall) {
+        player.setDynamicProperty(this.SPIRIT_PROPERTY, 0);
+        player.setDynamicProperty(this.RESERVE_PROPERTY, reserve - shortfall);
+        try { player.sendMessage(`§7(Used §d${shortfall}§7 stored spirit from your knife)`); } catch (_) {}
+        return true;
+      }
+    }
+
     return false;
+  }
+
+  /**
+   * Pure check (no deduction) — does the player's live spirit + knife reserve cover this cost?
+   * Use for UI "can afford" previews instead of reading the raw spirit property directly.
+   */
+  static canAfford(player, amount) {
+    const current = this.getSpirit(player);
+    if (current >= amount) return true;
+    if (!this._hasKnife(player)) return false;
+    return current + this._getReserve(player) >= amount;
+  }
+
+  static _hasKnife(player) {
+    try {
+      const inv = player.getComponent('minecraft:inventory');
+      if (!inv?.container) return false;
+      for (let i = 0; i < inv.container.size; i++) {
+        const item = inv.container.getItem(i);
+        if (item && item.typeId === 'lotm:silver_ritualistic_knife') return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  static _getReserve(player) {
+    const r = player.getDynamicProperty(this.RESERVE_PROPERTY);
+    return typeof r === 'number' ? r : 0;
   }
   
   /**

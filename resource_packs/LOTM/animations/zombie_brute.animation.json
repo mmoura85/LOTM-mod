@@ -1,0 +1,22 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.zombie_brute.new_roar": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": [-17.5, 0, 0]
+				},
+				"rightArm": {
+					"rotation": [-145, 0, 0]
+				},
+				"leftArm": {
+					"rotation": [-140, 0, 0]
+				}
+			}
+		},
+		"animation.zombie_brute.new": {
+			"loop": true
+		}
+	}
+}

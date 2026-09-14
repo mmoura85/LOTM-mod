@@ -13,7 +13,6 @@
       "minecraft:display_name": {
         "value": "\u00a76Interrogator's Brand"
       },
-      "minecraft:use_duration": 1,
       "minecraft:use_animation": "none"
     }
   }

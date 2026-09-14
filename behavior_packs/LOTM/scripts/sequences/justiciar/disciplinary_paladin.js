@@ -139,6 +139,14 @@ export class DisciplinaryPaladinSequence {
     // ── +10 hearts (+20 HP) ───────────────────────────────────────────────────
     this._applyHealthBonus(player, 20);
 
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via its
+  // own Map.get(player.name) check. Called ONLY unconditionally from
+  // main.js for every player.
+  static tickAbilityState(player) {
     // ── Jurisdiction tick ─────────────────────────────────────────────────────
     this._tickJurisdiction(player);
 

@@ -1,0 +1,61 @@
+{
+  "pools": [
+    {
+      "rolls": { "min": 3, "max": 5 },
+      "entries": [
+        { "type": "item", "name": "minecraft:book",         "weight": 8, "functions": [{ "function": "set_count", "count": { "min": 1, "max": 2 } }] },
+        { "type": "item", "name": "minecraft:glass_bottle", "weight": 8, "functions": [{ "function": "set_count", "count": { "min": 1, "max": 3 } }] }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        { "type": "empty", "weight": 65 },
+        { "type": "item", "name": "lotm:hermit_potion_seq9", "weight": 35 }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        { "type": "empty", "weight": 55 },
+        { "type": "item", "name": "lotm:hermit_characteristic_seq9", "weight": 15 },
+        { "type": "item", "name": "lotm:mystery_pryer_powers",       "weight": 15 },
+        { "type": "item", "name": "lotm:hermit_characteristic_seq8", "weight": 15 }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        { "type": "empty", "weight": 40 },
+        { "type": "item", "name": "lotm:short_sword", "weight": 20 }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        { "type": "empty", "weight": 200 },
+
+        { "type": "item", "name": "lotm:darkness_potion_seq9",            "weight": 1 },
+        { "type": "item", "name": "lotm:darkness_characteristic_seq9",    "weight": 1 },
+        { "type": "item", "name": "lotm:death_potion_seq9",               "weight": 1 },
+        { "type": "item", "name": "lotm:death_characteristic_seq9",       "weight": 1 },
+        { "type": "item", "name": "lotm:door_potion_seq9",                "weight": 1 },
+        { "type": "item", "name": "lotm:door_characteristic_seq9",        "weight": 1 },
+        { "type": "item", "name": "lotm:twilight_potion_seq9",            "weight": 1 },
+        { "type": "item", "name": "lotm:twilight_giant_characteristic_seq9","weight": 1 },
+        { "type": "item", "name": "lotm:sun_potion_seq9",                 "weight": 1 },
+        { "type": "item", "name": "lotm:sun_characteristic_seq9",         "weight": 1 },
+        { "type": "item", "name": "lotm:seer_potion_seq9",                "weight": 1 },
+        { "type": "item", "name": "lotm:seer_characteristic_seq9",        "weight": 1 },
+        { "type": "item", "name": "lotm:justiciar_potion_seq9",           "weight": 1 },
+        { "type": "item", "name": "lotm:justiciar_characteristic_seq9",   "weight": 1 },
+        { "type": "item", "name": "lotm:red_priest_potion_seq9",          "weight": 1 },
+        { "type": "item", "name": "lotm:red_priest_characteristic_seq9",  "weight": 1 },
+        { "type": "item", "name": "lotm:tyrant_potion_seq9",              "weight": 1 },
+        { "type": "item", "name": "lotm:tyrant_characteristic_seq9",      "weight": 1 },
+        { "type": "item", "name": "lotm:hanged_man_potion_seq9",          "weight": 1 },
+        { "type": "item", "name": "lotm:hanged_man_characteristic_seq9",  "weight": 1 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:tyrant_potion_seq6_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " F ",
+      "FBF",
+      " T "
+    ],
+    "key": {
+      "F": { "item": "minecraft:feather" },
+      "B": { "item": "minecraft:glass_bottle" },
+      "T": { "item": "lotm:tyrant_characteristic_seq6" }
+    },
+    "result": { "item": "lotm:tyrant_potion_seq6", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_characteristic_seq6" }]
+  }
+}

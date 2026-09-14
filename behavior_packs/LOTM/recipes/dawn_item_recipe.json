@@ -2,7 +2,7 @@
   "format_version": "1.21.0",
   "minecraft:recipe_shaped": {
     "description": {
-      "identifier": "lotm:dawn_light_craft"
+      "identifier": "lotm:dawn_item_craft"
     },
     "tags": ["crafting_table"],
     "pattern": [

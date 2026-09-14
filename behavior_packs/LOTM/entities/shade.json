@@ -37,7 +37,6 @@
           "target": "self"
         }
       },
-      "minecraft:owner_identifier": {},
       "minecraft:is_tamed": {},
 
       "minecraft:can_fly": {},
@@ -52,7 +51,6 @@
         "avoid_sun": false
       },
       "minecraft:movement.hover": {},
-      "minecraft:movement.float": {},
       "minecraft:physics": {
         "has_collision": true,
         "has_gravity": false

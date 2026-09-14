@@ -17,7 +17,6 @@
         "can_path_from_air": true, "avoid_water": true, "avoid_damage_blocks": true, "avoid_sun": false
       },
       "minecraft:movement.hover": {},
-      "minecraft:movement.float": {},
       "minecraft:physics": { "has_collision": true, "has_gravity": false },
       "minecraft:pushable": { "is_pushable": false },
       "minecraft:health": { "value": 25, "max": 25 },

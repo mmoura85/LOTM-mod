@@ -29,7 +29,7 @@
             "num_particles": 5,
             "on_other_hit": true,
             "on_entity_hit": true,
-            "particle_type": "minecraft:crit_emitter"
+            "particle_type": "iconcrack"
           }
         },
         "hit_sound": "bow.hit",

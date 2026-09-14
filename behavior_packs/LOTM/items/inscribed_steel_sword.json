@@ -1,0 +1,26 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:item": {
+        "description": {
+            "identifier": "lotm:inscribed_steel_sword",
+            "menu_category": { "category": "equipment", "group": "itemGroup.name.sword" }
+        },
+        "components": {
+            "minecraft:display_name": { "value": "§bInscribed Steel Sword" },
+            "minecraft:icon": "inscribed_steel_sword",
+            "minecraft:max_stack_size": 1,
+            "minecraft:hand_equipped": true,
+            "minecraft:damage": { "value": 10 },
+            "minecraft:durability": {
+                "max_durability": 600,
+                "damage_chance": { "min": 0, "max": 100 }
+            },
+            "minecraft:enchantable": { "slot": "sword", "value": 14 },
+            "minecraft:repairable": {
+                "repair_items": [
+                    { "items": ["lotm:steel_ingot"], "repair_amount": 200 }
+                ]
+            }
+        }
+    }
+}

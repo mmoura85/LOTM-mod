@@ -54,13 +54,7 @@
         "within_radius": 24.0,
         "must_see": false,
         "entity_types": [
-          { "filters": { "test": "is_family", "subject": "other", "value": "monster" }, "max_dist": 24 },
-          { "filters": { "test": "is_type", "subject": "other", "value": "lotm:rampager" }, "max_dist": 24 },
-          { "filters": { "test": "is_type", "subject": "other", "value": "lotm:voidwatcher" }, "max_dist": 24 },
-          { "filters": { "test": "is_type", "subject": "other", "value": "lotm:clown" }, "max_dist": 24 },
-          { "filters": { "test": "is_type", "subject": "other", "value": "lotm:ghoul" }, "max_dist": 24 },
-          { "filters": { "test": "is_type", "subject": "other", "value": "lotm:vengeful_ghost" }, "max_dist": 24 },
-          { "filters": { "test": "is_type", "subject": "other", "value": "lotm:brownbear" }, "max_dist": 24 }
+          { "filters": { "test": "is_family", "subject": "other", "value": "monster" }, "max_dist": 24 }
         ]
       },
       "minecraft:behavior.melee_attack": {

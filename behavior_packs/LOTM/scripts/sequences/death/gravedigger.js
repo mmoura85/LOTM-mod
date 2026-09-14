@@ -67,11 +67,24 @@ export class GravediggerSequence {
     if (!hb || hb.amplifier !== 3 || hb.duration < 200)
       player.addEffect('health_boost', this.EFFECT_DURATION, { amplifier: 3, showParticles: false });
 
-    // Tick summon cooldown
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+
+    // Note: the line that used to be here, `CorpseCollectorSequence.
+    // applyNightVision(player)`, was removed — that method never existed
+    // (CorpseCollectorSequence applies night vision inline, not via a
+    // separate method) and this call was fully redundant with Gravedigger's
+    // own night vision block above anyway. It threw every tick, silently
+    // swallowed by main.js's try/catch around this whole call — harmless in
+    // effect, but real dead/broken code. Found while converting this class.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via its
+  // own Map.get(player.name) check. Called ONLY unconditionally from
+  // main.js for every player.
+  static tickAbilityState(player) {
     const cd = this.summonCooldowns.get(player.name) || 0;
     if (cd > 0) this.summonCooldowns.set(player.name, cd - 1);
-
-    CorpseCollectorSequence.applyNightVision(player);
   }
 
   // ── WHISTLE HANDLER ─────────────────────────────────────────────────────

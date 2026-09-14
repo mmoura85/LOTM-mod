@@ -1,10 +1,17 @@
 tile.lotm:silver_ore.name=§7Silver Ore
 tile.lotm:tin_ore.name=§7Tin Ore
 tile.lotm:alloy_forge.name=§8Alloy Forge
+tile.lotm:cursed_item.name=§5Cursed Item
+tile.lotm:ritual_altar.name=§5Ritual Altar
 
 itemGroup.name.lotm_sequence_potion=Sequence Potions
 itemGroup.name.lotm_characteristic=Characteristics
 
+item.lotm:mystic_robes.name=Mystic Robes
+item.lotm:mystic_pants.name=Mystic Pants
+item.lotm:mystic_shoes.name=Mystic Shoes
+item.lotm:spirit_shard.name=Spirit Shard
+item.lotm:creeping_hunger.name=Creeping Hunger
 item.lotm:steel_slayer_armour.name=Steel Slayer Armour
 item.lotm:steel_slayer_armour_light.name=Steel Slayer Armour (Light)
 item.lotm:steel_slayer_pants_light.name=Steel Slayer Pants (Light)
@@ -16,6 +23,35 @@ item.lotm:wolf_fur.name=Wolf Fur
 
 entity.lotm:ogre.name=Ogre
 entity.lotm:earth_spirit.name=Earth Spirit
+entity.lotm:dire_werewolf.name=Dire Werewolf
+entity.lotm:zombie_brute.name=Zombie Brute
+entity.lotm:spirit_messenger.name=Spirit Messenger
 item.lotm:cudgel.name=Cudgel
 
 tile.lotm:rope_ladder.name=Rope Ladder
+
+item.lotm:dawnchestplate_.name=Dawn Chestplate
+item.lotm:dawnsword.name=Dawn Sword
+item.lotm:hunter_boots.name=Hunter Boots
+item.lotm:hunter_chest.name=Hunter Chestplate
+item.lotm:hunter_pants.name=Hunter Pants
+item.lotm:slayer_axe_2.name=Slayer's Axe
+item.lotm:steel_slayer_heavy_armour.name=Steel Slayer Heavy Armour
+item.lotm:steel_slayer_heavy_helmet.name=Steel Slayer Heavy Helmet
+item.lotm:steel_slayer_medium_pants.name=Steel Slayer Medium Pants
+item.lotm:tophat.name=Top Hat
+item.lotm:travelershat.name=Traveler's Hat
+
+tile.lotm:bear_trap.name=Bear Trap
+tile.lotm:beast_ward.name=Beast Ward
+tile.lotm:corpse.name=Corpse
+tile.lotm:fake_grass.name=False Grass
+tile.lotm:fire_trap.name=Fire Trap
+tile.lotm:graveyard_marker.name=Graveyard Marker
+tile.lotm:soldier_spawner.name=Soldier Spawner
+tile.lotm:spike_trap.name=Spike Trap
+tile.lotm:sunshine_orb.name=Sunshine Orb
+tile.lotm:sun_flare_orb.name=Sun Flare Orb
+tile.lotm:traveler_portal.name=Traveler's Portal
+tile.lotm:waystone.name=Waystone
+tile.lotm:wooden_spike_trap.name=Wooden Spike Trap

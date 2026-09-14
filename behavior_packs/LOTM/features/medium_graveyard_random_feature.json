@@ -5,8 +5,7 @@
             "identifier": "lotm:medium_graveyard_random_feature"
         },
         "features": [
-            { "feature": "lotm:small_medium_graveyard_feature",   "weight": 1 },
-            { "feature": "lotm:small_medium_graveyard_b_feature", "weight": 1 }
+            ["lotm:small_medium_graveyard_feature", 1]
         ]
     }
 }

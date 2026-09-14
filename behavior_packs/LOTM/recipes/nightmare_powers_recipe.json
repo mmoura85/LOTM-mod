@@ -15,7 +15,7 @@
         "item": "minecraft:soul_sand"
       },
       "P": {
-        "item": "minecraft:phantom_membrane"
+        "item": "lotm:insomnia_extract"
       },
       "E": {
         "item": "lotm:nightmare_fragment"
@@ -27,7 +27,7 @@
     },
     "unlock": [
       {
-        "item": "minecraft:phantom_membrane"
+        "item": "lotm:darkness_potion_seq7"
       }
     ]
   }

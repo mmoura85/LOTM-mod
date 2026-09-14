@@ -194,27 +194,6 @@ export class ShadowAsceticSequence {
     // ── Spirit Perception passive scan (Seq 9 inherited) ─────────────────
     SecretsSuppliantSequence.runSpiritPerceptionPassive(player);
 
-    // ── Shadow Lurking passive tick ───────────────────────────────────────
-    if (this.lurkActive.has(player.name)) {
-      this._processLurking(player);
-    }
-
-    // ── Shadow Curse tick ─────────────────────────────────────────────────
-    this._processActiveCurses(player);
-
-    // ── Shadow Manipulation tick ──────────────────────────────────────────
-    this._processActiveManipulations(player);
-
-    // ── Shadow Sword countdown ────────────────────────────────────────────
-    this._processShadowSword(player);
-
-    // ── Focused Listen / Suppress inherited ticks ─────────────────────────
-    ListenerSequence._processFocusedListen(player);
-    ListenerSequence._processSuppressVoices(player);
-
-    // ── Cooldown ticks ────────────────────────────────────────────────────
-    this._tickCooldowns(player);
-
     // ── Action bar ────────────────────────────────────────────────────────
     const stage      = ListenerSequence.getMadnessStage(player);
     const madness    = Math.floor(ListenerSequence.getMadness(player));
@@ -226,6 +205,22 @@ export class ShadowAsceticSequence {
     player.onScreenDisplay.setActionBar(
       `§bSpirit: §f${spirit}§7/§f${maxSpirit}  ${listenStr}  Mind: ${stageLabel} §7(${madness}/100)${lurkStr}`
     );
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (Summon/Curse/Manipulation/Lurking/Shaping +
+  // cooldowns). Called unconditionally every tick from main.js so a
+  // grazer of any of these keeps working without needing to be a real
+  // Shadow Ascetic. See grazeRegistry.js.
+  // =============================================
+  static tickAbilityState(player) {
+    if (this.lurkActive.has(player.name)) {
+      this._processLurking(player);
+    }
+    this._processActiveCurses(player);
+    this._processActiveManipulations(player);
+    this._processShadowSword(player);
+    this._tickCooldowns(player);
   }
 
   // =============================================
@@ -341,6 +336,18 @@ export class ShadowAsceticSequence {
       return false;
     }
 
+    // Find nearest entity in range (not the player) BEFORE spending
+    // anything — no point consuming a medium/spirit/cooldown for a curse
+    // with nothing to land on. (Previously this check ran last, after the
+    // cooldown was already set — so "No target in range!" still burned the
+    // full 10s cooldown for nothing. Shadow Manipulation below already had
+    // the correct ordering; this brings Curse in line with it.)
+    const target = this._findNearestTarget(player, this.CURSE_RANGE);
+    if (!target) {
+      player.sendMessage('§cNo target in range!');
+      return false;
+    }
+
     // Check for curse medium in inventory
     const mediumConsumed = this._consumeCurseMedium(player);
     if (!mediumConsumed) {
@@ -356,14 +363,6 @@ export class ShadowAsceticSequence {
     }
 
     this.curseCooldowns.set(player.name, this.CURSE_COOLDOWN);
-
-    // Find nearest entity in range (not the player)
-    const target = this._findNearestTarget(player, this.CURSE_RANGE);
-    if (!target) {
-      player.sendMessage('§cNo target in range!');
-      SpiritSystem.restoreSpirit(player, this.CURSE_SPIRIT_COST);
-      return false;
-    }
 
     // Apply curse
     const curseList = this.activeCurses.get(player.name) || [];
@@ -915,8 +914,9 @@ export class ShadowAsceticSequence {
     const mc  = this.manipCooldowns.get(n);   if (mc)  this.manipCooldowns.set(n, tick(mc));
     const lc  = this.lurkCooldowns.get(n);    if (lc)  this.lurkCooldowns.set(n, tick(lc));
     const shc = this.shapeCooldowns.get(n);   if (shc) this.shapeCooldowns.set(n, tick(shc));
-    // Inherited
-    ListenerSequence._tickCooldowns(player);
+    // Listener's own cooldowns now tick independently via
+    // ListenerSequence.tickAbilityState (called unconditionally from
+    // main.js) — no longer delegated from here.
   }
 
   static _cdRemaining(map, player) {

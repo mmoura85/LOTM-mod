@@ -18,7 +18,7 @@
         "item": "minecraft:diamond"
       },
       "P": {
-        "item": "lotm:darkness_potion_seq7"
+        "item": "lotm:darkness_characteristic_seq6"
       },
       "G": {
         "item": "minecraft:ghast_tear"
@@ -30,7 +30,7 @@
     },
     "unlock": [
       {
-        "item": "lotm:darkness_potion_seq7"
+        "item": "lotm:darkness_characteristic_seq6"
       }
     ]
   }

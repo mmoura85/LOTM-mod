@@ -8,17 +8,17 @@
     "pattern": [
       " S ",
       "NPN",
-      " E "
+      "SE "
     ],
     "key": {
       "S": {
-        "item": "minecraft:nether_star"
+        "item": "minecraft:ender_pearl"
       },
       "N": {
         "item": "minecraft:netherite_ingot"
       },
       "P": {
-        "item": "lotm:door_potion_seq6"
+        "item": "lotm:door_characteristic_seq5"
       },
       "E": {
         "item": "minecraft:elytra"
@@ -30,7 +30,7 @@
     },
     "unlock": [
       {
-        "item": "lotm:door_potion_seq6"
+        "item": "lotm:door_characteristic_seq5"
       }
     ]
   }

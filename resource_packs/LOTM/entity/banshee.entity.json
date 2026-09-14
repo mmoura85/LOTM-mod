@@ -1,0 +1,35 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:banshee",
+      "materials": {
+        "default": "entity_emissive"
+      },
+      "textures": {
+        "default": "textures/entity/banshee"
+      },
+      "geometry": {
+        "default": "geometry.banshee"
+      },
+      "animations": {
+        "idle": "animation.banshee.idle",
+        "fly": "animation.banshee.fly",
+				"general": "controller.animation.allay.general"
+      },
+      "scripts": {
+        "pre_animation": ["variable.holding_trident = query.is_item_name_any('slot.weapon.mainhand', 'minecraft:trident');"],
+        "animate": [
+          "general"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.lotm_banshee"
+      ],
+      "spawn_egg": {
+        "base_color": "#B490D8",
+        "overlay_color": "#6C3E99"
+      }
+    }
+  }
+}

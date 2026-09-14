@@ -5,7 +5,7 @@
 // Fixed: uses dawn_item menu (inherits from DawnPaladinSequence)
 // ============================================
 
-import { world, system, ItemStack } from '@minecraft/server';
+import { world, system, ItemStack, EnchantmentType } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { DawnPaladinSequence } from './dawn_paladin.js';
@@ -80,18 +80,24 @@ export class GuardianSequence {
     this.applyGiantSize(player);
     this.applyIllusionImmunity(player);
 
-    this.processLightOfDawn(player);
-    this.processHurricaneOfLight(player);
-    this.processProtection(player);
-    // Sword/Shield processing inherited from DawnPaladinSequence
-    DawnPaladinSequence._processDawnSword(player);
-    DawnPaladinSequence._processDawnArmour(player);
-
-    this.tickCooldowns(player);
-    DawnPaladinSequence.tickCooldowns(player);
+    // Deliberately NOT calling tickAbilityState (own) or
+    // DawnPaladinSequence.tickAbilityState (inherited Dawn Sword/Armour)
+    // here — main.js calls both unconditionally for every player already,
+    // so calling them again here would double-tick duration/cooldowns for
+    // a real Guardian specifically.
 
     this.applyWeaponEnchantments(player);
     this.applyArmorEnchantments(player);
+  }
+
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
+    this.processLightOfDawn(player);
+    this.processHurricaneOfLight(player);
+    this.processProtection(player);
+    this.tickCooldowns(player);
   }
 
   // =============================================
@@ -675,10 +681,10 @@ export class GuardianSequence {
     try {
       const e = heldItem.getComponent('minecraft:enchantable');
       if (!e) return;
-      if (!e.hasEnchantment('sharpness'))   e.addEnchantment({ type: 'sharpness',   level: 5 });
-      if (!e.hasEnchantment('smite'))        e.addEnchantment({ type: 'smite',       level: 5 });
-      if (!e.hasEnchantment('fire_aspect'))  e.addEnchantment({ type: 'fire_aspect', level: 2 });
-      if (!e.hasEnchantment('knockback'))    e.addEnchantment({ type: 'knockback',   level: 3 });
+      if (!e.hasEnchantment('sharpness'))   e.addEnchantment({ type: new EnchantmentType('sharpness'),   level: 5 });
+      if (!e.hasEnchantment('smite'))        e.addEnchantment({ type: new EnchantmentType('smite'),       level: 5 });
+      if (!e.hasEnchantment('fire_aspect'))  e.addEnchantment({ type: new EnchantmentType('fire_aspect'), level: 2 });
+      if (!e.hasEnchantment('knockback'))    e.addEnchantment({ type: new EnchantmentType('knockback'),   level: 3 });
       inventory.container.setItem(player.selectedSlotIndex, heldItem);
     } catch (e) {}
   }
@@ -694,11 +700,28 @@ export class GuardianSequence {
       try {
         const e = item.getComponent('minecraft:enchantable');
         if (!e) continue;
-        if (!e.hasEnchantment('protection'))       e.addEnchantment({ type: 'protection',       level: 4 });
-        if (!e.hasEnchantment('blast_protection')) e.addEnchantment({ type: 'blast_protection', level: 4 });
-        if (!e.hasEnchantment('unbreaking'))       e.addEnchantment({ type: 'unbreaking',       level: 3 });
+        if (!e.hasEnchantment('protection'))       e.addEnchantment({ type: new EnchantmentType('protection'),       level: 4 });
+        if (!e.hasEnchantment('blast_protection')) e.addEnchantment({ type: new EnchantmentType('blast_protection'), level: 4 });
+        if (!e.hasEnchantment('unbreaking'))       e.addEnchantment({ type: new EnchantmentType('unbreaking'),       level: 3 });
         inventory.container.setItem(slot, item);
       } catch (e) {}
     }
+  }
+
+  // =============================================
+  // CLEANUP
+  // =============================================
+  // Was missing entirely — DemonHunterSequence.removeEffects calls
+  // GuardianSequence.removeEffects(player), which would throw a TypeError
+  // ("not a function") since this never existed. Found while auditing this
+  // file for the tickAbilityState conversion.
+  static removeEffects(player) {
+    DawnPaladinSequence.removeEffects(player);
+    this.activeLightZones.delete(player.name);
+    this.lightCooldowns.delete(player.name);
+    this.hurricaneCooldowns.delete(player.name);
+    this.activeHurricanes.delete(player.name);
+    this.protectionActive.delete(player.name);
+    this.protectionCooldowns.delete(player.name);
   }
 }

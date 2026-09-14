@@ -20,7 +20,7 @@
         "item": "minecraft:amethyst_shard"
       },
       "W": {
-        "item": "lotm:hermit_potion_seq7"
+        "item": "lotm:hermit_characteristic_seq6"
       },
       "B": {
         "item": "minecraft:blaze_powder"
@@ -32,7 +32,7 @@
     },
     "unlock": [
       {
-        "item": "lotm:hermit_potion_seq7"
+        "item": "lotm:hermit_characteristic_seq6"
       }
     ]
   }

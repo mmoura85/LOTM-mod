@@ -1,7 +1,15 @@
 import { ActionFormData, MessageFormData } from '@minecraft/server-ui';
 import { MidnightPoetSequence } from '../sequences/darkness/midnight_poet.js';
 import { NightmareSequence } from '../sequences/darkness/nightmare.js';
+import { SoulAssurerSequence } from '../sequences/darkness/soul_assurer.js';
 import { PathwayManager } from '../core/pathwayManager.js';
+
+// Shared with main.js's cycleSoulAssurerAbility/useSoulAssurerAbility (plain-
+// use path) — a single Map so the menu's selection and the plain right-click
+// dispatch always agree. SoulAssurerSequence has no built-in persisted
+// selection state of its own (unlike NightmareSequence), so this is the only
+// tracker that exists for it.
+export const selectedSoulAssurerAbilities = new Map();
 
 export class DarknessPathwayMenus {
   /**

@@ -97,12 +97,15 @@ export class SunPathwayMenus {
     
     switch (response.selection) {
       case 0: // Sunshine
+        LightSuppliantSequence.setSelectedOrbAbility(player, LightSuppliantSequence.ABILITIES.SUNSHINE);
         LightSuppliantSequence.useSunshine(player);
         break;
       case 1: // Blessing
+        LightSuppliantSequence.setSelectedOrbAbility(player, LightSuppliantSequence.ABILITIES.BLESSING);
         LightSuppliantSequence.useBlessing(player);
         break;
       case 2: // Daytime
+        LightSuppliantSequence.setSelectedOrbAbility(player, LightSuppliantSequence.ABILITIES.DAYTIME);
         LightSuppliantSequence.useDaytime(player);
         break;
       case 3: // Cancel
