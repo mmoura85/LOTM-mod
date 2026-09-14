@@ -9,6 +9,6 @@
       { "item": "minecraft:amethyst_shard" }
     ],
     "result": { "item": "lotm:conspirer_focus", "count": 1 },
-    "unlock": [{ "item": "lotm:red_priest_characteristic_seq6" }]
+    "unlock": [{ "item": "lotm:red_priest_potion_seq6" }]
   }
 }

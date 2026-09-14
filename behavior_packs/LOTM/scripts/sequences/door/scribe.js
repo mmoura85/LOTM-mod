@@ -90,7 +90,7 @@ export class ScribeSequence {
     
     // Apply passive resistances from recorded abilities
     this.applyRecordedPassives(player);
-    
+
     // Night Vision and Regeneration
     const nightVision = player.getEffect('night_vision');
     if (!nightVision || nightVision.duration < 200) {
@@ -107,8 +107,19 @@ export class ScribeSequence {
         showParticles: false
       });
     }
-    
-    // Tick down cooldowns
+  }
+
+  /**
+   * Ability-state ticking (Record cooldown). Called unconditionally every
+   * tick from main.js so a real higher-tier player (e.g. a real Traveler)
+   * still gets their inherited Record cooldown ticked — previously only
+   * Scribe's own exact-sequence applyPassiveAbilities ticked this. Record
+   * itself is deliberately NOT graze/Creeping-Hunger-exposed (2026-08-08)
+   * — it targets another player directly and doesn't go through
+   * GRAZE_REGISTRY/characteristic items at all, so it doesn't fit the
+   * graze model the way every other ability here does.
+   */
+  static tickAbilityState(player) {
     this.tickCooldowns(player);
   }
   

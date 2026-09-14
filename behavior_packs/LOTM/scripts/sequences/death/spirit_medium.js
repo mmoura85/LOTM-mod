@@ -44,20 +44,28 @@ export class SpiritMediumSequence {
 
     try { CorpseCollectorSequence.makeUndeadPassive(player); } catch (_) {}
 
-    // Keep spirit wolves close — teleport any that wander >18 blocks back beside player
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+
+    const spirit    = Math.floor(SpiritSystem.getSpirit(player));
+    const maxSpirit = SpiritSystem.getMaxSpirit(player);
+    const cdRemain  = Math.max(0, WOLF_COOLDOWN_MS - (Date.now() - (wolfCooldown.get(player.id) || 0)));
+    const cdStr     = cdRemain > 0 ? `  §8(wolf ${(cdRemain/1000).toFixed(0)}s)` : '';
+    player.onScreenDisplay.setActionBar(
+      `§8Spirit: §f${spirit}§7/§f${maxSpirit}  §7│  §8Spirit Medium${cdStr}`
+    );
+  }
+
+  // Ongoing ability state — safe to call for ANY player. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
+    // Keep spirit wolves close — teleport any that wander >18 blocks back
+    // beside player. Throttled to 1/s via Date.now(), same as before.
     const now = Date.now();
     if (now - (lastWolfTick.get(player.id) || 0) > 1000) {
       lastWolfTick.set(player.id, now);
       _tickSpiritWolves(player);
     }
-
-    const spirit    = Math.floor(SpiritSystem.getSpirit(player));
-    const maxSpirit = SpiritSystem.getMaxSpirit(player);
-    const cdRemain  = Math.max(0, WOLF_COOLDOWN_MS - (now - (wolfCooldown.get(player.id) || 0)));
-    const cdStr     = cdRemain > 0 ? `  §8(wolf ${(cdRemain/1000).toFixed(0)}s)` : '';
-    player.onScreenDisplay.setActionBar(
-      `§8Spirit: §f${spirit}§7/§f${maxSpirit}  §7│  §8Spirit Medium${cdStr}`
-    );
   }
 
   // ── AWAKEN ────────────────────────────────────────────────────────────────

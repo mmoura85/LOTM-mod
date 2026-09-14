@@ -158,11 +158,20 @@ export class ImperativeMageSequence {
       if (mf && mf.amplifier <= 0 && mf.duration < 60) player.removeEffect('mining_fatigue');
     } catch (_) {}
 
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via its
+  // own Map.get(player.name) check. Called ONLY unconditionally from
+  // main.js for every player.
+  static tickAbilityState(player) {
     // ── Jurisdiction tick ─────────────────────────────────────────────────────
     this._tickJurisdiction(player);
 
     // ── Mythical Form countdown ───────────────────────────────────────────────
-    if (inMythical) {
+    const mythTicks = this.mythicalActive.get(player.name) ?? 0;
+    if (mythTicks > 0) {
       const remaining = mythTicks - 1;
       this.mythicalActive.set(player.name, remaining);
       if (remaining === 0) {

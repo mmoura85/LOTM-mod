@@ -18,13 +18,24 @@
           ]
         },
         {
-          "rolls": { "min": 0, "max": 1 },
+          "rolls": {
+            "min": 0,
+            "max": 1
+          },
           "entries": [
             {
               "type": "item",
               "name": "lotm:beyonder_soul",
               "weight": 8,
-              "functions": [{ "function": "set_count", "count": { "min": 1, "max": 1 } }]
+              "functions": [
+                {
+                  "function": "set_count",
+                  "count": {
+                    "min": 1,
+                    "max": 1
+                  }
+                }
+              ]
             },
             {
               "type": "item",
@@ -109,7 +120,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -120,18 +134,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:darkness_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -165,23 +171,15 @@
         },
         {
           "type": "item",
-          "name": "lotm:death_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
           "name": "lotm:door_characteristic_seq9",
           "weight": 10,
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -192,18 +190,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:door_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -214,7 +204,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -225,18 +218,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:twilight_giant_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -247,18 +232,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:sun_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -269,7 +246,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -280,18 +260,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:seer_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -302,7 +274,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -313,18 +288,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:justiciar_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -335,7 +302,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -346,18 +316,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:hanged_man_characteristic_seq7",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -368,7 +330,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -379,18 +344,38 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
         {
           "type": "item",
-          "name": "lotm:hermit_characteristic_seq7",
+          "name": "lotm:tyrant_characteristic_seq8",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "lotm:tyrant_characteristic_seq9",
           "weight": 10,
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -401,7 +386,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -412,18 +400,10 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 1, "max": 1 }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "lotm:red_priest_characteristic_seq7",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": { "min": 1, "max": 1 }
+              "count": {
+                "min": 1,
+                "max": 1
+              }
             }
           ]
         },
@@ -434,9 +414,39 @@
           "functions": [
             {
               "function": "set_count",
-              "count": { "min": 0, "max": 0 }
+              "count": {
+                "min": 0,
+                "max": 0
+              }
             }
           ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "min": 0,
+        "max": 1
+      },
+      "entries": [
+        {
+          "type": "item",
+          "name": "lotm:spirit_shard",
+          "weight": 15,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:air",
+          "weight": 85
         }
       ]
     }

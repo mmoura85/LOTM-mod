@@ -7,11 +7,11 @@ export class NightmareSequence {
   static SEQUENCE_NUMBER = 7;
   static PATHWAY = PathwayManager.PATHWAYS.DARKNESS;
   
-  // Passive ability constants - ENHANCED from Midnight Poet
+  // Passive ability constants — rebalanced 2026-08-05, see midnight_poet.js
   static NIGHT_VISION_DURATION = 999999;
-  static SPEED_AMPLIFIER = 3; // Speed IV
-  static STRENGTH_AMPLIFIER = 3; // Strength IV
-  static JUMP_AMPLIFIER = 3; // Jump Boost IV
+  static SPEED_AMPLIFIER = 1; // Speed II
+  static STRENGTH_AMPLIFIER = 1; // Strength II
+  static JUMP_AMPLIFIER = 1; // Jump Boost II
   
   // Nightmare State ability - FIXED: More spectator-like
   static NIGHTMARE_STATE_SPIRIT_COST = 50;
@@ -160,16 +160,26 @@ export class NightmareSequence {
     
     // Health bonus (3 extra hearts for Sequence 7)
     this.applyHealthBonus(player, 6);
-    
-    // Process active abilities
+
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player (real Nightmare, inherited via Soul
+    // Assurer, or grazer alike), so calling it again here would double-tick
+    // duration/cooldowns for a real Nightmare specifically.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player — covers real Nightmare
+  // members, Soul Assurer members (who inherit these same abilities and
+  // reuse these same tracking Maps directly, including the enhanced Dream
+  // Invasion override), and grazers, all with no double-ticking.
+  static tickAbilityState(player) {
     this.processNightmareState(player);
     this.processDreamInvasion(player);
     this.processNightmareLimbs(player);
-    
-    // Tick down cooldowns
     this.tickCooldowns(player);
   }
-  
+
   /**
    * Apply physical enhancements
    */
@@ -545,78 +555,76 @@ export class NightmareSequence {
 
           const pos = { x: px, y: py, z: pz };
 
-          // Base segments: sculk soul (dark blue tendrils)
-          // Tip segments: squid ink (darker, thicker)
+          // Base + mid segments: sculk soul (dark blue tendrils)
+          // Tip segments: soul particle (brighter, marks the "business end")
           try {
-            if (progress < 0.5) {
+            if (progress < 0.8) {
               dim.spawnParticle('minecraft:sculk_soul', pos);
-            } else if (progress < 0.8) {
-              dim.spawnParticle('minecraft:warden_tendril_clicks', pos);
             } else {
-              // Tip - squid ink splash
-              dim.spawnParticle('minecraft:squid_ink_bubble', pos);
               dim.spawnParticle('minecraft:soul_particle', pos);
             }
           } catch (e) {}
         }
+      }
 
-        // ── Tip charges toward nearest entity ────────────────────────────
-        // Every 10 ticks, find a target and "lash" toward it
-        if (t % 10 === tentIdx * 2) {
-          try {
-            const tipX = loc.x + Math.cos(angle) * (this.NIGHTMARE_LIMBS_RANGE * 0.7);
-            const tipZ = loc.z + Math.sin(angle) * (this.NIGHTMARE_LIMBS_RANGE * 0.7);
-            const tipLoc = { x: tipX, y: loc.y + 1, z: tipZ };
+      // ── Lash the nearest real targets in range ──────────────────────────
+      // Previous version aimed at 4 fixed rotating points and only hit
+      // something if a mob happened to be standing exactly there — it
+      // basically never landed a hit. Now it actually finds the closest
+      // entities within NIGHTMARE_LIMBS_RANGE (one per tentacle) and lashes
+      // those directly, so the ability reliably does something.
+      if (t % 10 === 0) {
+        try {
+          const inRange = dim.getEntities({
+            location: loc,
+            maxDistance: this.NIGHTMARE_LIMBS_RANGE,
+            excludeTypes: ['minecraft:item', 'minecraft:player']
+          }).filter(e => e.isValid());
 
-            const nearby = dim.getEntities({
-              location: tipLoc,
-              maxDistance: 2.5,
-              excludeTypes: ['minecraft:item', 'minecraft:player']
-            });
+          inRange.sort((a, b) => {
+            const da = (a.location.x-loc.x)**2 + (a.location.y-loc.y)**2 + (a.location.z-loc.z)**2;
+            const db = (b.location.x-loc.x)**2 + (b.location.y-loc.y)**2 + (b.location.z-loc.z)**2;
+            return da - db;
+          });
 
-            for (const target of nearby) {
-              // Draw a sculk charge "lash" line from tip to target
-              const tx = target.location.x - tipX;
-              const ty = (target.location.y + 1) - (loc.y + 1);
-              const tz = target.location.z - tipZ;
-              const tlen = Math.sqrt(tx*tx + ty*ty + tz*tz);
+          const targets = inRange.slice(0, numTentacles);
+          for (const target of targets) {
+            const tx = target.location.x - loc.x;
+            const ty = (target.location.y + 1) - (loc.y + 1);
+            const tz = target.location.z - loc.z;
+            const tlen = Math.sqrt(tx*tx + ty*ty + tz*tz) || 1;
 
-              if (tlen > 0 && tlen < 4) {
-                const lashSteps = 6;
-                for (let l = 0; l < lashSteps; l++) {
-                  const lp = l / lashSteps;
-                  try {
-                    dim.spawnParticle('minecraft:sculk_charge_pop', {
-                      x: tipX + (tx/tlen) * lp * tlen,
-                      y: (loc.y + 1) + ty * lp,
-                      z: tipZ + (tz/tlen) * lp * tlen
-                    });
-                  } catch (e) {}
-                }
-
-                // Deal damage
-                try { target.applyDamage(this.NIGHTMARE_LIMBS_DAMAGE); } catch (e) {}
-
-                // Hit sound
-                try {
-                  dim.playSound('mob.warden.tendril_clicks', {
-                    location: target.location,
-                    pitch: 1.5 + Math.random() * 0.5,
-                    volume: 0.6
-                  });
-                } catch (e) {
-                  try {
-                    dim.playSound('mob.wither.hurt', {
-                      location: target.location,
-                      pitch: 1.8,
-                      volume: 0.4
-                    });
-                  } catch (e2) {}
-                }
-              }
+            const lashSteps = 8;
+            for (let l = 0; l <= lashSteps; l++) {
+              const lp = l / lashSteps;
+              try {
+                dim.spawnParticle('minecraft:sculk_charge_pop', {
+                  x: loc.x + tx * lp,
+                  y: (loc.y + 1) + ty * lp,
+                  z: loc.z + tz * lp
+                });
+              } catch (e) {}
             }
-          } catch (e) {}
-        }
+
+            try { target.applyDamage(this.NIGHTMARE_LIMBS_DAMAGE); } catch (e) {}
+
+            try {
+              dim.playSound('mob.warden.tendril_clicks', {
+                location: target.location,
+                pitch: 1.5 + Math.random() * 0.5,
+                volume: 0.6
+              });
+            } catch (e) {
+              try {
+                dim.playSound('mob.wither.hurt', {
+                  location: target.location,
+                  pitch: 1.8,
+                  volume: 0.4
+                });
+              } catch (e2) {}
+            }
+          }
+        } catch (e) {}
       }
     }
 

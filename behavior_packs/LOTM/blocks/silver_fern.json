@@ -26,7 +26,6 @@
               { "name": "minecraft:dirt" },
               { "name": "minecraft:grass_block" },
               { "name": "minecraft:podzol" },
-              { "name": "minecraft:rooted_dirt" },
               { "name": "minecraft:mud" }
             ]
           }

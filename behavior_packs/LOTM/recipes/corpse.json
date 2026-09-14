@@ -1,0 +1,24 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "lotm:corpse_craft"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      { "item": "minecraft:rotten_flesh", "count": 4 },
+      { "item": "minecraft:bone", "count": 2 }
+    ],
+    "result": {
+      "item": "lotm:corpse",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:rotten_flesh"
+      }
+    ]
+  }
+}

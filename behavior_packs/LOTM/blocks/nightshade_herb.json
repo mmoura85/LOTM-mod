@@ -27,8 +27,7 @@
               { "name": "minecraft:dirt" },
               { "name": "minecraft:coarse_dirt" },
               { "name": "minecraft:podzol" },
-              { "name": "minecraft:mycelium" },
-              { "name": "minecraft:rooted_dirt" }
+              { "name": "minecraft:mycelium" }
             ]
           }
         ]

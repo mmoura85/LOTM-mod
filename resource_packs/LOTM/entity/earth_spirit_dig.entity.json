@@ -13,7 +13,8 @@
       },
       "scripts": {
         "pre_animation": [
-          "v.walking = query.modified_move_speed > 0.01;"
+          "v.walking = query.modified_move_speed > 0.01;",
+          "v.is_holding_right = false;"
         ],
         "animate": ["look_at_target", "walk_controller"]
       },

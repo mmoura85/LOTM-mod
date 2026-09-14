@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:traveler_bracelet_recipe" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:ender_pearl" },
+      { "item": "lotm:voidsteel_ingot" },
+      { "item": "lotm:door_characteristic_seq5" }
+    ],
+    "result": { "item": "lotm:traveler_bracelet", "count": 1 },
+    "unlock": [{ "item": "lotm:door_characteristic_seq5" }]
+  }
+}

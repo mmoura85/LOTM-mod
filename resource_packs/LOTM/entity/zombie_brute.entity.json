@@ -1,0 +1,32 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lotm:zombie_brute",
+      "materials": { "default": "zombie" },
+      "textures": { "default": "textures/entity/zombie_brute" },
+      "geometry": { "default": "geometry.zombie_brute" },
+      "scripts": {
+        "pre_animation": [
+          "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+        ],
+        "animate": [
+          "move",
+          "look_at_target_default",
+          { "attack.rotations": "variable.attack_time > 0.0" },
+          { "zombie_attack_bare_hand": "variable.attack_time > 0.0" },
+          { "roar": "query.variant == 1" }
+        ]
+      },
+      "animations": {
+        "move": "animation.humanoid.move",
+        "look_at_target_default": "animation.humanoid.look_at_target.default",
+        "attack.rotations": "animation.humanoid.attack.rotations",
+        "zombie_attack_bare_hand": "animation.zombie.attack_bare_hand",
+        "roar": "animation.zombie_brute.new_roar"
+      },
+      "render_controllers": [ "controller.render.default" ],
+      "spawn_egg": { "base_color": "#3c5c3c", "overlay_color": "#1c2c1c" }
+    }
+  }
+}

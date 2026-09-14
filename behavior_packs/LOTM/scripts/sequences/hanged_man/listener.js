@@ -283,13 +283,6 @@ export class ListenerSequence {
     // Apply madness stage effects
     this._applyMadnessEffects(player);
 
-    // Process active abilities
-    this._processFocusedListen(player);
-    this._processSuppressVoices(player);
-
-    // Tick cooldowns
-    this._tickCooldowns(player);
-
     // Action bar — show madness level alongside spirit
     const stage      = this.getMadnessStage(player);
     const madness    = Math.floor(this.getMadness(player));
@@ -299,6 +292,18 @@ export class ListenerSequence {
     player.onScreenDisplay.setActionBar(
       `§bSpirit: §f${spirit}§7/§f${maxSpirit}  §7│  Mind: ${stageLabel} §7(${madness}/100)`
     );
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (Focused Listen / Suppress Voices + cooldowns)
+  // Called unconditionally every tick from main.js so a grazer of either
+  // ability keeps working without needing to be a real Listener. See
+  // grazeRegistry.js.
+  // =============================================
+  static tickAbilityState(player) {
+    this._processFocusedListen(player);
+    this._processSuppressVoices(player);
+    this._tickCooldowns(player);
   }
 
   // =============================================
@@ -782,8 +787,10 @@ export class ListenerSequence {
     const tick = v => (v > 0 ? v - 1 : 0);
     const fc   = this.focusedListenCooldowns.get(n); if (fc) this.focusedListenCooldowns.set(n, tick(fc));
     const sc   = this.suppressCooldowns.get(n);      if (sc) this.suppressCooldowns.set(n, tick(sc));
-    // Also tick inherited cooldowns
-    SecretsSuppliantSequence.tickCooldowns(player);
+    // Suppliant's own cooldowns now tick independently via
+    // SecretsSuppliantSequence.tickAbilityState (called unconditionally
+    // from main.js) — no longer delegated from here, avoids double-ticking
+    // real Listener-tier-and-above members.
   }
 
   static _cdRemaining(map, player) {

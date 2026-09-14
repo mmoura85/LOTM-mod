@@ -5,6 +5,9 @@
     "jagerstock": {
       "textures": "textures/entity/attachable/jagerstock"
     },
+    "ritual_altar": {
+      "textures": "textures/items/ritual_altar_icon"
+    },
     "darkness_potion_seq9": {
       "textures": "textures/items/darkness_potion_seq9"
     },
@@ -29,17 +32,8 @@
     "spirit_world_key": {
       "textures": "textures/items/spirit_world_key"
     },
-    "flashbang": {
-      "textures": "textures/items/flashbang"
-    },
-    "flame_fingers": {
-      "textures": "textures/items/flame_fingers"
-    },
-    "spark_crystal": {
-      "textures": "textures/items/spark_crystal"
-    },
-    "frost_stone": {
-      "textures": "textures/items/frost_stone"
+    "bag_of_tricks": {
+      "textures": "textures/items/bag_of_tricks"
     },
     "twilight_potion_seq9": {
       "textures": "textures/items/twilight_potion_seq9"
@@ -57,14 +51,14 @@
       "textures": "textures/items/dawn_light"
     },
     "dawnsword": {
-			"textures": "textures/items/dawnsword.png"
-		},
+      "textures": "textures/items/dawnsword.png"
+    },
     "dawnchestplate_": {
-			"textures": "textures/items/dawnchestplate_.png"
-		},
+      "textures": "textures/items/dawnchestplate_.png"
+    },
     "tophat": {
-			"textures": "textures/items/tophat.png"
-		},
+      "textures": "textures/items/tophat.png"
+    },
     "door_potion_seq7": {
       "textures": "textures/items/door_potion_seq7"
     },
@@ -84,8 +78,8 @@
       "textures": "textures/items/travelers_log"
     },
     "travelershat": {
-			"textures": "textures/items/travelershat.png"
-		},
+      "textures": "textures/items/travelershat.png"
+    },
     "darkness_potion_seq7": {
       "textures": "textures/items/darkness_potion_seq7"
     },
@@ -137,6 +131,87 @@
     "demon_hunter_powers": {
       "textures": "textures/items/demon_hunter_powers"
     },
+    "fire_mote_charm": {
+      "textures": "textures/items/fire_mote_charm"
+    },
+    "sun_flare_charm": {
+      "textures": "textures/items/sun_flare_charm"
+    },
+    "tyrant_characteristic_seq9": {
+      "textures": "textures/items/tyrant_characteristic_seq9"
+    },
+    "tyrant_potion_seq9": {
+      "textures": "textures/items/tyrant_potion_seq9"
+    },
+    "tyrant_characteristic_seq8": {
+      "textures": "textures/items/tyrant_characteristic_seq8"
+    },
+    "tyrant_potion_seq8": {
+      "textures": "textures/items/tyrant_potion_seq8"
+    },
+    "folk_of_rage_focus": {
+      "textures": "textures/items/folk_of_rage_focus"
+    },
+    "tyrant_characteristic_seq7": {
+      "textures": "textures/items/tyrant_characteristic_seq7"
+    },
+    "tyrant_potion_seq7": {
+      "textures": "textures/items/tyrant_potion_seq7"
+    },
+    "seafarer_focus": {
+      "textures": "textures/items/seafarer_focus"
+    },
+    "tyrant_characteristic_seq6": {
+      "textures": "textures/items/tyrant_characteristic_seq6"
+    },
+    "tyrant_potion_seq6": {
+      "textures": "textures/items/tyrant_potion_seq6"
+    },
+    "wind_blessed_focus": {
+      "textures": "textures/items/wind_blessed_focus"
+    },
+    "tyrant_characteristic_seq5": {
+      "textures": "textures/items/tyrant_characteristic_seq5"
+    },
+    "tyrant_potion_seq5": {
+      "textures": "textures/items/tyrant_potion_seq5"
+    },
+    "ocean_songster_focus": {
+      "textures": "textures/items/ocean_songster_focus"
+    },
+    "tyrant_characteristic_seq4": {
+      "textures": "textures/items/tyrant_characteristic_seq4"
+    },
+    "tyrant_potion_seq4": {
+      "textures": "textures/items/tyrant_potion_seq4"
+    },
+    "cataclysmic_interrer_focus": {
+      "textures": "textures/items/cataclysmic_interrer_focus"
+    },
+    "banshee_charm": {
+      "textures": "textures/items/banshee_charm"
+    },
+    "seven_stone_bracelet": {
+      "textures": "textures/items/seven_stone_bracelet"
+    },
+    "traveler_bracelet": {
+      "textures": "textures/items/traveler_bracelet"
+    },
+    "inscribed_steel_sword": {
+      "textures": "textures/items/inscribed_steel_sword"
+    },
+    "slumber_charm": {
+      "textures": "textures/items/slumber_charm"
+    },
+    "yesterday_once_more_charm": {
+      "textures": "textures/items/yesterday_once_more_charm"
+    },
+    "leymano_travels": {
+      "textures": "textures/items/leymano_travels"
+    },
+    "staff_of_the_stars": {
+      "textures": "textures/items/staff_of_the_stars"
+    },
     "twilight_potion_seq4": {
       "textures": "textures/items/twilight_potion_seq4"
     },
@@ -185,16 +260,36 @@
     "short_sword": {
       "textures": "textures/items/short_sword"
     },
-    "seer_potion_seq9":  { "textures": "textures/items/seer_potion_seq9"  },
-    "seer_potion_seq8":  { "textures": "textures/items/seer_potion_seq8"  },
-    "seer_potion_seq7":  { "textures": "textures/items/seer_potion_seq7"  },
-    "spirit_vision_orb": { "textures": "textures/items/spirit_vision_orb" },
-    "danger_sense_charm":{ "textures": "textures/items/danger_sense_charm"},
-    "clown_mask":        { "textures": "textures/items/clown_mask"        },
-    "magician_wand":     { "textures": "textures/items/magician_wand"     },
-    "paper_knife":       { "textures": "textures/items/paper_knife"       },
-    "paper_figurine":    { "textures": "textures/items/paper_figurine"    },
-    "paper_weapon":      { "textures": "textures/items/paper_weapon"      },
+    "seer_potion_seq9": {
+      "textures": "textures/items/seer_potion_seq9"
+    },
+    "seer_potion_seq8": {
+      "textures": "textures/items/seer_potion_seq8"
+    },
+    "seer_potion_seq7": {
+      "textures": "textures/items/seer_potion_seq7"
+    },
+    "spirit_vision_orb": {
+      "textures": "textures/items/spirit_vision_orb"
+    },
+    "danger_sense_charm": {
+      "textures": "textures/items/danger_sense_charm"
+    },
+    "clown_mask": {
+      "textures": "textures/items/clown_mask"
+    },
+    "magician_wand": {
+      "textures": "textures/items/magician_wand"
+    },
+    "paper_knife": {
+      "textures": "textures/items/paper_knife"
+    },
+    "paper_figurine": {
+      "textures": "textures/items/paper_figurine"
+    },
+    "paper_weapon": {
+      "textures": "textures/items/paper_weapon"
+    },
     "moonflower_seed": {
       "textures": "textures/items/moonflower_seed"
     },
@@ -264,18 +359,42 @@
     "stargrass_seed": {
       "textures": "textures/items/stargrass_seed"
     },
-    "justiciar_potion_seq9": { "textures": "textures/items/justiciar_potion_seq9" },
-    "arbiters_seal":         { "textures": "textures/items/arbiters_seal" },
-    "justiciar_potion_seq8": { "textures": "textures/items/justiciar_potion_seq8" },
-    "sheriffs_badge":        { "textures": "textures/items/sheriffs_badge" },
-    "justiciar_potion_seq7":  { "textures": "textures/items/justiciar_potion_seq7" },
-    "interrogators_brand":    { "textures": "textures/items/interrogators_brand" },
-    "justiciar_potion_seq6":  { "textures": "textures/items/justiciar_potion_seq6" },
-    "judges_gavel":           { "textures": "textures/items/judges_gavel" },
-    "justiciar_potion_seq5": { "textures": "textures/items/justiciar_potion_seq5" },
-    "paladins_seal":         { "textures": "textures/items/paladins_seal" },
-    "justiciar_potion_seq4": { "textures": "textures/items/justiciar_potion_seq4" },
-    "mages_codex":           { "textures": "textures/items/mages_codex" },
+    "justiciar_potion_seq9": {
+      "textures": "textures/items/justiciar_potion_seq9"
+    },
+    "arbiters_seal": {
+      "textures": "textures/items/arbiters_seal"
+    },
+    "justiciar_potion_seq8": {
+      "textures": "textures/items/justiciar_potion_seq8"
+    },
+    "sheriffs_badge": {
+      "textures": "textures/items/sheriffs_badge"
+    },
+    "justiciar_potion_seq7": {
+      "textures": "textures/items/justiciar_potion_seq7"
+    },
+    "interrogators_brand": {
+      "textures": "textures/items/interrogators_brand"
+    },
+    "justiciar_potion_seq6": {
+      "textures": "textures/items/justiciar_potion_seq6"
+    },
+    "judges_gavel": {
+      "textures": "textures/items/judges_gavel"
+    },
+    "justiciar_potion_seq5": {
+      "textures": "textures/items/justiciar_potion_seq5"
+    },
+    "paladins_seal": {
+      "textures": "textures/items/paladins_seal"
+    },
+    "justiciar_potion_seq4": {
+      "textures": "textures/items/justiciar_potion_seq4"
+    },
+    "mages_codex": {
+      "textures": "textures/items/mages_codex"
+    },
     "spiritual_essence": {
       "textures": "textures/items/spiritual_essence"
     },
@@ -412,7 +531,7 @@
       "textures": "textures/items/justiciar_characteristic_seq4"
     },
     "death_potion_seq8": {
-    "textures": "textures/items/death_potion_seq8"
+      "textures": "textures/items/death_potion_seq8"
     },
     "spirit_whistle": {
       "textures": "textures/items/spirit_whistle"
@@ -422,6 +541,33 @@
     },
     "spirit_channeler": {
       "textures": "textures/items/spirit_channeler"
+    },
+    "thread": {
+      "textures": "textures/items/thread"
+    },
+    "silver_ritualistic_knife": {
+      "textures": "textures/items/silver_ritualistic_knife"
+    },
+    "spirit_messenger_pouch": {
+      "textures": "textures/items/spirit_messenger_pouch"
+    },
+    "spirit_shard": {
+      "textures": "textures/items/spirit_shard"
+    },
+    "creeping_hunger": {
+      "textures": "textures/items/creeping_hunger"
+    },
+    "fists_of_rage": {
+      "textures": "textures/items/fists_of_rage"
+    },
+    "mystic_robes": {
+      "textures": "textures/items/mystic_robes"
+    },
+    "mystic_pants": {
+      "textures": "textures/items/mystic_pants"
+    },
+    "mystic_shoes": {
+      "textures": "textures/items/mystic_shoes"
     },
     "spirit_vanguard_charm": {
       "textures": "textures/items/spirit_vanguard_charm"
@@ -435,61 +581,153 @@
     "hanged_man_characteristic_seq9": {
       "textures": "textures/items/hanged_man_characteristic_seq9"
     },
-    "hanged_man_potion_seq8": { "textures": "textures/items/hanged_man_potion_seq8" },
-    "hanged_man_characteristic_seq8": { "textures": "textures/items/hanged_man_characteristic_seq8" },
-    "hanged_man_potion_seq7":        { "textures": "textures/items/hanged_man_potion_seq7" },
-    "hanged_man_characteristic_seq7":{ "textures": "textures/items/hanged_man_characteristic_seq7" },
-    "shadow_sword":                  { "textures": "textures/items/shadow_sword" },
-    "flesh_bomb":                   { "textures": "textures/items/flesh_bomb" },
-    "hanged_man_potion_seq6":       { "textures": "textures/items/hanged_man_potion_seq6" },
-    "hanged_man_characteristic_seq6":{ "textures": "textures/items/hanged_man_characteristic_seq6" },
-    "beyonder_soul":               { "textures": "textures/items/beyonder_soul" },
-    "hanged_man_potion_seq5":      { "textures": "textures/items/hanged_man_potion_seq5" },
-    "hanged_man_characteristic_seq5": { "textures": "textures/items/hanged_man_characteristic_seq5" },
-    "hermit_potion_seq9":         { "textures": "textures/items/hermit_potion_seq9" },
-    "hermit_potion_seq8":         { "textures": "textures/items/hermit_potion_seq8" },
-    "mystery_pryer_powers":       { "textures": "textures/items/mystery_pryer_powers" },
-    "melee_scholar_powers":       { "textures": "textures/items/melee_scholar_powers" },
-    "hermit_characteristic_seq9": { "textures": "textures/items/hermit_characteristic_seq9" },
-    "hermit_characteristic_seq8": { "textures": "textures/items/hermit_characteristic_seq8" },
-    "hermit_potion_seq7":        { "textures": "textures/items/hermit_potion_seq7" },
-    "warlocks_wand":             { "textures": "textures/items/warlocks_wand" },
-    "spell_pouch":               { "textures": "textures/items/spell_pouch" },
-    "hermit_characteristic_seq7":{ "textures": "textures/items/hermit_characteristic_seq7" },
-    "iron_dust":                 { "textures": "textures/items/iron_dust" },
-    "bone_ash":                  { "textures": "textures/items/bone_ash" },
-    "ember_powder":              { "textures": "textures/items/ember_powder" },
-    "sunflower_dust":            { "textures": "textures/items/sunflower_dust" },
-    "storm_dust":                { "textures": "textures/items/storm_dust" },
-    "tide_powder":               { "textures": "textures/items/tide_powder" },
-    "stone_dust":                { "textures": "textures/items/stone_dust" },
-    "gravel_dust":               { "textures": "textures/items/gravel_dust" },
-    "hermit_potion_seq6":         { "textures": "textures/items/hermit_potion_seq6" },
-    "hermit_characteristic_seq6": { "textures": "textures/items/hermit_characteristic_seq6" },
-    "scroll_burning":             { "textures": "textures/items/scroll_burning" },
-    "scroll_sun":                 { "textures": "textures/items/scroll_sun" },
-    "scroll_healing":             { "textures": "textures/items/scroll_healing" },
-    "scroll_freeze":              { "textures": "textures/items/scroll_freeze" },
-    "scroll_storm":               { "textures": "textures/items/scroll_storm" },
-    "scroll_force_field":         { "textures": "textures/items/scroll_force_field" },
-    "scroll_armour":              { "textures": "textures/items/scroll_armour" },
-    "scroll_raise_earth":         { "textures": "textures/items/scroll_raise_earth" },
-    "hermit_potion_seq5":         { "textures": "textures/items/hermit_potion_seq5" },
-    "hermit_characteristic_seq5": { "textures": "textures/items/hermit_characteristic_seq5" },
-    "constellations_tome":        { "textures": "textures/items/constellations_tome" },
-    "flying_rock_core": { "textures": "textures/items/flying_rock_core" },
+    "hanged_man_potion_seq8": {
+      "textures": "textures/items/hanged_man_potion_seq8"
+    },
+    "hanged_man_characteristic_seq8": {
+      "textures": "textures/items/hanged_man_characteristic_seq8"
+    },
+    "hanged_man_potion_seq7": {
+      "textures": "textures/items/hanged_man_potion_seq7"
+    },
+    "hanged_man_characteristic_seq7": {
+      "textures": "textures/items/hanged_man_characteristic_seq7"
+    },
+    "shadow_sword": {
+      "textures": "textures/items/shadow_sword"
+    },
+    "flesh_bomb": {
+      "textures": "textures/items/flesh_bomb"
+    },
+    "hanged_man_potion_seq6": {
+      "textures": "textures/items/hanged_man_potion_seq6"
+    },
+    "hanged_man_characteristic_seq6": {
+      "textures": "textures/items/hanged_man_characteristic_seq6"
+    },
+    "beyonder_soul": {
+      "textures": "textures/items/beyonder_soul"
+    },
+    "hanged_man_potion_seq5": {
+      "textures": "textures/items/hanged_man_potion_seq5"
+    },
+    "hanged_man_characteristic_seq5": {
+      "textures": "textures/items/hanged_man_characteristic_seq5"
+    },
+    "hermit_potion_seq9": {
+      "textures": "textures/items/hermit_potion_seq9"
+    },
+    "hermit_potion_seq8": {
+      "textures": "textures/items/hermit_potion_seq8"
+    },
+    "mystery_pryer_powers": {
+      "textures": "textures/items/mystery_pryer_powers"
+    },
+    "melee_scholar_powers": {
+      "textures": "textures/items/melee_scholar_powers"
+    },
+    "hermit_characteristic_seq9": {
+      "textures": "textures/items/hermit_characteristic_seq9"
+    },
+    "hermit_characteristic_seq8": {
+      "textures": "textures/items/hermit_characteristic_seq8"
+    },
+    "hermit_potion_seq7": {
+      "textures": "textures/items/hermit_potion_seq7"
+    },
+    "warlocks_wand": {
+      "textures": "textures/items/warlocks_wand"
+    },
+    "spell_pouch": {
+      "textures": "textures/items/spell_pouch"
+    },
+    "hermit_characteristic_seq7": {
+      "textures": "textures/items/hermit_characteristic_seq7"
+    },
+    "iron_dust": {
+      "textures": "textures/items/iron_dust"
+    },
+    "bone_ash": {
+      "textures": "textures/items/bone_ash"
+    },
+    "ember_powder": {
+      "textures": "textures/items/ember_powder"
+    },
+    "sunflower_dust": {
+      "textures": "textures/items/sunflower_dust"
+    },
+    "storm_dust": {
+      "textures": "textures/items/storm_dust"
+    },
+    "tide_powder": {
+      "textures": "textures/items/tide_powder"
+    },
+    "stone_dust": {
+      "textures": "textures/items/stone_dust"
+    },
+    "gravel_dust": {
+      "textures": "textures/items/gravel_dust"
+    },
+    "hermit_potion_seq6": {
+      "textures": "textures/items/hermit_potion_seq6"
+    },
+    "hermit_characteristic_seq6": {
+      "textures": "textures/items/hermit_characteristic_seq6"
+    },
+    "scroll_burning": {
+      "textures": "textures/items/scroll_burning"
+    },
+    "scroll_sun": {
+      "textures": "textures/items/scroll_sun"
+    },
+    "scroll_healing": {
+      "textures": "textures/items/scroll_healing"
+    },
+    "scroll_freeze": {
+      "textures": "textures/items/scroll_freeze"
+    },
+    "scroll_storm": {
+      "textures": "textures/items/scroll_storm"
+    },
+    "scroll_force_field": {
+      "textures": "textures/items/scroll_force_field"
+    },
+    "scroll_armour": {
+      "textures": "textures/items/scroll_armour"
+    },
+    "scroll_raise_earth": {
+      "textures": "textures/items/scroll_raise_earth"
+    },
+    "hermit_potion_seq5": {
+      "textures": "textures/items/hermit_potion_seq5"
+    },
+    "hermit_characteristic_seq5": {
+      "textures": "textures/items/hermit_characteristic_seq5"
+    },
+    "constellations_tome": {
+      "textures": "textures/items/constellations_tome"
+    },
+    "flying_rock_core": {
+      "textures": "textures/items/flying_rock_core"
+    },
     "scroll_slow_fall": {
       "textures": "textures/items/scroll_slow_fall"
     },
     "scroll_earth_spike": {
       "textures": "textures/items/scroll_earth_spike"
     },
-    "dawn_sword": { "textures": "textures/items/dawn_sword" },
+    "dawn_sword": {
+      "textures": "textures/items/dawn_sword"
+    },
     "death_characteristic_seq8": {
       "textures": "textures/items/death_characteristic_seq8"
     },
-    "spirit_vial":              { "textures": "textures/items/spirit_vial" },
-    "spirit_expansion_potion":  { "textures": "textures/items/spirit_expansion_potion" },
+    "spirit_vial": {
+      "textures": "textures/items/spirit_vial"
+    },
+    "spirit_expansion_potion": {
+      "textures": "textures/items/spirit_expansion_potion"
+    },
     "death_potion_seq7": {
       "textures": "textures/items/death_potion_seq7"
     },
@@ -499,48 +737,143 @@
     "spirit_focus": {
       "textures": "textures/items/spirit_focus"
     },
-    "hermit_characteristic_seq4": { "textures": "textures/items/hermit_characteristic_seq4" },
-    "mystic_staff":  { "textures": "textures/items/mystic_staff" },
-    "defense_tome":  { "textures": "textures/items/defense_tome" },
-    "buff_tome":     { "textures": "textures/items/buff_tome" },
-    "mystic_compass":{ "textures": "textures/items/mystic_compass" },
-    "hermit_potion_seq4":         { "textures": "textures/items/hermit_potion_seq4" },
-    "coke":            { "textures": "textures/items/coal" },
-    "raw_silver":      { "textures": "textures/items/raw_silver" },
-    "raw_tin":         { "textures": "textures/items/raw_tin" },
-    "silver_ingot":    { "textures": "textures/items/iron_ingot" },
-    "tin_ingot":       { "textures": "textures/items/tin_ingot" },
-    "steel_ingot":     { "textures": "textures/items/steel_ingot" },
-    "bronze_ingot":    { "textures": "textures/items/bronze_ingot" },
-    "voidsteel_ingot": { "textures": "textures/items/voidsteel_ingot" },
-    "steel_sword":     { "textures": "textures/items/steel_sword" },
-    "steel_pickaxe":   { "textures": "textures/items/steel_pickaxe" },
-    "steel_axe":       { "textures": "textures/items/steel_axe" },
-    "steel_shovel":    { "textures": "textures/items/steel_shovel" },
-    "steel_hoe":       { "textures": "textures/items/steel_hoe" },
-    "cudgel":          { "textures": "textures/items/cudgel" },
-    "red_priest_potion_seq9":         { "textures": "textures/items/red_priest_potion_seq9" },
-    "red_priest_characteristic_seq9": { "textures": "textures/items/red_priest_characteristic_seq9" },
-    "red_priest_potion_seq8":         { "textures": "textures/items/red_priest_potion_seq8" },
-    "red_priest_characteristic_seq8": { "textures": "textures/items/red_priest_characteristic_seq8" },
-    "red_priest_potion_seq7":         { "textures": "textures/items/red_priest_potion_seq7" },
-    "red_priest_characteristic_seq7": { "textures": "textures/items/red_priest_characteristic_seq7" },
-    "red_priest_potion_seq6":         { "textures": "textures/items/red_priest_potion_seq6" },
-    "red_priest_characteristic_seq6": { "textures": "textures/items/red_priest_characteristic_seq6" },
-    "decoy_item":    { "textures": "textures/items/decoy_item" },
-    "silence_bomb":  { "textures": "textures/items/silence_bomb" },
-    "steel_slayer_medium_pants": { "textures": "textures/items/steel_slayer_medium_pants" },
-    "steel_slayer_heavy_helmet": { "textures": "textures/items/steel_slayer_heavy_helmet" },
-    "steel_slayer_heavy_armour": { "textures": "textures/items/steel_slayer_heavy_armour" },
-    "provoker_idol":      { "textures": "textures/items/provoker_idol" },
-    "pyromaniac_focus":   { "textures": "textures/items/pyromaniac_focus" },
-    "conspirer_focus":                { "textures": "textures/items/conspirer_focus" },
-    "flame_sword":                    { "textures": "textures/items/flame_sword" },
-    "red_priest_potion_seq5":         { "textures": "textures/items/red_priest_potion_seq5" },
-    "red_priest_characteristic_seq5": { "textures": "textures/items/red_priest_characteristic_seq5" },
-    "reaper_focus":                   { "textures": "textures/items/reaper_focus" },
-    "hunter_chest":                   { "textures": "textures/items/hunter_chest" },
-    "hunter_pants":                   { "textures": "textures/items/hunter_pants" },
-    "throwing_knife":     { "textures": "textures/items/throwing_knife" }
+    "hermit_characteristic_seq4": {
+      "textures": "textures/items/hermit_characteristic_seq4"
+    },
+    "mystic_staff": {
+      "textures": "textures/items/mystic_staff"
+    },
+    "defense_tome": {
+      "textures": "textures/items/defense_tome"
+    },
+    "buff_tome": {
+      "textures": "textures/items/buff_tome"
+    },
+    "mystic_compass": {
+      "textures": "textures/items/mystic_compass"
+    },
+    "hermit_potion_seq4": {
+      "textures": "textures/items/hermit_potion_seq4"
+    },
+    "coke": {
+      "textures": "textures/items/coal"
+    },
+    "raw_silver": {
+      "textures": "textures/items/raw_silver"
+    },
+    "raw_tin": {
+      "textures": "textures/items/raw_tin"
+    },
+    "silver_ingot": {
+      "textures": "textures/items/silver_ingot"
+    },
+    "tin_ingot": {
+      "textures": "textures/items/tin_ingot"
+    },
+    "steel_ingot": {
+      "textures": "textures/items/steel_ingot"
+    },
+    "bronze_ingot": {
+      "textures": "textures/items/bronze_ingot"
+    },
+    "voidsteel_ingot": {
+      "textures": "textures/items/voidsteel_ingot"
+    },
+    "steel_sword": {
+      "textures": "textures/items/steel_sword"
+    },
+    "steel_pickaxe": {
+      "textures": "textures/items/steel_pickaxe"
+    },
+    "steel_axe": {
+      "textures": "textures/items/steel_axe"
+    },
+    "steel_shovel": {
+      "textures": "textures/items/steel_shovel"
+    },
+    "steel_hoe": {
+      "textures": "textures/items/steel_hoe"
+    },
+    "cudgel": {
+      "textures": "textures/items/cudgel"
+    },
+    "red_priest_potion_seq9": {
+      "textures": "textures/items/red_priest_potion_seq9"
+    },
+    "red_priest_characteristic_seq9": {
+      "textures": "textures/items/red_priest_characteristic_seq9"
+    },
+    "red_priest_potion_seq8": {
+      "textures": "textures/items/red_priest_potion_seq8"
+    },
+    "red_priest_characteristic_seq8": {
+      "textures": "textures/items/red_priest_characteristic_seq8"
+    },
+    "red_priest_potion_seq7": {
+      "textures": "textures/items/red_priest_potion_seq7"
+    },
+    "red_priest_characteristic_seq7": {
+      "textures": "textures/items/red_priest_characteristic_seq7"
+    },
+    "red_priest_potion_seq6": {
+      "textures": "textures/items/red_priest_potion_seq6"
+    },
+    "red_priest_characteristic_seq6": {
+      "textures": "textures/items/red_priest_characteristic_seq6"
+    },
+    "decoy_item": {
+      "textures": "textures/items/decoy_item"
+    },
+    "silence_bomb": {
+      "textures": "textures/items/silence_bomb"
+    },
+    "steel_slayer_medium_pants": {
+      "textures": "textures/items/steel_slayer_medium_pants"
+    },
+    "steel_slayer_heavy_helmet": {
+      "textures": "textures/items/steel_slayer_heavy_helmet"
+    },
+    "steel_slayer_heavy_armour": {
+      "textures": "textures/items/steel_slayer_heavy_armour"
+    },
+    "provoker_idol": {
+      "textures": "textures/items/provoker_idol"
+    },
+    "pyromaniac_focus": {
+      "textures": "textures/items/pyromaniac_focus"
+    },
+    "conspirer_focus": {
+      "textures": "textures/items/conspirer_focus"
+    },
+    "flame_sword": {
+      "textures": "textures/items/flame_sword"
+    },
+    "red_priest_potion_seq5": {
+      "textures": "textures/items/red_priest_potion_seq5"
+    },
+    "red_priest_characteristic_seq5": {
+      "textures": "textures/items/red_priest_characteristic_seq5"
+    },
+    "reaper_focus": {
+      "textures": "textures/items/reaper_focus"
+    },
+    "hunter_chest": {
+      "textures": "textures/items/hunter_chest"
+    },
+    "hunter_pants": {
+      "textures": "textures/items/hunter_pants"
+    },
+    "hunter_boots": {
+      "textures": "textures/items/hunter_boots"
+    },
+    "throwing_knife": {
+      "textures": "textures/items/throwing_knife"
+    },
+    "spear_of_longinus_item": {
+      "textures": "textures/items/spear_of_longinus_item"
+    },
+    "insomnia_extract": {
+      "textures": "textures/items/insomnia_extract"
+    }
   }
 }

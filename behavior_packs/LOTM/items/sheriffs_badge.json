@@ -13,7 +13,6 @@
       "minecraft:display_name": {
         "value": "\u00a76Sheriff's Badge"
       },
-      "minecraft:use_duration": 1,
       "minecraft:use_animation": "none"
     }
   }

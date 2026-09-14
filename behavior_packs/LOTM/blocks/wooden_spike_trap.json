@@ -31,7 +31,7 @@
         "components": {
           "minecraft:transformation": { "rotation": [-90, 0, 0] },
           "minecraft:collision_box": false,
-          "minecraft:selection_box": { "origin": [-8, -6, -8], "size": [16, 14, 16] }
+          "minecraft:selection_box": { "origin": [-8, 0, -8], "size": [16, 14, 16] }
         }
       },
       {
@@ -39,7 +39,7 @@
         "components": {
           "minecraft:transformation": { "rotation": [90, 0, 0] },
           "minecraft:collision_box": false,
-          "minecraft:selection_box": { "origin": [-8, -6, -8], "size": [16, 14, 16] }
+          "minecraft:selection_box": { "origin": [-8, 0, -8], "size": [16, 14, 16] }
         }
       },
       {
@@ -47,7 +47,7 @@
         "components": {
           "minecraft:transformation": { "rotation": [0, 0, -90] },
           "minecraft:collision_box": false,
-          "minecraft:selection_box": { "origin": [-8, -6, -8], "size": [16, 14, 16] }
+          "minecraft:selection_box": { "origin": [-8, 0, -8], "size": [16, 14, 16] }
         }
       },
       {
@@ -55,7 +55,7 @@
         "components": {
           "minecraft:transformation": { "rotation": [0, 0, 90] },
           "minecraft:collision_box": false,
-          "minecraft:selection_box": { "origin": [-8, -6, -8], "size": [16, 14, 16] }
+          "minecraft:selection_box": { "origin": [-8, 0, -8], "size": [16, 14, 16] }
         }
       }
     ],

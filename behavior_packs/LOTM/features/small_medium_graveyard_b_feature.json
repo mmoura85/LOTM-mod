@@ -5,7 +5,7 @@
             "identifier": "lotm:small_medium_graveyard_b_feature"
         },
         "structure_name": "lotm:small_medium_graveyard_b",
-        "adjustment_radius": 4,
+        "adjustment_radius": 8,
         "facing_direction": "random",
         "constraints": {
             "grounded": {}

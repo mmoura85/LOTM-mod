@@ -22,6 +22,7 @@ export class SpiritVialSystem {
     'hermit':         ['lotm:hermit_characteristic_seq9',         'lotm:hermit_characteristic_seq8',         'lotm:hermit_characteristic_seq7'],
     'seer':           ['lotm:seer_characteristic_seq9',           'lotm:seer_characteristic_seq8',           'lotm:seer_characteristic_seq7'],
     'justiciar':      ['lotm:justiciar_characteristic_seq9',      'lotm:justiciar_characteristic_seq8',      'lotm:justiciar_characteristic_seq7'],
+    'red_priest':     ['lotm:red_priest_characteristic_seq9',     'lotm:red_priest_characteristic_seq8',     'lotm:red_priest_characteristic_seq7'],
   };
 
   // ── Player uses the empty vial ────────────────────────────────────────────
@@ -147,7 +148,7 @@ export class SpiritVialSystem {
       'darkness': '§8Darkness', 'death': '§7Death', 'door': '§6Door',
       'twilight_giant': '§cTwilight Giant', 'sun': '§eSun',
       'hanged_man': '§5Hanged Man', 'hermit': '§9Hermit',
-      'seer': '§dSeer', 'justiciar': '§bJusticiar',
+      'seer': '§dSeer', 'justiciar': '§bJusticiar', 'red_priest': '§4Red Priest',
     };
     return names[pathway] || pathway;
   }

@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:staff_of_the_stars_recipe" },
+    "tags": ["lotm:ritual_altar"],
+    "ingredients": [
+      { "item": "lotm:door_characteristic_seq6" },
+      { "item": "lotm:beyonder_soul" },
+      { "item": "lotm:voidsteel_ingot" },
+      { "item": "minecraft:amethyst_shard" },
+      { "item": "lotm:spirit_shard" },
+      { "item": "lotm:spirit_shard" },
+      { "item": "lotm:door_characteristic_seq5" }
+    ],
+    "result": { "item": "lotm:staff_of_the_stars" },
+    "unlock": [{ "item": "lotm:door_characteristic_seq5" }]
+  }
+}

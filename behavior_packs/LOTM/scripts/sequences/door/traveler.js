@@ -169,21 +169,33 @@ export class TravelerSequence {
       });
     }
     
-    // Tick down cooldowns
-    this.tickCooldowns(player);
-    
-    // Check for Blink trigger (sneak without shield)
+    // Check for Blink trigger (sneak without shield) — stays real-Traveler-
+    // gated here since it's an ambient convenience trigger tied to actually
+    // being Traveler-tier-or-better, not graze-relevant ability state.
+    // Blink's own cooldown ticks unconditionally via tickAbilityState.
     if (this.shouldTriggerBlink(player)) {
       this.useBlink(player);
     }
-    
-    // Process invisible hand
-    this.processInvisibleHand(player);
-    
-    // Process active doors
-    this.processActiveDoors();
+  }
 
-    // Process spirit fog
+  /**
+   * Ability-state ticking (Blink/Travel/Spirit Fog cooldowns, Invisible
+   * Hand's ongoing grab-processing, Spirit Fog's ongoing processing).
+   * Called unconditionally every tick from main.js so a grazer of any of
+   * these keeps working without needing to be a real Traveler, and so a
+   * real player who has progressed PAST Traveler (e.g. a real Secrets
+   * Sorcerer) still gets their inherited Traveler cooldowns ticked —
+   * previously only Traveler's own exact-sequence applyPassiveAbilities
+   * ticked these, so a higher-tier real player's Blink cooldown (set once
+   * used) never decremented again. See grazeRegistry.js.
+   *
+   * processActiveDoors() is NOT called here — activeDoors is keyed by
+   * door id, not player name, so it's a global system ticked once per
+   * loop from main.js instead (like TrapSystem.tick()), not per-player.
+   */
+  static tickAbilityState(player) {
+    this.tickCooldowns(player);
+    this.processInvisibleHand(player);
     this.processSpiritFog(player);
   }
   
@@ -1031,6 +1043,18 @@ static useInvisibleHand(player, activate = true) {
   }
   
   return true;
+}
+
+/**
+ * Toggle wrapper for the graze dispatch layer (grazeRegistry.js) — the
+ * real useInvisibleHand takes an explicit `activate` boolean set by the
+ * menu (true from the grab button, false from the release button), which
+ * a grazer has no way to supply since graze entries call with fixed args.
+ * Auto-detects current state and flips it, same self-toggling pattern as
+ * Shadow Ascetic's Shadow Lurking (see shadow_ascetic.js).
+ */
+static useInvisibleHandToggle(player) {
+  return this.useInvisibleHand(player, !this.grabbedTargets.has(player.name));
 }
 
 /**

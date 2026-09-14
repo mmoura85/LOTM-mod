@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:seafarer_focus_recipe" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:trident" },
+      { "item": "minecraft:prismarine_crystals" },
+      { "item": "minecraft:lightning_rod" }
+    ],
+    "result": { "item": "lotm:seafarer_focus", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_potion_seq7" }]
+  }
+}

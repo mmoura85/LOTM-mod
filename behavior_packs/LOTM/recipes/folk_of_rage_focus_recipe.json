@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:folk_of_rage_focus_recipe" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:lightning_rod" },
+      { "item": "minecraft:iron_ingot" },
+      { "item": "minecraft:redstone" }
+    ],
+    "result": { "item": "lotm:folk_of_rage_focus", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_potion_seq8" }]
+  }
+}

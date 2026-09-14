@@ -55,11 +55,22 @@ export class ProvokerSequence {
         this._applyTrapVisibility(player);
     }
 
+    // Reset the wall-clock provocation cooldown — used by the graze dispatch
+    // layer (grazeRegistry.js resetCooldownCall) so a grazer is gated by
+    // Creeping Hunger's/Shepherd's own short flat cooldown, not this
+    // ability's own longer real-time one. provokeCooldown is a module-
+    // private Map keyed by player.id, unreachable via the normal
+    // resetCooldownRefs mechanism (which expects a static class Map keyed
+    // by player.name) — hence this dedicated method.
+    static resetProvocationCooldown(player) {
+        provokeCooldown.delete(player.id);
+    }
+
     static useProvocation(player) {
         const spirit = SpiritSystem.getSpirit(player);
         if (spirit < PROVOCATION_COST) {
             player.sendMessage(`§cNot enough spirit! Need §f${PROVOCATION_COST}§c, have §f${Math.floor(spirit)}`);
-            return;
+            return false;
         }
 
         const now = Date.now();
@@ -67,7 +78,7 @@ export class ProvokerSequence {
         const remaining = Math.ceil((PROVOCATION_COOLDOWN_MS - (now - lastUse)) / 1000);
         if (remaining > 0) {
             player.sendMessage(`§cProvocation on cooldown: §f${remaining}s`);
-            return;
+            return false;
         }
 
         const targets = player.dimension.getEntities({
@@ -77,7 +88,7 @@ export class ProvokerSequence {
 
         if (targets.length < 2) {
             player.sendMessage('§7Not enough nearby creatures to provoke.');
-            return;
+            return false;
         }
 
         SpiritSystem.consumeSpirit(player, PROVOCATION_COST);
@@ -112,6 +123,7 @@ export class ProvokerSequence {
         try {
             player.dimension.spawnParticle('minecraft:critical_hit_emitter', player.location);
         } catch (_) {}
+        return true;
     }
 
     static _applyEffect(player, id, amplifier) {

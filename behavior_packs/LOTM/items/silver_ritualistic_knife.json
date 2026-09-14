@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:silver_ritualistic_knife",
+      "menu_category": { "category": "equipment", "group": "itemGroup.name.sword" }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "silver_ritualistic_knife",
+      "minecraft:display_name": { "value": "§7Silver Ritualistic Knife" },
+      "minecraft:hand_equipped": true,
+      "minecraft:durability": {
+        "max_durability": 200,
+        "damage_chance": { "min": 1, "max": 1 }
+      },
+      "minecraft:damage": 5,
+      "minecraft:enchantable": {
+        "slot": "sword",
+        "value": 10
+      },
+      "minecraft:repairable": {
+        "repair_items": [
+          { "items": ["lotm:silver_ingot"], "repair_amount": 60 }
+        ]
+      }
+    }
+  }
+}

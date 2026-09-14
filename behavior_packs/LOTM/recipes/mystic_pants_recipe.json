@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:mystic_pants_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "STS",
+      "T T",
+      "T T"
+    ],
+    "key": {
+      "S": {
+        "item": "lotm:steel_ingot"
+      },
+      "T": {
+        "item": "lotm:thread"
+      }
+    },
+    "result": {
+      "item": "lotm:mystic_pants",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "lotm:thread"
+      }
+    ]
+  }
+}

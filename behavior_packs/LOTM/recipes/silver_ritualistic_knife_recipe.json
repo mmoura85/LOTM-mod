@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:silver_ritualistic_knife_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " S",
+      "I "
+    ],
+    "key": {
+      "S": { "item": "lotm:silver_ingot" },
+      "I": { "item": "minecraft:stick" }
+    },
+    "result": { "item": "lotm:silver_ritualistic_knife", "count": 1 },
+    "unlock": [{ "item": "lotm:silver_ingot" }]
+  }
+}

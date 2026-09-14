@@ -27,7 +27,6 @@
             { "condition": "q.block_state('minecraft:block_face') == 'west'",  "components": { "minecraft:transformation": { "rotation": [0, 90, 0] } } }
         ],
         "components": {
-            "minecraft:custom_components": ["lotm:fire_trap"],
             "minecraft:geometry": "geometry.lotm.fire_trap",
             "minecraft:material_instances": {
                 "*":         { "texture": "fire_trap_side",   "render_method": "opaque" },

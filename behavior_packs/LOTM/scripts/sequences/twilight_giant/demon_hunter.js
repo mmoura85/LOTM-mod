@@ -2,7 +2,7 @@
 // DEMON HUNTER (WITCHER) - SEQUENCE 4 TWILIGHT GIANT PATHWAY
 // ============================================
 
-import { world, system } from '@minecraft/server';
+import { world, system, EnchantmentType } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { DawnPaladinSequence } from './dawn_paladin.js';
@@ -125,23 +125,12 @@ export class DemonHunterSequence {
     // Mind Concealment (passive resistance effects)
     this.applyMindConcealment(player);
     
-    // Process active abilities (own + inherited)
-    this.processEyeOfDemonHunting(player);
-    this.processAnchoredProtection(player);
-    this.processOintment(player);
-    
-    // IMPORTANT: Process inherited Guardian abilities
-    GuardianSequence.processProtection(player);
-    GuardianSequence.processLightOfDawn(player);
-    GuardianSequence.processHurricaneOfLight(player);   // ← ADD: runs hurricane waves
-    DawnPaladinSequence._processDawnSword(player);       // ← ADD: ticks dawn sword timer
-    DawnPaladinSequence._processDawnArmour(player);      // ← ADD: ticks dawn armour timer
+    // Deliberately NOT calling tickAbilityState (own) or Guardian's/Dawn
+    // Paladin's tickAbilityState (inherited abilities) here — main.js calls
+    // all three unconditionally for every player already, so calling them
+    // again here would double-tick duration/cooldowns for a real Demon
+    // Hunter specifically.
 
-    // Tick down cooldowns (own + all inherited)
-    this.tickCooldowns(player);
-    GuardianSequence.tickCooldowns(player);
-    DawnPaladinSequence.tickCooldowns(player);     
-    
     // Apply weapon enhancements
     this.applyWeaponEnhancements(player);
     
@@ -272,6 +261,16 @@ export class DemonHunterSequence {
     // Remove confusion, nausea, blindness (represent divination interference)
     player.removeEffect('nausea');
     player.removeEffect('blindness');
+  }
+
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
+    this.processEyeOfDemonHunting(player);
+    this.processAnchoredProtection(player);
+    this.processOintment(player);
+    this.tickCooldowns(player);
   }
   
   /**
@@ -672,7 +671,7 @@ export class DemonHunterSequence {
           // Protection V
           const currentProt = enchantments.getEnchantment('protection');
           if (!currentProt || currentProt.level < 5) {
-            enchantments.addEnchantment({ type: 'protection', level: 5 });
+            enchantments.addEnchantment({ type: new EnchantmentType('protection'), level: 5 });
           }
           
           equipment.setEquipment(slot, armorItem);

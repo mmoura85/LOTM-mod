@@ -139,8 +139,18 @@ export class ScrollProfessorSequence {
 
     // Upgraded health bonus
     this._applyHealthBonus(player, this.HEALTH_BONUS);
+  }
 
-    // Process active sessions
+  // =============================================
+  // ABILITY-STATE TICKING (Storm/Force Field/Armour ongoing processing).
+  // Called unconditionally every tick from main.js so a grazer keeps
+  // working without needing to be a real Scroll Professor, and so a real
+  // higher-tier player still gets it ticked — previously only Scroll
+  // Professor's own exact-sequence applyPassiveAbilities ticked this. No
+  // cooldown Maps exist for scrolls (only real inventory-item consumption
+  // gates them), so nothing else to tick here.
+  // =============================================
+  static tickAbilityState(player) {
     this._tickStormSession(player);
     this._tickForceField(player);
     this._tickArmourBuff(player);
@@ -217,6 +227,43 @@ export class ScrollProfessorSequence {
       case this.SCROLLS.SLOW_FALL.id:   return this._castSlowFall(player);
       case this.SCROLLS.EARTH_SPIKE.id: return this._castEarthSpike(player);
 
+      default: return false;
+    }
+  }
+
+  /**
+   * Cast a scroll WITHOUT consuming a scroll item — still costs the normal
+   * spirit amount. Used by the graze dispatch layer (grazeRegistry.js) for
+   * grazed Scroll Professor abilities — a grazer shouldn't need to
+   * stockpile Scroll-Professor-specific consumable items for an ability
+   * they're borrowing, but it should still cost spirit like every other
+   * grazed ability does (2026-08-08 user decision).
+   */
+  static castScrollNoItem(player, scrollId) {
+    if (!this.hasSequence(player)) { player.sendMessage('§cNo access!'); return false; }
+
+    const scroll = Object.values(this.SCROLLS).find(s => s.id === scrollId);
+    if (!scroll) { player.sendMessage('§cUnknown scroll!'); return false; }
+
+    if (!SpiritSystem.consumeSpirit(player, scroll.spiritCost)) {
+      player.sendMessage(`§cNot enough spirit! Need §5${scroll.spiritCost}`);
+      return false;
+    }
+
+    this._spawnScrollCastParticles(player);
+    player.playSound('fire.ignite', { pitch: 1.8, volume: 0.7 });
+
+    switch (scrollId) {
+      case this.SCROLLS.BURNING.id:     return this._castBurning(player);
+      case this.SCROLLS.SUN.id:         return this._castSun(player);
+      case this.SCROLLS.HEALING.id:     return this._castHealing(player);
+      case this.SCROLLS.FREEZE.id:      return this._castFreeze(player);
+      case this.SCROLLS.STORM.id:       return this._castStorm(player);
+      case this.SCROLLS.FORCE_FIELD.id: return this._castForceField(player);
+      case this.SCROLLS.ARMOUR.id:      return this._castArmour(player);
+      case this.SCROLLS.RAISE_EARTH.id: return this._castRaiseEarth(player);
+      case this.SCROLLS.SLOW_FALL.id:   return this._castSlowFall(player);
+      case this.SCROLLS.EARTH_SPIKE.id: return this._castEarthSpike(player);
       default: return false;
     }
   }

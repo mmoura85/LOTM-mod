@@ -1,0 +1,53 @@
+{
+	"format_version": "1.21.100",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lotm:cursed_item",
+			"menu_category": {
+				"category": "items"
+			}
+		},
+		"components": {
+			"minecraft:display_name": "§5Cursed Item",
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": {
+				"origin": [-4, 0, -4],
+				"size": [8, 8, 8]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 0
+			},
+			"minecraft:geometry": "geometry.cursed_item",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "cursed_item",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				}
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#32a852",
+			"minecraft:loot": "loot_tables/blocks/cursed_item.json",
+			"minecraft:random_offset": {
+				"x": {
+					"range": {
+						"min": -5,
+						"max": 5
+					},
+					"steps": 10
+				},
+				"z": {
+					"range": {
+						"min": -5,
+						"max": 5
+					},
+					"steps": 10
+				}
+			}
+		}
+	}
+}

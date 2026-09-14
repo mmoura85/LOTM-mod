@@ -32,7 +32,7 @@
             "num_particles": 6,
             "on_other_hit": true,
             "on_entity_hit": true,
-            "particle_type": "minecraft:crimson_spore_particle"
+            "particle_type": "iconcrack"
           },
           "remove_on_hit": {}
         }

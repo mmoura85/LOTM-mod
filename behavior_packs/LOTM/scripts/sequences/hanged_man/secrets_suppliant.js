@@ -88,6 +88,12 @@ export class SecretsSuppliantSequence {
 
     this.applyHealthBonus(player, 2);
     this.runSpiritPerceptionPassive(player);
+  }
+
+  // Ability-state ticking — cooldowns for Divination/Inscription/Aura
+  // Reading. Called unconditionally every tick from main.js (real members
+  // AND grazers/Creeping-Hunger-borrowers alike) — see grazeRegistry.js.
+  static tickAbilityState(player) {
     this.tickCooldowns(player);
   }
 

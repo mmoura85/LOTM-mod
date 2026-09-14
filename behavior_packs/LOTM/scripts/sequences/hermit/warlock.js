@@ -175,8 +175,6 @@ export class WarlockSequence {
     this._applyPhysicalEnhancements(player);
     this._applyHealthBonus(player, this.HEALTH_BONUS);
     this._tickAuraScan(player);
-    this._processHandOfForce(player);
-    this._tickCooldowns(player);
     this._checkPouchChestClosed(player);
     this._tickPassiveOreScan(player);
 
@@ -188,6 +186,18 @@ export class WarlockSequence {
         this.selectedSpells.set(player.name, this.SPELLS.FLAMES.id);
       }
     }
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (Hand of Force ongoing processing + all spell/
+  // cast cooldowns). Called unconditionally every tick from main.js so a
+  // grazer keeps working without needing to be a real Warlock, and so a
+  // real higher-tier player still gets it ticked — previously only
+  // Warlock's own exact-sequence applyPassiveAbilities ticked this.
+  // =============================================
+  static tickAbilityState(player) {
+    this._processHandOfForce(player);
+    this._tickCooldowns(player);
   }
 
   static _applyPhysicalEnhancements(player) {
@@ -676,6 +686,60 @@ export class WarlockSequence {
       case this.SPELLS.TUNNEL.id:        return this._castTunnel(player);
       default: return false;
     }
+  }
+
+  /**
+   * Cast a spell WITHOUT consuming powder — still costs the normal spirit
+   * amount. Used by ConstellationsMasterSequence.castWarlockSpellFree
+   * (real seq5+ players, who've "surpassed the need" for powder) and by
+   * the graze dispatch layer (grazeRegistry.js) for grazed Warlock spells
+   * — a grazer shouldn't need to stockpile Warlock-specific powder types
+   * for an ability they're borrowing, but it should still cost spirit like
+   * every other grazed ability does (2026-08-08 user decision).
+   */
+  static castSpellNoPowder(player, spellId) {
+    const spell = Object.values(this.SPELLS).find(s => s.id === spellId);
+    if (!spell) { player.sendMessage('§cUnknown spell!'); return false; }
+
+    const cdKey = `${player.name}_${spellId}`;
+    const cd    = this.spellCooldowns.get(cdKey) || 0;
+    if (cd > 0) {
+      player.sendMessage(`§c${spell.name} §8(${Math.ceil(cd/20)}s)`);
+      return false;
+    }
+
+    if (!SpiritSystem.consumeSpirit(player, spell.spiritCost)) {
+      player.sendMessage(`§cNot enough spirit! Need §5${spell.spiritCost}`);
+      return false;
+    }
+
+    this.spellCooldowns.set(cdKey, spell.cooldown * 20);
+    this.castCooldowns.set(player.name, this.CAST_COOLDOWN);
+    this._spawnCastParticles(player);
+
+    switch (spellId) {
+      case this.SPELLS.HAND_OF_FORCE.id: return this._castHandOfForce(player);
+      case this.SPELLS.EXORCISM.id:      return this._castExorcism(player);
+      case this.SPELLS.FLAMES.id:        return this._castFlames(player);
+      case this.SPELLS.PURIFICATION.id:  return this._castPurification(player);
+      case this.SPELLS.LIGHTNING.id:     return this._castLightning(player);
+      case this.SPELLS.SEA_WAVE.id:      return this._castSeaWave(player);
+      case this.SPELLS.EARTH_WALL.id:    return this._castEarthWall(player);
+      case this.SPELLS.ORE_SENSE.id:     return this._castOreSense(player);
+      case this.SPELLS.TUNNEL.id:        return this._castTunnel(player);
+      default: return false;
+    }
+  }
+
+  /**
+   * Reset a spell's cooldown — used by the graze dispatch layer
+   * (grazeRegistry.js resetCooldownCall) since spellCooldowns is keyed by
+   * `${player.name}_${spellId}`, not just player.name, so the generic
+   * resetCooldownRefs map.delete(player.name) mechanism can't reach it.
+   * Same pattern as Red Priest's resetSpellCooldown (see provoker.js).
+   */
+  static resetSpellCooldown(player, spellId) {
+    this.spellCooldowns.delete(`${player.name}_${spellId}`);
   }
 
   // =============================================

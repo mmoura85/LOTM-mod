@@ -4,7 +4,7 @@
     "description": {
       "identifier": "lotm:ghost",
       "materials": {
-        "default": "entity_emissive"
+        "default": "entity_alphatest"
       },
       "textures": {
         "default": "textures/entity/ghost"
@@ -14,7 +14,7 @@
       },
       "animations": {
         "idle": "animation.ghost.idle",
-        "fly": "animation.ghost.fly",
+        "fly": "animation.ghost.move",
 				"general": "controller.animation.allay.general"
       },
       "scripts": {

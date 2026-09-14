@@ -11,7 +11,9 @@
     "curves": {
       "variable.fade_in_out": {
         "type": "bezier",
-        "nodes": [0.0, 1.0, 1.0, 0.0]
+        "nodes": [0.0, 1.0, 1.0, 0.0],
+        "input": "variable.particle_age",
+        "horizontal_range": "variable.particle_lifetime"
       }
     },
     "components": {

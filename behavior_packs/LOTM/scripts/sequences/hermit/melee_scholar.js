@@ -2,7 +2,7 @@
 // MELEE SCHOLAR - SEQUENCE 8 HERMIT PATHWAY
 // ============================================
 
-import { world, system } from '@minecraft/server';
+import { world, system, EnchantmentType } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { MysteryPryerSequence } from './mystery_pryer.js';
@@ -63,8 +63,15 @@ export class MeleeScholarSequence {
   // PASSIVE ABILITIES
   // =============================================
   static applyPassiveAbilities(player) {
-    // Inherit Mystery Pryer passives (night vision, health boost, aura scan)
+    // Inherit Mystery Pryer passives (health boost, aura scan)
     MysteryPryerSequence.applyPassiveAbilities(player);
+
+    // Night Vision — moved here from Mystery Pryer (2026-08-16): entry-tier
+    // Hermit no longer sees in the dark, Melee Scholar is where it starts.
+    const nv = player.getEffect('night_vision');
+    if (!nv || nv.duration < 200) {
+      player.addEffect('night_vision', this.EFFECT_DURATION, { amplifier: 0, showParticles: false });
+    }
 
     // Physical enhancements — first and only time Hermit gets physical buffs
     this._applyPhysicalEnhancements(player);
@@ -72,18 +79,26 @@ export class MeleeScholarSequence {
     // Extra health: +2 hearts (scholar's conditioning)
     this._applyHealthBonus(player, 4);
 
-    // Process active abilities
-    this._processCombatInsight(player);
-    this._processMartialStudy(player);
-
-    // Tick inherited cooldowns
-    MysteryPryerSequence._tickCooldowns(player);
-
-    // Tick own cooldowns
-    this._tickCooldowns(player);
-
     // Weapon enchantments via martial knowledge
     this._applyWeaponEnchantments(player);
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (Combat Insight/Martial Study processing +
+  // cooldowns). Called unconditionally every tick from main.js so a
+  // grazer keeps working without needing to be a real Melee Scholar, and
+  // so a real higher-tier player still gets it ticked — previously only
+  // Melee Scholar's own exact-sequence applyPassiveAbilities ticked this,
+  // so a real Warlock's inherited Martial Study would set studyActive once
+  // and never clear it (permanently locking out re-use, since
+  // useMartialStudy's "already active" check never sees it end). Mystery
+  // Pryer's own cooldowns tick independently via its own tickAbilityState
+  // (also unconditional) — no longer delegated from here.
+  // =============================================
+  static tickAbilityState(player) {
+    this._processCombatInsight(player);
+    this._processMartialStudy(player);
+    this._tickCooldowns(player);
   }
 
   // =============================================
@@ -143,7 +158,7 @@ export class MeleeScholarSequence {
       // Sharpness I from technique (modest)
       const sharp = enc.getEnchantment('sharpness');
       if (!sharp || sharp.level < 1) {
-        enc.addEnchantment({ type: 'sharpness', level: 1 });
+        enc.addEnchantment({ type: new EnchantmentType('sharpness'), level: 1 });
         inventory.container.setItem(player.selectedSlotIndex, heldItem);
       }
     } catch (e) {}

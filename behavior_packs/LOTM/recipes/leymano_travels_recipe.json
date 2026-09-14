@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:leymano_travels_recipe" },
+    "tags": ["lotm:ritual_altar"],
+    "ingredients": [
+      { "item": "minecraft:book" },
+      { "item": "lotm:beyonder_soul" },
+      { "item": "lotm:spiritual_essence" },
+      { "item": "lotm:spiritual_essence" },
+      { "item": "lotm:spirit_shard" },
+      { "item": "lotm:door_characteristic_seq6" }
+    ],
+    "result": { "item": "lotm:leymano_travels" },
+    "unlock": [{ "item": "lotm:door_characteristic_seq6" }]
+  }
+}

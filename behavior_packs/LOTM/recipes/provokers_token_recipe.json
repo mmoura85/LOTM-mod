@@ -13,6 +13,6 @@
       "R": { "item": "minecraft:red_dye" }
     },
     "result": { "item": "lotm:provoker_idol", "count": 1 },
-    "unlock": [{ "item": "lotm:red_priest_characteristic_seq8" }]
+    "unlock": [{ "item": "lotm:red_priest_potion_seq8" }]
   }
 }

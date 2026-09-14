@@ -12,12 +12,15 @@
       "minecraft:max_stack_size": 1,
       "minecraft:icon": "seer_potion_seq9",
       "minecraft:display_name": {
-        "value": "§5Seer Potion"
+        "value": "\u00a75Seer Potion"
       },
-      "minecraft:use_duration": 32,
       "minecraft:food": {
         "nutrition": 0,
         "can_always_eat": true
+      },
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.0
       }
     }
   }

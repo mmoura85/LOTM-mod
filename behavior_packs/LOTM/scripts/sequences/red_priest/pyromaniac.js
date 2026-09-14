@@ -87,12 +87,12 @@ export class PyromancerSequence {
         const remaining = config.cooldownMs - (now - (spellCooldowns.get(cdKey) || 0));
         if (remaining > 0) {
             player.sendMessage(`§c${spell.replace(/_/g,' ')} on cooldown (${(remaining/1000).toFixed(1)}s)`);
-            return;
+            return false;
         }
         const spirit = SpiritSystem.getSpirit(player);
         if (spirit < config.cost) {
             player.sendMessage(`§cNot enough spirit (need ${config.cost}, have ${spirit})`);
-            return;
+            return false;
         }
 
         spellCooldowns.set(cdKey, now);
@@ -114,6 +114,26 @@ export class PyromancerSequence {
             spellCooldowns.delete(cdKey);
             SpiritSystem.restoreSpirit(player, config.cost);
         }
+        return ok;
+    }
+
+    // Grazed/borrowed dispatch — selects a specific spell then casts it,
+    // bypassing the attunement menu. Needed because castSpell() always
+    // reads from the module-level `selectedSpell` Map with no way to pass
+    // a spell directly, and the individual _castX functions are private
+    // module functions, not class methods reachable via abilityRef.
+    static castSpecificSpell(player, spellKey) {
+        selectedSpell.set(player.id, spellKey);
+        return this.castSpell(player);
+    }
+
+    // Reset a specific spell's wall-clock cooldown — used by the graze
+    // dispatch layer (grazeRegistry.js resetCooldownCall), same reasoning
+    // as ProvokerSequence.resetProvocationCooldown. spellCooldowns is a
+    // module-private Map keyed by `${player.id}:${spell}`, unreachable via
+    // the normal resetCooldownRefs mechanism.
+    static resetSpellCooldown(player, spellKey) {
+        spellCooldowns.delete(`${player.id}:${spellKey}`);
     }
 
     // Called every tick from main.js for timed effects

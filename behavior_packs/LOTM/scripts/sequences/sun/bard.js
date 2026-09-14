@@ -85,8 +85,19 @@ export class BardSequence {
     
     // Health bonus (1 extra heart for Sequence 9)
     this.applyHealthBonus(player, 2);
-    
-    // Process active songs
+
+    // Deliberately NOT calling tickAbilityState here — main.js already calls
+    // it unconditionally for every player (real Bard or grazer alike), so
+    // calling it again here would double-tick song duration/cooldowns for a
+    // real Bard specifically.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via
+  // processSongs' own Map.get(player.name) check. Called both from the real
+  // Bard's applyPassiveAbilities above and unconditionally from main.js for
+  // every player, so a grazed/Creeping-Hunger-borrowed Song of Comfort keeps
+  // being processed even for a non-Bard player.
+  static tickAbilityState(player) {
     this.processSongs(player);
   }
   

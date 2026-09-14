@@ -89,12 +89,25 @@ export class ReaperSequence {
         cullActiveUntil.delete(player.id);
     }
 
-    // Called from entityHitEntity in main.js
+    // Called from entityHitEntity in main.js — real Reapers only (gated by
+    // pathway/sequence there). Baseline burn+damage is an innate tier
+    // bonus, not something a grazer of some OTHER Red Priest ability
+    // should get for free, so this stays externally gated. Deliberately
+    // does NOT also call processCullHit here — main.js calls that
+    // unconditionally for every player already (see there), so calling it
+    // again here would double-process Cull hits for a real Reaper.
     static onMeleeHit(player, victim) {
         // Base melee: 10s burn + heavy bonus damage
         try { victim.setOnFire(10, true); } catch (_) {}
         try { victim.applyDamage(6, { damagingEntity: player }); } catch (_) {}
+    }
 
+    // Cull-specific escalation — self-gates via cullActiveUntil, so this is
+    // safe to call for ANY player on ANY melee hit (see main.js's
+    // entityHitEntity, called unconditionally there) — a grazer who
+    // activated Cull via castSpecificSpell needs this to fire even though
+    // they aren't a real Reaper and don't get the onMeleeHit call above.
+    static processCullHit(player, victim) {
         const now = Date.now();
         const cullUntil = cullActiveUntil.get(player.id) || 0;
         if (now > cullUntil) return;
@@ -162,12 +175,12 @@ export class ReaperSequence {
         const remaining = config.cooldownMs - (now - (spellCooldowns.get(cdKey) || 0));
         if (remaining > 0) {
             player.sendMessage(`§c${spell.replace(/_/g,' ')} on cooldown (${(remaining/1000).toFixed(1)}s)`);
-            return;
+            return false;
         }
         const spirit = SpiritSystem.getSpirit(player);
         if (spirit < config.cost) {
             player.sendMessage(`§cNot enough spirit (need ${config.cost}, have ${spirit})`);
-            return;
+            return false;
         }
 
         spellCooldowns.set(cdKey, now);
@@ -194,6 +207,7 @@ export class ReaperSequence {
             spellCooldowns.delete(cdKey);
             SpiritSystem.restoreSpirit(player, config.cost);
         }
+        return ok;
     }
 
     static tickEffects() {
@@ -214,6 +228,20 @@ export class ReaperSequence {
             if (radius > 14) { activeRings.splice(i, 1); continue; }
             try { _tickRing(ring, radius); } catch (_) {}
         }
+    }
+
+    // Grazed/borrowed dispatch — see PyromancerSequence.castSpecificSpell
+    // for why this wrapper exists (selectedSpell is module-private,
+    // individual spells are module functions not class methods).
+    static castSpecificSpell(player, spellKey) {
+        selectedSpell.set(player.id, spellKey);
+        return this.castSpell(player);
+    }
+
+    // Reset a specific spell's wall-clock cooldown — see
+    // PyromancerSequence.resetSpellCooldown for why this exists.
+    static resetSpellCooldown(player, spellKey) {
+        spellCooldowns.delete(`${player.id}:${spellKey}`);
     }
 }
 
@@ -254,7 +282,7 @@ function _classifyEntity(entity) {
     if (id === 'lotm:rampager' || id === 'lotm:voidwatcher') return 'rampager';
     if (id === 'lotm:soldier' || id === 'lotm:clown' || id === 'lotm:ghost' || id === 'lotm:vengeful_ghost') return 'beyonder';
     if (id === 'lotm:ghoul' || id === 'lotm:shade' || id === 'lotm:rimewraith' || id === 'lotm:poltergeist' ||
-        id === 'lotm:dire_wolf' || id === 'lotm:dire_bear' || id === 'lotm:ogre') return 'dangerous';
+        id === 'lotm:dire_wolf' || id === 'lotm:dire_bear' || id === 'lotm:ogre' || id === 'lotm:dire_werewolf') return 'dangerous';
     try {
         if (entity.matches({ families: ['monster'] })) return 'hostile';
         if (entity.matches({ families: ['undead'] }))  return 'hostile';

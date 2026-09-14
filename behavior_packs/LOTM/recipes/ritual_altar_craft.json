@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:recipe_shaped": {
+        "description": { "identifier": "lotm:ritual_altar_craft" },
+        "tags": ["crafting_table"],
+        "pattern": [
+            "OSO",
+            "SDS",
+            "OSO"
+        ],
+        "key": {
+            "O": { "item": "minecraft:obsidian" },
+            "S": { "item": "minecraft:soul_sand" },
+            "D": { "item": "minecraft:diamond" }
+        },
+        "result": { "item": "lotm:ritual_altar" },
+        "unlock": [{ "item": "minecraft:soul_sand" }]
+    }
+}

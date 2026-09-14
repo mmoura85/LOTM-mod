@@ -1,5 +1,7 @@
 import { ActionFormData, ModalFormData, MessageFormData } from '@minecraft/server-ui';
 import { world } from '@minecraft/server';
+import { SpiritSystem } from '../core/spiritSystem.js';
+import { dispatchGrazedAbility } from '../core/grazeRegistry.js';
 
 /**
  * Menu System for Door Pathway Abilities
@@ -374,8 +376,8 @@ export class DoorPathwayMenus {
   static async showUseRecordingConfirmMenu(player, index, recording, ScribeSequence) {
     const estimatedCost = Math.floor(30 * (1 / recording.strength));
     const currentSpirit = Math.floor(player.getDynamicProperty('lotm:spirit') || 0);
-    
-    const canAfford = currentSpirit >= estimatedCost;
+
+    const canAfford = SpiritSystem.canAfford(player, estimatedCost);
     
     const form = new MessageFormData()
       .title('§cConfirm Use')
@@ -453,6 +455,83 @@ export class DoorPathwayMenus {
   }
   
   /**
+   * Grazed version of Traveler's Log (see showTravelerMenu above) — opened
+   * by a Creeping Hunger/Shepherd grazer who doesn't have real Traveler
+   * access. Reuses showTeleportMenu/showSaveLocationMenu/
+   * showManageLocationsMenu (and everything under them) completely
+   * unchanged via a shim: read-only data (savedLocations/selectedLocation/
+   * travelCooldowns) is the SAME Map as the real TravelerSequence uses —
+   * already correctly keyed per player.name, so sharing it with real
+   * Travelers is safe, they're just different players — while the two
+   * actual ability calls (saveLocation/travelToLocation) route through
+   * dispatchGrazedAbility so they get the same spirit discount + pathway
+   * bypass + cooldown reset as any other grazed ability.
+   *
+   * Place Door / Manage Portals are deliberately NOT offered here —
+   * placing a persistent, world-visible portal block anyone can walk
+   * through is a bigger blast-radius ability than a personal teleport, and
+   * stays real-Traveler-only.
+   */
+  static async showGrazedTravelerMenu(player, ability, TravelerSequenceReal) {
+    // Lazy-load from the dynamic property if this player's saved locations
+    // aren't in memory yet — TravelerSequence.loadLocations() is normally
+    // only triggered from inside TravelerSequence/SecretsSorcererSequence's
+    // own applyPassiveAbilities (real-pathway-gated), which a grazer never
+    // satisfies. Without this, a grazer's savedLocations Map entry starts
+    // fresh-empty after every script reload (main.js reload / world
+    // restart) even though their real data is still persisted on the
+    // dynamic property — real Travelers don't hit this since their own
+    // passive tick loads it for them automatically.
+    if (!TravelerSequenceReal.savedLocations.has(player.name)) {
+      TravelerSequenceReal.loadLocations(player);
+    }
+
+    const shim = {
+      savedLocations: TravelerSequenceReal.savedLocations,
+      selectedLocation: TravelerSequenceReal.selectedLocation,
+      travelCooldowns: TravelerSequenceReal.travelCooldowns,
+      getPlayerDoors: (...args) => TravelerSequenceReal.getPlayerDoors(...args),
+      calculateTravelCost: (...args) => TravelerSequenceReal.calculateTravelCost(...args),
+      saveLocations: (...args) => TravelerSequenceReal.saveLocations(...args),
+      saveLocation: (p, name) => dispatchGrazedAbility(p, {
+        abilityRef: { class: 'TravelerSequence', method: 'saveLocation', args: [name] },
+        pathway: ability.pathway, sequenceNumber: ability.sequenceNumber
+      }),
+      travelToLocation: (p, index) => dispatchGrazedAbility(p, {
+        abilityRef: { class: 'TravelerSequence', method: 'travelToLocation', args: [index] },
+        pathway: ability.pathway, sequenceNumber: ability.sequenceNumber,
+        resetCooldownRefs: [{ class: 'TravelerSequence', mapProperty: 'travelCooldowns' }]
+      }),
+    };
+
+    const locations = shim.savedLocations.get(player.name) || [];
+    const selectedIndex = shim.selectedLocation.get(player.name);
+
+    let selectedLocationText = '';
+    if (selectedIndex !== undefined && selectedIndex >= 0 && selectedIndex < locations.length) {
+      selectedLocationText = `\n§7Default: §e${locations[selectedIndex].name}`;
+    }
+
+    const form = new ActionFormData()
+      .title('§5Traveler\'s Log §7(Grazed)')
+      .body(`§7Saved Locations: §e${locations.length}§7/§e10${selectedLocationText}\n\n§7What would you like to do?`)
+      .button('§aTeleport\n§7Travel to a saved location', 'textures/items/ender_pearl')
+      .button('§bSave Location\n§7Bookmark this spot', 'textures/items/compass_item')
+      .button('§6Manage Locations\n§7View and configure', 'textures/ui/book_writable')
+      .button('§7Cancel', 'textures/ui/cancel');
+
+    const response = await form.show(player);
+    if (response.canceled) return;
+
+    switch (response.selection) {
+      case 0: this.showTeleportMenu(player, shim); break;
+      case 1: this.showSaveLocationMenu(player, shim); break;
+      case 2: this.showManageLocationsMenu(player, shim); break;
+      case 3: break; // Cancel
+    }
+  }
+
+  /**
    * Show teleport destination menu
    */
   static async showTeleportMenu(player, TravelerSequence) {
@@ -524,7 +603,7 @@ export class DoorPathwayMenus {
     const spiritCost = TravelerSequence.calculateTravelCost(distance);
     
     const currentSpirit = Math.floor(player.getDynamicProperty('lotm:spirit') || 0);
-    const canAfford = currentSpirit >= spiritCost;
+    const canAfford = SpiritSystem.canAfford(player, spiritCost);
     
     const cooldown = TravelerSequence.travelCooldowns.get(player.name) || 0;
     const onCooldown = cooldown > 0;

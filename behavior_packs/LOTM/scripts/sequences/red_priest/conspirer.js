@@ -108,12 +108,12 @@ export class ConspirierSequence {
         const remaining = config.cooldownMs - (now - (spellCooldowns.get(cdKey) || 0));
         if (remaining > 0) {
             player.sendMessage(`§c${spell.replace(/_/g,' ')} on cooldown (${(remaining/1000).toFixed(1)}s)`);
-            return;
+            return false;
         }
         const spirit = SpiritSystem.getSpirit(player);
         if (spirit < config.cost) {
             player.sendMessage(`§cNot enough spirit (need ${config.cost}, have ${spirit})`);
-            return;
+            return false;
         }
 
         spellCooldowns.set(cdKey, now);
@@ -139,6 +139,7 @@ export class ConspirierSequence {
             spellCooldowns.delete(cdKey);
             SpiritSystem.restoreSpirit(player, config.cost);
         }
+        return ok;
     }
 
     static tickEffects() {
@@ -149,6 +150,20 @@ export class ConspirierSequence {
             if (radius > 12) { activeRings.splice(i, 1); continue; }
             try { _tickRing(ring, radius); } catch (_) {}
         }
+    }
+
+    // Grazed/borrowed dispatch — see PyromancerSequence.castSpecificSpell
+    // for why this wrapper exists (selectedSpell is module-private,
+    // individual spells are module functions not class methods).
+    static castSpecificSpell(player, spellKey) {
+        selectedSpell.set(player.id, spellKey);
+        return this.castSpell(player);
+    }
+
+    // Reset a specific spell's wall-clock cooldown — see
+    // PyromancerSequence.resetSpellCooldown for why this exists.
+    static resetSpellCooldown(player, spellKey) {
+        spellCooldowns.delete(`${player.id}:${spellKey}`);
     }
 }
 
@@ -198,7 +213,7 @@ function _classifyEntity(entity) {
     if (id === 'lotm:soldier' || id === 'lotm:clown' || id === 'lotm:ghost' || id === 'lotm:vengeful_ghost') return 'beyonder';
     // Dangerous LOTM monsters
     if (id === 'lotm:ghoul' || id === 'lotm:shade' || id === 'lotm:rimewraith' || id === 'lotm:poltergeist' ||
-        id === 'lotm:dire_wolf' || id === 'lotm:dire_bear' || id === 'lotm:ogre') return 'dangerous';
+        id === 'lotm:dire_wolf' || id === 'lotm:dire_bear' || id === 'lotm:ogre' || id === 'lotm:dire_werewolf') return 'dangerous';
     // Standard vanilla hostiles
     try {
         if (entity.matches({ families: ['monster'] })) return 'hostile';
@@ -806,10 +821,13 @@ function _fireImpact(dim, pos) {
 }
 
 function _tickRing(ring, radius) {
-    if (radius - ring.lastRadius < 0.3) return;
+    // Sampling density/tolerance uplifted to match Reaper's version
+    // (threshold 0.25, steps max(28, radius*18), maxDistance 1.4) — user
+    // confirmed Reaper's denser sampling catches mobs more reliably.
+    if (radius - ring.lastRadius < 0.25) return;
     ring.lastRadius = radius;
     const { center, dimension, player, hitEntities } = ring;
-    const steps = Math.max(24, Math.floor(radius * 15));
+    const steps = Math.max(28, Math.floor(radius * 18));
     const DAMAGE = SPELLS.ring_of_fire.damage;
     for (let i=0;i<steps;i++) {
         const angle=(i/steps)*Math.PI*2;
@@ -817,7 +835,7 @@ function _tickRing(ring, radius) {
         const pos={ x:center.x+rx, y:center.y+0.3, z:center.z+rz };
         try { dimension.spawnParticle('minecraft:mobflame_single', pos); } catch(_) {}
         try { dimension.spawnParticle('minecraft:basic_flame_particle', { ...pos, y:pos.y+0.9 }); } catch(_) {}
-        for (const e of dimension.getEntities({ location:{ x:pos.x, y:center.y, z:pos.z }, maxDistance:1.3 })) {
+        for (const e of dimension.getEntities({ location:{ x:pos.x, y:center.y, z:pos.z }, maxDistance:1.4 })) {
             if (!e.isValid()||e.id===player.id||hitEntities.has(e.id)) continue;
             hitEntities.add(e.id);
             try { e.applyDamage(DAMAGE, { damagingEntity:player }); } catch(_) {}

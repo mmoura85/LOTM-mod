@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "lotm:hunter_boots_craft"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      "I I",
+      "I I"
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:iron_ingot"
+      }
+    },
+    "result": {
+      "item": "lotm:hunter_boots",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:iron_ingot"
+      }
+    ]
+  }
+}

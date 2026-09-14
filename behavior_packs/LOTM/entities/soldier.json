@@ -18,9 +18,9 @@
 								{
 									"any_of": [
 										{ "test": "is_family", "subject": "other", "value": "monster" },
-										{ "test": "is_type", "subject": "other", "value": "lotm:dire_wolf" },
-										{ "test": "is_type", "subject": "other", "value": "lotm:dire_bear" },
-										{ "test": "is_type", "subject": "other", "value": "lotm:rampager" }
+										{ "test": "is_family", "subject": "other", "value": "dire_wolf" },
+										{ "test": "is_family", "subject": "other", "value": "dire_bear" },
+										{ "test": "is_family", "subject": "other", "value": "rampager" }
 									]
 								}
 							]
@@ -119,9 +119,9 @@
 					{
 						"filters": {
 							"any_of": [
-								{ "test": "is_type", "subject": "other", "value": "lotm:dire_wolf" },
-								{ "test": "is_type", "subject": "other", "value": "lotm:dire_bear" },
-								{ "test": "is_type", "subject": "other", "value": "lotm:rampager" }
+								{ "test": "is_family", "subject": "other", "value": "dire_wolf" },
+								{ "test": "is_family", "subject": "other", "value": "dire_bear" },
+								{ "test": "is_family", "subject": "other", "value": "rampager" }
 							]
 						},
 						"within_default": 16
@@ -137,9 +137,9 @@
 							{
 								"any_of": [
 									{ "test": "is_family", "subject": "other", "value": "monster" },
-									{ "test": "is_type", "subject": "other", "value": "lotm:dire_wolf" },
-									{ "test": "is_type", "subject": "other", "value": "lotm:dire_bear" },
-									{ "test": "is_type", "subject": "other", "value": "lotm:rampager" }
+									{ "test": "is_family", "subject": "other", "value": "dire_wolf" },
+									{ "test": "is_family", "subject": "other", "value": "dire_bear" },
+									{ "test": "is_family", "subject": "other", "value": "rampager" }
 								]
 							}
 						]

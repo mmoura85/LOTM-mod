@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:tyrant_potion_seq4_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " E ",
+      "EBE",
+      " T "
+    ],
+    "key": {
+      "E": { "item": "minecraft:echo_shard" },
+      "B": { "item": "minecraft:glass_bottle" },
+      "T": { "item": "lotm:tyrant_characteristic_seq4" }
+    },
+    "result": { "item": "lotm:tyrant_potion_seq4", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_characteristic_seq4" }]
+  }
+}

@@ -5,10 +5,10 @@
     "tags": ["crafting_table"],
     "ingredients": [
       { "item": "minecraft:blaze_powder" },
-      { "item": "minecraft:wither_rose" },
+      { "item": "minecraft:soul_soil" },
       { "item": "minecraft:gold_ingot" }
     ],
     "result": { "item": "lotm:reaper_focus", "count": 1 },
-    "unlock": [{ "item": "lotm:red_priest_characteristic_seq5" }]
+    "unlock": [{ "item": "lotm:red_priest_potion_seq5" }]
   }
 }

@@ -42,15 +42,19 @@ export class SeerSequence {
 
   // ── Passive ─────────────────────────────────────────────────────────
   static applyPassiveAbilities(player) {
-    // Seq 9 Seer — pure mental pathway, no physical bonus
+    // Seq 9 Seer — pure mental pathway, no physical bonus. All real content
+    // lives in tickAbilityState, called unconditionally from main.js (not
+    // from here) so grazers/inherited-access (Clown/Magician) get identical
+    // treatment with no double-ticking risk.
+  }
 
-    // Process Spirit Vision duration
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
     this.processSpiritVision(player);
-
-    // Passive Danger Intuition scan
     this.processDangerIntuition(player);
 
-    // Tick cooldowns
     if (this.spiritVisionCooldown.has(player.name)) {
       const cd = this.spiritVisionCooldown.get(player.name) - 1;
       if (cd <= 0) this.spiritVisionCooldown.delete(player.name);
@@ -263,14 +267,22 @@ export class ClownSequence {
     player.addEffect('speed',      60, { amplifier: 0, showParticles: false }); // Speed I
     player.addEffect('jump_boost', 60, { amplifier: 0, showParticles: false }); // Jump Boost I
 
-    // Inherited Seer passives
-    SeerSequence.processDangerIntuition(player);
-    SeerSequence.processSpiritVision(player);
+    // Deliberately NOT calling tickAbilityState (own) or SeerSequence's
+    // here — main.js calls both unconditionally for every player already,
+    // so calling them again here would double-tick duration/cooldowns for
+    // a real Clown specifically.
+  }
 
-    // Process disguise
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
     this.processDisguise(player);
 
-    // Tick cooldowns
+    // NOTE: paperDaggersCooldown deliberately not ticked here — matches
+    // pre-existing behavior (usePaperDaggers sets it but never actually
+    // reads/gates on it, so it was already inert dead tracking before this
+    // conversion, not something this change is responsible for "fixing").
     for (const map of [this.feintCooldowns, this.disguiseCooldowns]) {
       if (map.has(player.name)) {
         const cd = map.get(player.name) - 1;
@@ -664,22 +676,18 @@ export class MagicianSequence {
     // +4 hearts health boost (Seq 7 caster — well below physical pathways)
     player.addEffect('health_boost', 999999, { amplifier: 3, showParticles: false }); // amp 3 = +4 hearts
 
-    // Inherited passives
-    SeerSequence.processDangerIntuition(player);
-    SeerSequence.processSpiritVision(player);
-    ClownSequence.processDisguise(player);
+    // Deliberately NOT calling tickAbilityState (own) or Seer's/Clown's
+    // here — main.js calls all three unconditionally for every player
+    // already, so calling them again here would double-tick duration/
+    // cooldowns for a real Magician specifically.
+  }
 
-    // Tick cooldowns
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player.
+  static tickAbilityState(player) {
     for (const map of [this.flamingJumpCooldowns, this.transferCooldowns, this.spellCooldowns,
                        this.airBulletCooldowns, this.figurineCooldowns, this.paperWeaponCooldowns]) {
-      if (map.has(player.name)) {
-        const cd = map.get(player.name) - 1;
-        if (cd <= 0) map.delete(player.name);
-        else         map.set(player.name, cd);
-      }
-    }
-    for (const map of [ClownSequence.feintCooldowns, ClownSequence.disguiseCooldowns,
-                       ClownSequence.paperDaggersCooldown]) {
       if (map.has(player.name)) {
         const cd = map.get(player.name) - 1;
         if (cd <= 0) map.delete(player.name);
@@ -1162,7 +1170,13 @@ export class MagicianSequence {
       case this.ABILITIES.DAMAGE_TRANSFER:    return this.useDamageTransfer(player);
       case this.ABILITIES.SPELL_VOLLEY:       return this.useSpellVolley(player);
       case this.ABILITIES.AIR_BULLET:         return this.useAirBullet(player);
-      case this.ABILITIES.PAPER_FIGURINE:     return this.usePaperFigurine(player);
+      case this.ABILITIES.PAPER_FIGURINE:
+        // Not a real triggerable ability — usePaperFigurine never existed.
+        // Figurine is a passive item check (checkFigurinePrimed/
+        // handleFigurineTrigger, driven by the entityHurt event in
+        // main.js) — carrying one in inventory is all that's needed.
+        player.sendMessage('§7Just carry a Paper Figurine in your inventory — it triggers automatically when you take a near-fatal hit.');
+        return false;
       case this.ABILITIES.WATER_BREATHING:    return this.useWaterBreathing(player);
       case this.ABILITIES.DRAWING_PAPER_WEAPON: return this.useDrawingPaperWeapon(player);
       default: return false;

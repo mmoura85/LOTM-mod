@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "lotm:tyrant_potion_seq7_recipe" },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " P ",
+      "PBP",
+      " T "
+    ],
+    "key": {
+      "P": { "item": "minecraft:ink_sac" },
+      "B": { "item": "minecraft:glass_bottle" },
+      "T": { "item": "lotm:tyrant_characteristic_seq7" }
+    },
+    "result": { "item": "lotm:tyrant_potion_seq7", "count": 1 },
+    "unlock": [{ "item": "lotm:tyrant_characteristic_seq7" }]
+  }
+}

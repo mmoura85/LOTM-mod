@@ -8,17 +8,11 @@
     "conditions": {
       "placement_pass": "surface_pass",
       "minecraft:biome_filter": {
-        "all_of": [
-          {
-            "test": "has_biome_tag",
-            "operator": "==",
-            "value": "overworld"
-          },
-          {
-            "test": "has_biome_tag",
-            "operator": "==",
-            "value": "forest"
-          }
+        "any_of": [
+          { "test": "has_biome_tag", "operator": "==", "value": "forest" },
+          { "test": "has_biome_tag", "operator": "==", "value": "taiga" },
+          { "test": "has_biome_tag", "operator": "==", "value": "plains" },
+          { "test": "has_biome_tag", "operator": "==", "value": "savanna" }
         ]
       }
     },

@@ -1,0 +1,16 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lotm:yesterday_once_more_charm",
+      "menu_category": { "category": "equipment" }
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "yesterday_once_more_charm",
+      "minecraft:display_name": { "value": "§eYesterday Once More Charm" },
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": 1
+    }
+  }
+}

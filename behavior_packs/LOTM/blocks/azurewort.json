@@ -27,8 +27,7 @@
               { "name": "minecraft:sand" },
               { "name": "minecraft:gravel" },
               { "name": "minecraft:dirt" },
-              { "name": "minecraft:coarse_dirt" },
-              { "name": "minecraft:rooted_dirt" }
+              { "name": "minecraft:coarse_dirt" }
             ]
           }
         ]

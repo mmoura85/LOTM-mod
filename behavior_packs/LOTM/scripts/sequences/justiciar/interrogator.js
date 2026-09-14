@@ -123,6 +123,14 @@ export class InterrogatorSequence {
     // ── +6 hearts (+12 HP) ───────────────────────────────────────────────────
     this._applyHealthBonus(player, 12);
 
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player already.
+  }
+
+  // Ongoing ability state — safe to call for ANY player, self-gates via its
+  // own Map.get(player.name) check. Called ONLY unconditionally from
+  // main.js for every player.
+  static tickAbilityState(player) {
     // ── Cooldown ticks ────────────────────────────────────────────────────────
     this._tickCooldowns(player);
 
@@ -209,7 +217,7 @@ export class InterrogatorSequence {
       const eyePos = { x: player.location.x, y: player.location.y + 1.6, z: player.location.z };
       const dir    = player.getViewDirection();
       for (let i = 1; i <= 5; i++) {
-        player.dimension.spawnParticle('minecraft:lightning_field', {
+        player.dimension.spawnParticle('minecraft:critical_hit_emitter', {
           x: eyePos.x + dir.x * i,
           y: eyePos.y + dir.y * i,
           z: eyePos.z + dir.z * i,
@@ -361,7 +369,7 @@ export class InterrogatorSequence {
     // Lightning visual on player
     try {
       for (let i = 0; i < 4; i++) {
-        player.dimension.spawnParticle('minecraft:lightning_field', {
+        player.dimension.spawnParticle('minecraft:critical_hit_emitter', {
           x: player.location.x + (Math.random()-0.5),
           y: player.location.y + (Math.random()*2),
           z: player.location.z + (Math.random()-0.5),
@@ -392,7 +400,7 @@ export class InterrogatorSequence {
 
     // Lightning particle on victim
     try {
-      victim.dimension.spawnParticle('minecraft:lightning_field', {
+      victim.dimension.spawnParticle('minecraft:critical_hit_emitter', {
         x: victim.location.x,
         y: victim.location.y + 1,
         z: victim.location.z,

@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "lotm:waystone_recipe" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:stone_bricks", "count": 2 },
+      { "item": "minecraft:ender_pearl" },
+      { "item": "lotm:spiritual_essence" }
+    ],
+    "result": { "item": "lotm:waystone", "count": 1 },
+    "unlock": [{ "item": "lotm:spiritual_essence" }]
+  }
+}

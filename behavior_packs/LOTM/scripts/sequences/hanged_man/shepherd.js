@@ -18,6 +18,7 @@ import { RoseBishopSequence } from './rose_bishop.js';
 import { ShadowAsceticSequence } from './shadow_ascetic.js';
 import { ListenerSequence } from './listener.js';
 import { SecretsSuppliantSequence } from './secrets_suppliant.js';
+import { GRAZE_REGISTRY, dispatchGrazedAbility, dispatchGrazedMenu, tickGrazedAbility } from '../../core/grazeRegistry.js';
 
 export class ShepherdSequence {
   static SEQUENCE_NUMBER = 5;
@@ -34,400 +35,20 @@ export class ShepherdSequence {
   // Dynamic property for permanent passive grazes (seq 7+ characteristics)
   static PASSIVE_GRAZES_PROP   = 'lotm:shepherd_passives';
 
-  // Spirit cost to activate a grazed ability (half the original cost)
-  // The soul does some of the work
-  static GRAZED_ABILITY_SPIRIT_MULTIPLIER = 0.6;
+  // Grazed-ability spirit discount (60% of a real member's cost) is now
+  // implemented at the shared dispatch layer — see
+  // GRAZED_SPIRIT_COST_MULTIPLIER in core/grazeRegistry.js. This class no
+  // longer needs its own copy of that constant.
 
   // Grazing costs spirit (the act of absorbing a soul is taxing)
   static GRAZE_SPIRIT_COST = 60;
 
-  // ── Grazeable ability registry ────────────────────────────────────────────
-  // Maps characteristic item id → array of ability definitions
-  // Each ability: { id, name, description, sequenceNumber, isPassive, passiveEffects? }
-  // isPassive: true = low-sequence buff (doesn't count toward cap)
-  // passiveEffects: array of effect descriptors applied every tick
-  static GRAZE_REGISTRY = {
+  // Cooldown between uses of a grazed ability (0.2s) — governs reuse once
+  // the source ability's own (usually longer) cooldown has been reset via
+  // resetCooldownRefs/resetCooldownCall. Shortened from 10s 2026-08-09.
+  static GRAZED_ABILITY_COOLDOWN_TICKS = 4;
 
-    // ── DARKNESS pathway ──────────────────────────────────────────────────
-    'lotm:darkness_characteristic_seq9': [
-      {
-        id: 'graze_sleepless_nightvision',
-        name: '§5Night Vision',
-        description: 'Permanent night vision',
-        pathway: 'darkness', sequenceNumber: 9, isPassive: true,
-        passiveEffects: [{ effect: 'night_vision', amplifier: 0 }]
-      },
-      {
-        id: 'graze_sleepless_speed',
-        name: '§5Enhanced Speed',
-        description: 'Speed I permanent',
-        pathway: 'darkness', sequenceNumber: 9, isPassive: true,
-        passiveEffects: [{ effect: 'speed', amplifier: 0 }]
-      }
-    ],
-    'lotm:darkness_characteristic_seq8': [
-      {
-        id: 'graze_poet_song_fear',
-        name: '§5Song of Fear',
-        description: 'Make enemies flee',
-        pathway: 'darkness', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'MidnightPoetSequence', method: 'useSongOfFear' }
-      },
-      {
-        id: 'graze_poet_song_pacify',
-        name: '§5Song of Pacification',
-        description: 'Calm hostile mobs',
-        pathway: 'darkness', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'MidnightPoetSequence', method: 'useSongOfPacification' }
-      }
-    ],
-    'lotm:darkness_characteristic_seq7': [
-      {
-        id: 'graze_nightmare_state',
-        name: '§5Nightmare State',
-        description: 'Become incorporeal (20s)',
-        pathway: 'darkness', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'NightmareSequence', method: 'useNightmareState' }
-      },
-      {
-        id: 'graze_nightmare_limbs',
-        name: '§5Nightmare Limbs',
-        description: 'Dark tentacles attack nearby',
-        pathway: 'darkness', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'NightmareSequence', method: 'useNightmareLimbs' }
-      },
-      {
-        id: 'graze_dream_invasion',
-        name: '§5Dream Invasion',
-        description: 'Put targets to sleep',
-        pathway: 'darkness', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'NightmareSequence', method: 'useDreamInvasion' }
-      }
-    ],
-    'lotm:darkness_characteristic_seq6': [
-      {
-        id: 'graze_soul_assurer_requiem',
-        name: '§b Requiem',
-        description: 'Suppress spirit bodies of targets',
-        pathway: 'darkness', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'SoulAssurerSequence', method: 'useRequiem' }
-      },
-      {
-        id: 'graze_soul_assurer_agitate',
-        name: '§b Agitate',
-        description: 'Heighten enemy aggression',
-        pathway: 'darkness', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'SoulAssurerSequence', method: 'useAgitate' }
-      }
-    ],
-
-    // ── TWILIGHT GIANT pathway ────────────────────────────────────────────
-    'lotm:twilight_giant_characteristic_seq9': [
-      {
-        id: 'graze_warrior_strength',
-        name: '§cWarrior Strength',
-        description: 'Strength II permanent',
-        pathway: 'twilight_giant', sequenceNumber: 9, isPassive: true,
-        passiveEffects: [{ effect: 'strength', amplifier: 1 }]
-      }
-    ],
-    'lotm:twilight_giant_characteristic_seq8': [
-      {
-        id: 'graze_pugilist_resist',
-        name: '§cPugilist Resistance',
-        description: 'Resistance I + Absorption I permanent',
-        pathway: 'twilight_giant', sequenceNumber: 8, isPassive: true,
-        passiveEffects: [
-          { effect: 'resistance', amplifier: 0 },
-          { effect: 'absorption', amplifier: 0 }
-        ]
-      }
-    ],
-    'lotm:twilight_giant_characteristic_seq7': [
-      {
-        id: 'graze_weapon_master_haste',
-        name: '§cWeapon Master Haste',
-        description: 'Haste I permanent',
-        pathway: 'twilight_giant', sequenceNumber: 7, isPassive: true,
-        passiveEffects: [{ effect: 'haste', amplifier: 0 }]
-      }
-    ],
-    'lotm:twilight_giant_characteristic_seq6': [
-      {
-        id: 'graze_dawn_light',
-        name: '§6Light of Dawn',
-        description: 'Consecrate holy ground',
-        pathway: 'twilight_giant', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'DawnPaladinSequence', method: 'useLightOfDawn' }
-      },
-      {
-        id: 'graze_dawn_sword_of_light',
-        name: '§6Sword of Light',
-        description: 'Channel divine power into weapon',
-        pathway: 'twilight_giant', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'DawnPaladinSequence', method: 'useSwordOfLight' }
-      }
-    ],
-    'lotm:twilight_giant_characteristic_seq5': [
-      {
-        id: 'graze_guardian_protection',
-        name: '§6Guardian Protection',
-        description: 'Dome of divine protection',
-        pathway: 'twilight_giant', sequenceNumber: 5, isPassive: false,
-        abilityRef: { class: 'GuardianSequence', method: 'useProtection' }
-      }
-    ],
-
-    // ── DOOR pathway ──────────────────────────────────────────────────────
-    'lotm:door_characteristic_seq9': [
-      {
-        id: 'graze_apprentice_door',
-        name: '§5Door Opening',
-        description: 'Open a spirit world door',
-        pathway: 'door', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'ApprenticeSequence', method: 'useDoorOpening' }
-      }
-    ],
-    'lotm:door_characteristic_seq8': [
-      {
-        id: 'graze_trickmaster_flashbang',
-        name: '§6Flashbang',
-        description: 'Blind nearby targets',
-        pathway: 'door', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'TrickmasterSequence', method: 'useFlashbang' }
-      },
-      {
-        id: 'graze_trickmaster_lightning',
-        name: '§6Lightning Strike',
-        description: 'Call down lightning',
-        pathway: 'door', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'TrickmasterSequence', method: 'useLightning' }
-      },
-      {
-        id: 'graze_trickmaster_freeze',
-        name: '§6Freeze',
-        description: 'Freeze a target in place',
-        pathway: 'door', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'TrickmasterSequence', method: 'useFreeze' }
-      }
-    ],
-    'lotm:door_characteristic_seq7': [
-      {
-        id: 'graze_astrologer_crystal_ball',
-        name: '§5Crystal Ball Scry',
-        description: 'Locate nearby structures',
-        pathway: 'door', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'AstrologerSequence', method: 'useCrystalBall' }
-      }
-    ],
-    'lotm:door_characteristic_seq6': [
-      {
-        id: 'graze_scribe_record',
-        name: '§5Scribe Record',
-        description: 'Record an ability to tome',
-        pathway: 'door', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'ScribeSequence', method: 'useRecording' }
-      }
-    ],
-    'lotm:door_characteristic_seq5': [
-      {
-        id: 'graze_traveler_portal',
-        name: '§5Traveler Portal',
-        description: 'Create a spirit world portal',
-        pathway: 'door', sequenceNumber: 5, isPassive: false,
-        abilityRef: { class: 'TravelerSequence', method: 'useSpiritFog' }
-      }
-    ],
-
-    // ── DEATH pathway ─────────────────────────────────────────────────────
-    'lotm:death_characteristic_seq9': [
-      {
-        id: 'graze_corpse_spirit_vision',
-        name: '§8Spirit Vision',
-        description: 'See and reveal nearby spirits',
-        pathway: 'death', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'CorpseCollectorSequence', method: 'useSpiritVision' }
-      },
-      {
-        id: 'graze_corpse_undead_passive',
-        name: '§8Undead Passive',
-        description: 'Undead ignore you passively',
-        pathway: 'death', sequenceNumber: 9, isPassive: true,
-        passiveEffects: [] // handled by special case in applyPassiveGraze
-      }
-    ],
-
-    // ── SUN pathway ───────────────────────────────────────────────────────
-    'lotm:sun_characteristic_seq9': [
-      {
-        id: 'graze_bard_song_comfort',
-        name: '§6Bard Song',
-        description: 'Sing to buff nearby allies',
-        pathway: 'sun', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'BardSequence', method: 'useSelectedSong' }
-      }
-    ],
-    'lotm:sun_characteristic_seq8': [
-      {
-        id: 'graze_light_suppliant_sunshine',
-        name: '§eSunshine',
-        description: 'Summon a beam of sunlight',
-        pathway: 'sun', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'LightSuppliantSequence', method: 'useSunshine' }
-      }
-    ],
-
-    // ── SEER pathway ──────────────────────────────────────────────────────
-    'lotm:seer_characteristic_seq9': [
-      {
-        id: 'graze_seer_spirit_vision',
-        name: '§5Seer Spirit Vision',
-        description: 'Toggle seer spirit sight',
-        pathway: 'seer', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'SeerSequence', method: 'handleAbilityUse', args: ['spirit_vision'] }
-      }
-    ],
-    'lotm:seer_characteristic_seq8': [
-      {
-        id: 'graze_clown_feint',
-        name: '§cFeint Strike',
-        description: 'Strike from unexpected angle',
-        pathway: 'seer', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'ClownSequence', method: 'handleAbilityUse', args: ['feint_strike'] }
-      }
-    ],
-    'lotm:seer_characteristic_seq7': [
-      {
-        id: 'graze_magician_air_bullet',
-        name: '§9Air Bullet',
-        description: 'Fire a compressed air projectile',
-        pathway: 'seer', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'MagicianSequence', method: 'handleAbilityUse', args: ['air_bullet'] }
-      },
-      {
-        id: 'graze_magician_flaming_jump',
-        name: '§9Flaming Jump',
-        description: 'Explosive jump launch',
-        pathway: 'seer', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'MagicianSequence', method: 'handleAbilityUse', args: ['flaming_jump'] }
-      }
-    ],
-
-    // ── JUSTICIAR pathway ─────────────────────────────────────────────────
-    'lotm:justiciar_characteristic_seq9': [
-      {
-        id: 'graze_arbiter_command',
-        name: '§eAuthority Command',
-        description: 'Command nearby entities',
-        pathway: 'justiciar', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'ArbiterSequence', method: 'useAbility', args: ['authority_command'] }
-      }
-    ],
-    'lotm:justiciar_characteristic_seq8': [
-      {
-        id: 'graze_sheriff_badge',
-        name: '§eSheriff Presence',
-        description: 'Exert lawful authority',
-        pathway: 'justiciar', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'SheriffSequence', method: 'useBadge', args: [false] }
-      }
-    ],
-    'lotm:hermit_characteristic_seq9': [
-      {
-        id: 'graze_mystery_pryer_divination',
-        name: '§5Divination',
-        description: 'Locate nearby structures',
-        pathway: 'hermit', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'MysteryPryerSequence', method: 'useDivination' }
-      },
-      {
-        id: 'graze_mystery_pryer_detect',
-        name: '§5Detect Hostiles',
-        description: 'Reveal and glow hostile mobs nearby',
-        pathway: 'hermit', sequenceNumber: 9, isPassive: false,
-        abilityRef: { class: 'MysteryPryerSequence', method: 'useDetectHostiles' }
-      },
-      {
-        id: 'graze_mystery_pryer_ore_sense',
-        name: '§7Ore Sense',
-        description: 'Passive ore detection nearby',
-        pathway: 'hermit', sequenceNumber: 9, isPassive: true,
-        passiveEffects: [] // handled via mystery_pryer passive ore scan
-      },
-    ],
-
-    'lotm:hermit_characteristic_seq8': [
-      {
-        id: 'graze_melee_scholar_insight',
-        name: '§bCombat Insight',
-        description: 'Analyse weapon and apply combat buffs',
-        pathway: 'hermit', sequenceNumber: 8, isPassive: false,
-        abilityRef: { class: 'MeleeScholarSequence', method: 'useCombatInsight' }
-      },
-      {
-        id: 'graze_melee_scholar_strength',
-        name: '§cScholar Strength',
-        description: 'Strength I permanent',
-        pathway: 'hermit', sequenceNumber: 8, isPassive: true,
-        passiveEffects: [{ effect: 'strength', amplifier: 0 }]
-      },
-    ],
-
-    'lotm:hermit_characteristic_seq7': [
-      {
-        id: 'graze_warlock_flames',
-        name: '§cFlames',
-        description: 'Fire bolt that ignites targets',
-        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'WarlockSequence', method: '_castFlames' }
-      },
-      {
-        id: 'graze_warlock_exorcism',
-        name: '§fExorcism',
-        description: 'Cause undead to flee in terror',
-        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'WarlockSequence', method: '_castExorcism' }
-      },
-      {
-        id: 'graze_warlock_lightning',
-        name: '§eLightning',
-        description: 'Strike target with lightning bolt',
-        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'WarlockSequence', method: '_castLightning' }
-      },
-      {
-        id: 'graze_warlock_ore_sense',
-        name: '§7Ore Sense (Active)',
-        description: 'Full ore scan with directions',
-        pathway: 'hermit', sequenceNumber: 7, isPassive: false,
-        abilityRef: { class: 'WarlockSequence', method: '_castOreSense' }
-      },
-    ],
-
-    'lotm:hermit_characteristic_seq6': [
-      {
-        id: 'graze_scroll_professor_storm',
-        name: '§9Storm',
-        description: 'Call down a lightning storm (30s)',
-        pathway: 'hermit', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'ScrollProfessorSequence', method: 'castScroll', args: ['scroll_storm'] }
-      },
-      {
-        id: 'graze_scroll_professor_healing',
-        name: '§aHealing',
-        description: 'Heal yourself and nearby allies',
-        pathway: 'hermit', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'ScrollProfessorSequence', method: 'castScroll', args: ['scroll_healing'] }
-      },
-      {
-        id: 'graze_scroll_professor_force_field',
-        name: '§bForce Field',
-        description: 'Erect a protective force field',
-        pathway: 'hermit', sequenceNumber: 6, isPassive: false,
-        abilityRef: { class: 'ScrollProfessorSequence', method: 'castScroll', args: ['scroll_force_field'] }
-      },
-    ],
-  };
+  // GRAZE_REGISTRY moved to scripts/core/grazeRegistry.js (shared with Creeping Hunger).
 
   // ── Ability identifiers ──────────────────────────────────────────────────
   static ABILITIES = {
@@ -571,9 +192,6 @@ export class ShepherdSequence {
     // ── Inherited RoseBishop logic (madness, flesh hunger, etc.) ─────────
     RoseBishopSequence.applyPassiveAbilities(player);
 
-    // ── Tick grazed ability cooldowns ─────────────────────────────────────
-    this._tickGrazedCooldowns(player);
-
     // ── Action bar (override Rose Bishop's to include grazed info) ────────
     const hunger     = RoseBishopSequence.getFleshHunger(player);
     const madness    = Math.floor(ListenerSequence.getMadness(player));
@@ -594,6 +212,24 @@ export class ShepherdSequence {
       `§bSpirit: §f${spirit}§7/§f${maxSpirit}  ${listenStr}  §cFlesh: §f${Math.floor(hunger)}§7/100` +
       `\n§7Mind: ${mLabel} (${madness}/100)  ${grazedStr}`
     );
+  }
+
+  // =============================================
+  // ABILITY-STATE TICKING (own grazed-ability cooldowns + driving the
+  // active grazed ability's own ongoing tickRefs). Called unconditionally
+  // every tick from main.js — see grazeRegistry.js. Rose Bishop/Shadow
+  // Ascetic/Listener/Suppliant's own abilities tick independently via
+  // their own tickAbilityState calls (also unconditional).
+  // =============================================
+  static tickAbilityState(player) {
+    this._tickGrazedCooldowns(player);
+
+    const activeGrazedForTick = this.getActiveGrazedId(player);
+    if (activeGrazedForTick) {
+      const grazedList = this.getGrazedAbilities(player);
+      const activeAbility = grazedList.find(function(g) { return g.id === activeGrazedForTick; });
+      if (activeAbility) tickGrazedAbility(player, activeAbility);
+    }
   }
 
   // =============================================
@@ -660,7 +296,7 @@ export class ShepherdSequence {
       return null;
     }
 
-    const availableAbilities = this.GRAZE_REGISTRY[charFound.typeId];
+    const availableAbilities = GRAZE_REGISTRY[charFound.typeId];
     if (!availableAbilities || availableAbilities.length === 0) {
       player.sendMessage(`§cNo graze abilities defined for: §7${charFound.typeId}`);
       return null;
@@ -740,16 +376,15 @@ export class ShepherdSequence {
       }
     }
 
-    // Register the ability
+    // Register the ability. Spread (not a named field list) so any future
+    // registry field survives persistence automatically instead of silently
+    // vanishing until someone remembers to add it here too — bit twice
+    // already (tickRefs, resetCooldownRefs).
     if (chosenAbility.isPassive) {
       const passives = this.getPassiveGrazes(player);
       passives.push({
-        id:             chosenAbility.id,
-        name:           chosenAbility.name,
-        description:    chosenAbility.description,
-        pathway:        chosenAbility.pathway,
-        sequenceNumber: chosenAbility.sequenceNumber,
-        isPassive:      true,
+        ...chosenAbility,
+        isPassive: true,
         passiveEffects: chosenAbility.passiveEffects || []
       });
       this.savePassiveGrazes(player, passives);
@@ -758,13 +393,8 @@ export class ShepherdSequence {
     } else {
       const grazed = this.getGrazedAbilities(player);
       grazed.push({
-        id:             chosenAbility.id,
-        name:           chosenAbility.name,
-        description:    chosenAbility.description,
-        pathway:        chosenAbility.pathway,
-        sequenceNumber: chosenAbility.sequenceNumber,
-        isPassive:      false,
-        abilityRef:     chosenAbility.abilityRef
+        ...chosenAbility,
+        isPassive: false
       });
       this.saveGrazedAbilities(player, grazed);
 
@@ -850,12 +480,10 @@ export class ShepherdSequence {
    * We resolve the class from the global sequence registry.
    */
   static _invokeGrazedAbility(player, ability) {
-    if (!ability.abilityRef) {
+    if (!ability.abilityRef && !ability.menuRef) {
       player.sendMessage(`§cAbility ${ability.name} has no invocation reference.`);
       return false;
     }
-
-    const ref = ability.abilityRef;
 
     // Cooldown check (use a per-ability cooldown)
     const cdKey = player.name + '_' + ability.id;
@@ -865,76 +493,37 @@ export class ShepherdSequence {
       return false;
     }
 
-    // Reduced spirit cost (60% of original)
-    // For grazed abilities we just check spirit — the actual consumption
-    // is handled by each sequence's method
+    // Menu-based grazed abilities (e.g. Traveler's Log) open an interactive
+    // form instead of firing a single effect — each real action inside the
+    // menu calls dispatchGrazedAbility itself (same discount/bypass as
+    // everything else), so this cooldown just throttles re-opening, and
+    // there's no "activated" message since the menu gives its own feedback.
+    if (ability.menuRef) {
+      const opened = dispatchGrazedMenu(player, ability);
+      if (opened !== false) {
+        this.grazedCooldowns.set(cdKey, this.GRAZED_ABILITY_COOLDOWN_TICKS);
+      }
+      return opened;
+    }
+
+    // Rough up-front affordability check only — the actual (60%-discounted,
+    // see GRAZED_SPIRIT_COST_MULTIPLIER in grazeRegistry.js) consumption is
+    // handled inside dispatchGrazedAbility via the target sequence's own method.
     const spiritAvail = SpiritSystem.getSpirit(player);
     if (spiritAvail < 10) {
       player.sendMessage('§cNot enough spirit!');
       return false;
     }
 
-    // Dispatch to the right sequence class
-    const result = this._dispatchToSequenceClass(player, ref);
+    // Dispatch to the right sequence class (shared registry — see grazeRegistry.js)
+    const result = dispatchGrazedAbility(player, ability);
 
     if (result !== false) {
-      // Set a cooldown (10 seconds base for grazed abilities)
-      this.grazedCooldowns.set(cdKey, 200);
+      this.grazedCooldowns.set(cdKey, this.GRAZED_ABILITY_COOLDOWN_TICKS);
       player.sendMessage(`§d[Grazed] §7${ability.name} activated`);
     }
 
     return result;
-  }
-
-  /**
-   * Dispatch to the appropriate sequence class method.
-   * Uses a string-based registry to avoid circular imports.
-   */
-  static _dispatchToSequenceClass(player, ref) {
-    const cls = ShepherdSequence._sequenceClassRegistry[ref.class];
-    if (!cls) {
-      player.sendMessage(`§cGrazed ability class §7${ref.class}§c not registered.`);
-      return false;
-    }
-
-    const method = cls[ref.method];
-    if (typeof method !== 'function') {
-      player.sendMessage(`§cGrazed ability method §7${ref.method}§c not found.`);
-      return false;
-    }
-
-    // Temporarily bypass the target class's hasSequence check.
-    // Grazed abilities are pre-validated at graze time — the Shepherd has
-    // legitimate access. Without this patch every grazed call returns false
-    // because the Shepherd isn't the sequence being called.
-    const originalHasSequence = cls.hasSequence;
-    cls.hasSequence = () => true;
-
-    try {
-      if (ref.args && ref.args.length > 0) {
-        return method.call(cls, player, ...ref.args);
-      }
-      return method.call(cls, player);
-    } catch (e) {
-      player.sendMessage(`§cError invoking grazed ability: §7${e.message || e}`);
-      return false;
-    } finally {
-      // Always restore — even if the method throws
-      cls.hasSequence = originalHasSequence;
-    }
-  }
-
-  // =============================================
-  // SEQUENCE CLASS REGISTRY
-  // Populated from main.js via registerSequenceClasses().
-  // Avoids circular import issues.
-  // =============================================
-  static _sequenceClassRegistry = {};
-
-  static registerSequenceClasses(classMap) {
-    for (const key of Object.keys(classMap)) {
-      ShepherdSequence._sequenceClassRegistry[key] = classMap[key];
-    }
   }
 
   // =============================================
@@ -956,7 +545,7 @@ export class ShepherdSequence {
     const inv = player.getComponent('minecraft:inventory');
     if (!inv || !inv.container) return null;
 
-    const knownChars = Object.keys(this.GRAZE_REGISTRY);
+    const knownChars = Object.keys(GRAZE_REGISTRY);
     for (let slot = 0; slot < 36; slot++) {
       const item = inv.container.getItem(slot);
       if (!item) continue;

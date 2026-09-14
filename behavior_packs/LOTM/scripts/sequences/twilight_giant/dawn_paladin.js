@@ -3,7 +3,7 @@
 // v3 - Dawn Sword + Air Slash + Enhanced Hurricane + Dawn Armour
 // ============================================
 
-import { world, system } from '@minecraft/server';
+import { world, system, EnchantmentType } from '@minecraft/server';
 import { SpiritSystem } from '../../core/spiritSystem.js';
 import { PathwayManager } from '../../core/pathwayManager.js';
 import { WeaponMasterSequence } from './weapon_master.js';
@@ -89,11 +89,11 @@ export class DawnPaladinSequence {
     this.applyPhysicalEnhancements(player);
     this.applyHealthBonus(player, 8);
     this.applyGiantSize(player);
-    this.processLightOfDawn(player);
-    this.processHurricaneOfLight(player);
-    this._processDawnSword(player);
-    this._processDawnArmour(player);
-    this.tickCooldowns(player);
+    // Deliberately NOT calling tickAbilityState here — main.js calls it
+    // unconditionally for every player (real Dawn Paladin, inherited via
+    // Guardian/Demon Hunter, or grazer alike), so calling it again here
+    // would double-tick duration/cooldowns for a real Dawn Paladin
+    // specifically.
     this.applyWeaponEnchantments(player);
 
     const spirit    = Math.floor(SpiritSystem.getSpirit(player));
@@ -118,6 +118,12 @@ export class DawnPaladinSequence {
     const j   = player.getEffect('jump_boost');
     if (!j || j.amplifier !== this.JUMP_AMPLIFIER || j.duration < 200)
       player.addEffect('jump_boost',  this.EFFECT_DURATION, { amplifier: this.JUMP_AMPLIFIER, showParticles: false });
+    const nv  = player.getEffect('night_vision');
+    if (!nv || nv.duration < 200)
+      player.addEffect('night_vision', this.EFFECT_DURATION, { amplifier: 0, showParticles: false });
+    const regen = player.getEffect('regeneration');
+    if (!regen || regen.amplifier !== 1 || regen.duration < 200)
+      player.addEffect('regeneration', this.EFFECT_DURATION, { amplifier: 1, showParticles: false });
   }
 
   static applyHealthBonus(player, hp) {
@@ -131,6 +137,20 @@ export class DawnPaladinSequence {
     // try { player.addEffect('slow_falling', 40, { amplifier: 0, showParticles: false }); } catch (_) {}
   }
 
+  // Ongoing ability state — safe to call for ANY player, each method here
+  // self-gates via its own Map.get(player.name) check. Called ONLY
+  // unconditionally from main.js for every player — covers real Dawn
+  // Paladin members, Guardian/Demon Hunter members (who inherit Dawn Sword/
+  // Dawn Armour and reuse these same tracking Maps directly), and grazers,
+  // all with no double-ticking.
+  static tickAbilityState(player) {
+    this.processLightOfDawn(player);
+    this.processHurricaneOfLight(player);
+    this._processDawnSword(player);
+    this._processDawnArmour(player);
+    this.tickCooldowns(player);
+  }
+
   static applyWeaponEnchantments(player) {
     try {
       const inv = player.getComponent('minecraft:inventory');
@@ -139,9 +159,9 @@ export class DawnPaladinSequence {
       if (!held || (!held.typeId.includes('sword') && !held.typeId.includes('axe') && held.typeId !== 'lotm:dawn_sword')) return;
       const enc = held.getComponent('minecraft:enchantable');
       if (!enc) return;
-      if (!enc.hasEnchantment('sharpness'))  enc.addEnchantment({ type: 'sharpness',  level: 5 });
-      if (!enc.hasEnchantment('fire_aspect')) enc.addEnchantment({ type: 'fire_aspect', level: 2 });
-      if (!enc.hasEnchantment('unbreaking')) enc.addEnchantment({ type: 'unbreaking', level: 3 });
+      if (!enc.hasEnchantment('sharpness'))  enc.addEnchantment({ type: new EnchantmentType('sharpness'),  level: 5 });
+      if (!enc.hasEnchantment('fire_aspect')) enc.addEnchantment({ type: new EnchantmentType('fire_aspect'), level: 2 });
+      if (!enc.hasEnchantment('unbreaking')) enc.addEnchantment({ type: new EnchantmentType('unbreaking'), level: 3 });
       inv.container.setItem(player.selectedSlotIndex, held);
     } catch (_) {}
   }
